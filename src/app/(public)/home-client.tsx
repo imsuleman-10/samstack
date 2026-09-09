@@ -445,66 +445,63 @@ export default function HomeClient() {
             </div>
           </AnimateOnScroll>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
             {team.map((member, i) => (
               <AnimateOnScroll key={member.name} delay={0.12 * i} variant="fadeUp" className="h-full">
-                <div className="relative h-[440px] w-full flex flex-col justify-end rounded-[2rem] overflow-hidden group/card bg-neutral-900 border border-white/10 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-brand-500/20">
-                  {/* Background Image / Placeholder */}
-                  {member.image ? (
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover object-top transition-transform duration-700 group-hover/card:scale-105 opacity-80 group-hover/card:opacity-95"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-black transition-transform duration-700 group-hover/card:scale-105" />
-                  )}
+                <div className="relative w-full h-full flex flex-col rounded-3xl overflow-hidden group/card bg-white dark:bg-neutral-900 border border-slate-200/80 dark:border-white/10 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-brand-400/50">
+                  {/* Portrait Photo Container - completely unobstructed */}
+                  <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-slate-100 dark:bg-neutral-950">
+                    {member.image ? (
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover object-top transition-transform duration-700 group-hover/card:scale-105"
+                        priority={i === 0}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-brand-600 to-indigo-900 flex items-center justify-center">
+                        <span className="text-4xl font-black text-white font-heading">{member.initials}</span>
+                      </div>
+                    )}
 
-                  {/* Elegant Gradient overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90 group-hover/card:opacity-85 transition-opacity duration-500" />
+                    {/* Subtle Vignette at bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
 
-                  {/* Subtle Top Glow */}
-                  <div className="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-brand-500/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-700" />
-
-                  {/* Badge */}
-                  <div className="absolute top-5 right-5 z-20">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 shadow-lg">
-                      {member.badge}
-                    </span>
+                    {/* Badge */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white bg-black/50 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 shadow-md">
+                        {member.badge}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="relative z-10 p-8 flex flex-col gap-4 transform transition-transform duration-500">
-
-                    {/* Avatar Circle (Fallback if no full image or just stylized) */}
-                    <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 bg-black/50 backdrop-blur-sm shadow-xl flex items-center justify-center shrink-0 group-hover/card:border-brand-400 transition-colors duration-500">
-                      {member.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-xl font-black text-white">{member.initials}</span>
-                      )}
-                    </div>
-
+                  {/* Content Container below photo */}
+                  <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between bg-white dark:bg-neutral-900">
                     <div>
-                      <h3 className="text-2xl font-extrabold text-white font-heading tracking-tight mb-1 group-hover/card:text-brand-400 transition-colors duration-300">
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white font-heading tracking-tight mb-1 group-hover/card:text-brand-600 dark:group-hover/card:text-brand-400 transition-colors">
                         {member.name}
                       </h3>
-                      <p className="text-[11px] font-bold text-brand-400 uppercase tracking-widest">{member.role}</p>
+                      <p className="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">
+                        {member.role}
+                      </p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+                        {member.description}
+                      </p>
                     </div>
 
-                    <p className="text-sm text-slate-300/80 leading-relaxed line-clamp-3 transition-opacity duration-500">
-                      {member.description}
-                    </p>
-
-                    <div className="flex flex-wrap gap-2 pt-2 border-t border-white/10 mt-2">
-                      {member.skills.slice(0, 4).map((skill: string) => (
-                        <span key={skill} className="text-[10px] font-bold uppercase tracking-wider bg-white/5 text-slate-300 px-2.5 py-1.5 rounded border border-white/10">
-                          {skill}
-                        </span>
-                      ))}
+                    <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/10">
+                      <div className="flex flex-wrap gap-1.5">
+                        {member.skills.slice(0, 4).map((skill: string) => (
+                          <span
+                            key={skill}
+                            className="text-[10px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-white/5 px-2.5 py-1 rounded-md border border-slate-200/60 dark:border-white/10"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
