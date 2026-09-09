@@ -20,7 +20,7 @@ import { blogPosts, getFeaturedPost } from "@/lib/data/blog-posts";
 const tags = ["All Logs", "Next.js", "DevOps", "Serverless", "AI & Agents", "Architecture", "TypeScript"];
 
 const getAuthorImage = (name: string) => {
-  if (name.includes("Suleman")) return "/suleman-zaheer-software-engineer-samstack-tech.jpg";
+  if (name.includes("Suleman")) return "/suleman-zaheer-software-engineer-samstack-tech.jpeg";
   if (name.includes("Abdullah")) return "/syed-abdullah-software-engineer-samstack-tech.png";
   if (name.includes("Saqib")) return "/saqib-javed-software-engineer-samstack-tech.jpg";
   return null;
@@ -44,8 +44,8 @@ export default function BlogPage() {
   // Filter by search query
   if (searchQuery.trim() !== "") {
     const q = searchQuery.toLowerCase();
-    filteredArticles = filteredArticles.filter((p) => 
-      p.title.toLowerCase().includes(q) || 
+    filteredArticles = filteredArticles.filter((p) =>
+      p.title.toLowerCase().includes(q) ||
       p.excerpt.toLowerCase().includes(q) ||
       p.tags.some(t => t.toLowerCase().includes(q))
     );
@@ -60,7 +60,7 @@ export default function BlogPage() {
       <section className="relative overflow-hidden w-full pt-32 pb-16 lg:pt-40 lg:pb-24 px-4 sm:px-6 lg:px-8 border-b border-slate-200 dark:border-neutral-900">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-500/10 dark:bg-brand-500/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] dark:opacity-[0.05] pointer-events-none mix-blend-overlay" />
-        
+
         <div className="relative z-10 max-w-6xl mx-auto w-full">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
             <div className="space-y-6 max-w-3xl">
@@ -72,7 +72,7 @@ export default function BlogPage() {
 
               <AnimateOnScroll variant="fadeUp" delay={0.1}>
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-slate-900 dark:text-white font-heading leading-[1.05] tracking-tight">
-                  Engineering <br/>
+                  Engineering <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-500 to-cyan-500 dark:from-brand-400 dark:via-indigo-400 dark:to-cyan-400">
                     &amp; Architecture Logs.
                   </span>
@@ -122,7 +122,7 @@ export default function BlogPage() {
                     className="object-cover transition-transform duration-[2000ms] group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-black/20 lg:to-black/80" />
-                  
+
                   {/* Badge */}
                   <div className="absolute top-6 left-6">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">
@@ -153,7 +153,7 @@ export default function BlogPage() {
                         {getAuthorImage(featuredArticle.author) ? (
                           <Image src={getAuthorImage(featuredArticle.author)!} alt={featuredArticle.author} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
                         ) : (
-                          featuredArticle.author.split(' ').map(n=>n[0]).join('')
+                          featuredArticle.author.split(' ').map(n => n[0]).join('')
                         )}
                       </div>
                       <span className="text-xs font-bold text-slate-900 dark:text-white">{featuredArticle.author}</span>
@@ -174,7 +174,7 @@ export default function BlogPage() {
       ══════════════════════════════════════════ */}
       <section id="articles" className="relative px-4 sm:px-6 lg:px-8 pb-24 sm:pb-32">
         <div className="max-w-6xl mx-auto">
-          
+
           {/* Filters Bar */}
           <AnimateOnScroll variant="fadeUp" delay={0.1}>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 pb-6 border-b border-slate-200 dark:border-neutral-800">
@@ -185,11 +185,10 @@ export default function BlogPage() {
                     <button
                       key={tag}
                       onClick={() => setActiveTag(tag)}
-                      className={`whitespace-nowrap px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 border ${
-                        activeTag === tag
+                      className={`whitespace-nowrap px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 border ${activeTag === tag
                           ? "text-white bg-slate-900 dark:bg-white dark:text-slate-900 border-slate-900 dark:border-white shadow-md"
                           : "text-slate-500 dark:text-slate-400 bg-transparent border-slate-200 dark:border-neutral-800 hover:border-brand-400 dark:hover:border-neutral-600 hover:bg-slate-50 dark:hover:bg-neutral-900"
-                      }`}
+                        }`}
                     >
                       {tag}
                     </button>
@@ -221,7 +220,7 @@ export default function BlogPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
                       <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-                        {article.tags.slice(0,2).map((t) => (
+                        {article.tags.slice(0, 2).map((t) => (
                           <span key={t} className="px-2.5 py-1 bg-black/40 backdrop-blur-md border border-white/20 rounded-md text-[9px] font-mono font-bold text-white uppercase tracking-widest shadow-sm">
                             {t}
                           </span>
@@ -236,11 +235,11 @@ export default function BlogPage() {
                         <span>&bull;</span>
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {article.readTime}</span>
                       </div>
-                      
+
                       <h3 className="text-xl font-black font-heading text-slate-900 dark:text-white leading-snug mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2">
                         {article.title}
                       </h3>
-                      
+
                       <p className="text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed line-clamp-3 mb-6 flex-1">
                         {article.excerpt}
                       </p>
@@ -293,13 +292,13 @@ export default function BlogPage() {
 
           <AnimateOnScroll variant="fadeUp" delay={0.1}>
             <form className="flex flex-col sm:flex-row max-w-lg mx-auto gap-3 mt-8" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="developer@company.com" 
+              <input
+                type="email"
+                placeholder="developer@company.com"
                 className="flex-1 px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm font-medium"
                 required
               />
-              <button 
+              <button
                 type="submit"
                 className="px-8 py-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-brand-500/25 shrink-0"
               >

@@ -8,26 +8,36 @@ export async function POST(request: NextRequest) {
     const { email, password } = body;
 
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "samstacktechs@gmail.com";
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Salman123@";
 
-    if (!ADMIN_PASSWORD) {
-      console.error("CRITICAL: ADMIN_PASSWORD is not set in environment variables.");
-      return NextResponse.json({ error: "Server misconfiguration. Admin login disabled." }, { status: 500 });
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      const token = await signAdminToken({ email });
+    if (
+      email.trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase() &&
+      password === ADMIN_PASSWORD
+    ) {
+      const token = await signAdminToken({ email: ADMIN_EMAIL });
 
       const cookieStore = await cookies();
-      cookieStore.set("admin_token", token, {
+      const cookieOpts = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "lax" as const,
         path: "/",
-        maxAge: 60 * 60 * 24, // 24 hours
-      });
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      };
 
-      return NextResponse.json({ success: true, message: "Authentication successful." }, { status: 200 });
+      cookieStore.set("session_token", token, cookieOpts);
+      cookieStore.set("admin_token", token, cookieOpts);
+
+      return NextResponse.json({
+        success: true,
+        message: "Authentication successful.",
+        dashboard: "/admin",
+        role: "admin",
+      });
     }
 
     return NextResponse.json({ error: "Invalid operator credentials. Access Denied." }, { status: 401 });

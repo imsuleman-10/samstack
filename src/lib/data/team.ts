@@ -42,7 +42,7 @@ export const teamData: TeamMember[] = [
     jobTitle: "Founder & Lead Software Engineer",
     bio: "Suleman is the founder and lead engineer behind SAMStack Tech, specializing in high-performance cloud architectures, full-stack engineering, and building enterprise-grade web applications that scale.",
     longBio: "Suleman Zaheer is a Computer Science student at the University of Engineering and Technology (UET), Lahore — one of Pakistan's most prestigious engineering universities — and the founder of SAMStack Tech. With deep expertise in Next.js App Router architecture, Firebase, Node.js, TypeScript, and AI-powered systems, Suleman has led the development of multiple production-grade platforms for clients across industries. Originally from Lahore, he built SAMStack Tech with a clear mission: to bridge the gap between cutting-edge technology and practical, scalable software systems, and to mentor the next generation of Pakistani engineers through SAMStack's internship programme.",
-    avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpg",
+    avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpeg",
     skills: ["Next.js", "React", "Node.js", "TypeScript", "Firebase", "Cloud Architecture", "UI/UX Design", "DevOps", "Agentic AI", "System Design", "PostgreSQL", "Docker"],
     specializations: ["Full-Stack Engineering", "Cloud Architecture", "AI Agent Systems", "Enterprise SaaS", "DevOps & CI/CD"],
     education: {

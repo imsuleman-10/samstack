@@ -53,7 +53,7 @@ export function UserAvatar({ src, name, size = 'md', status, className = '' }: U
       </div>
       {status && (
         <span
-          className={`absolute bottom-0 right-0 block rounded-full border-2 border-[var(--bg-surface)] ${STATUS_COLOR[status]}`}
+          className={`absolute bottom-0 right-0 block rounded-full border-2 border-white dark:border-zinc-900 ${STATUS_COLOR[status]}`}
           style={{ width: '28%', height: '28%', minWidth: 6, minHeight: 6 }}
         />
       )}

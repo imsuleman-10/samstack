@@ -82,22 +82,38 @@ function ApplyForm() {
   const validateStep1 = () => {
     if (!firstName.trim() || !lastName.trim()) return "Please enter your full name.";
     if (!phone.trim()) return "WhatsApp Number is required.";
+    if (!email.trim() || !email.includes("@")) return "A valid email address is required.";
     if (!gender) return "Please select your gender.";
     if (!selectedTrack) return "Please select a specialization track.";
     if (!covenantChecked) return "You must accept the Honor Covenant.";
     return null;
   };
 
-  const handleStep1Next = (e: React.FormEvent) => {
+  const handleStep1Next = async (e: React.FormEvent) => {
     e.preventDefault();
     const err = validateStep1();
     if (err) { setError(err); return; }
     setError(null);
-    setStep("ACCOUNT");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsSubmitting(true);
+
+    try {
+      const emailAddr = email.trim().toLowerCase();
+      const checkRes = await fetch(`/api/internship/check-email?email=${encodeURIComponent(emailAddr)}`);
+      const checkData = await checkRes.json();
+      if (checkData.exists) {
+        setError(checkData.message || "An application has already been submitted using this email address. Multiple submissions are not allowed.");
+        return;
+      }
+      setStep("ACCOUNT");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      // Fallback: advance to next step, backend /api/internship/apply will enforce duplicate check
+      setStep("ACCOUNT");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-
 
   const finalizeApplication = async (firebaseUid: string, idToken: string) => {
     const res = await fetch("/api/internship/apply", {
@@ -123,7 +139,15 @@ function ApplyForm() {
     setError(null);
     try {
       const emailAddr = email.trim().toLowerCase();
-      
+
+      // Check if application already submitted with this email
+      const checkRes = await fetch(`/api/internship/check-email?email=${encodeURIComponent(emailAddr)}`);
+      const checkData = await checkRes.json();
+      if (checkData.exists) {
+        setError(checkData.message || "An application has already been submitted using this email address.");
+        return;
+      }
+
       // Step 1: Request OTP
       const res = await fetch("/api/auth/send-email-otp", {
         method: "POST",
@@ -201,6 +225,17 @@ function ApplyForm() {
     try {
       const provider = new GoogleAuthProvider();
       const cred = await signInWithPopup(auth, provider);
+      const googleEmail = cred.user.email || email;
+
+      if (googleEmail) {
+        const checkRes = await fetch(`/api/internship/check-email?email=${encodeURIComponent(googleEmail.trim().toLowerCase())}`);
+        const checkData = await checkRes.json();
+        if (checkData.exists) {
+          setError(checkData.message || "An application with this email has already been submitted.");
+          return;
+        }
+      }
+
       const idToken = await cred.user.getIdToken();
       const data = await finalizeApplication(cred.user.uid, idToken);
       setRollNumber(data.rollNumber);
@@ -516,10 +551,10 @@ function ApplyForm() {
                       </div>
                     </div>
                     <div>
-                      <label className={labelClass}>Email Address</label>
+                      <label className={labelClass}>Email Address <span className="text-rose-500">*</span></label>
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className={`${inputClass} pl-10`} />
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className={`${inputClass} pl-10`} required />
                       </div>
                     </div>
                   </div>
@@ -650,25 +685,46 @@ function ApplyForm() {
             </div>
 
             {/* Submit */}
-            <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-100 dark:border-neutral-800 p-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-100 dark:border-neutral-800 p-6 shadow-sm space-y-4">
+              {/* Honor Covenant Checkbox right near submit button */}
+              <div className={`p-4 rounded-xl border transition-all duration-200 ${
+                covenantChecked 
+                  ? "bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/40" 
+                  : "bg-amber-50/70 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700/50 shadow-sm"
+              }`}>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="honor-covenant-submit-checkbox"
+                    checked={covenantChecked}
+                    onChange={(e) => setCovenantChecked(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-brand-500 rounded cursor-pointer shrink-0"
+                  />
+                  <div className="space-y-0.5 select-none">
+                    <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <ShieldCheck className={`w-4 h-4 shrink-0 ${covenantChecked ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`} />
+                      I accept the SAMStack Engineering Honor Covenant
+                    </div>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                      All work must be original. Plagiarism results in immediate disqualification. Your credential is cryptographically signed and publicly verifiable.
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between pt-1">
                 <div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white">Ready to apply?</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Next step: create your LMS account.</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Next step: create your LMS account.</div>
                 </div>
                 <button
                   type="submit"
                   disabled={!covenantChecked}
-                  className="shrink-0 inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-500 hover:to-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm transition-all shadow-lg shadow-brand-500/25"
+                  className="shrink-0 inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm transition-all shadow-lg shadow-brand-500/25 cursor-pointer"
                 >
                   Next: Create Account <ArrowLeft className="w-4 h-4 rotate-180" />
                 </button>
               </div>
-              {!covenantChecked && (
-                <p className="mt-3 text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 shrink-0" /> Accept the Honor Covenant to continue.
-                </p>
-              )}
             </div>
           </form>
         </main>

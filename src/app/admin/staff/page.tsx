@@ -114,8 +114,8 @@ export default function AdminStaffPage() {
               <div className="flex items-center gap-3">
                 <UserAvatar name={u.full_name} src={u.avatar_url} size="sm" />
                 <div>
-                  <p className="font-medium text-white">{u.full_name}</p>
-                  <p className="text-xs text-gray-400">{u.email}</p>
+                  <p className="font-bold text-slate-900 dark:text-white">{u.full_name}</p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">{u.email}</p>
                 </div>
               </div>
             ),
@@ -124,12 +124,12 @@ export default function AdminStaffPage() {
             key: 'department',
             label: 'Department',
             render: (u: StaffWithProfile) => (
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                 u.department === 'Support + Marketing'
-                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30'
                   : u.department
-                  ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                  : 'bg-gray-500/10 text-gray-500 border border-gray-500/20'
+                  ? 'bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/30'
+                  : 'bg-slate-100 text-slate-700 border border-slate-300 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
               }`}>
                 {u.department || 'Unassigned'}
               </span>
@@ -139,7 +139,7 @@ export default function AdminStaffPage() {
             key: 'position',
             label: 'Position',
             render: (u: StaffWithProfile) => (
-              <span className="text-gray-300 text-sm">{u.position || <span className="text-gray-600 italic">—</span>}</span>
+              <span className="text-slate-700 dark:text-zinc-300 text-sm font-medium">{u.position || <span className="text-slate-400 dark:text-zinc-600 italic">—</span>}</span>
             ),
           },
           {
@@ -151,7 +151,7 @@ export default function AdminStaffPage() {
             key: 'joined',
             label: 'Joined',
             render: (u) => (
-              <span className="text-gray-400 text-sm">
+              <span className="text-slate-500 dark:text-zinc-400 font-medium text-sm">
                 {new Date(u.created_at).toLocaleDateString()}
               </span>
             ),

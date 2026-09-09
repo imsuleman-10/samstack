@@ -70,8 +70,8 @@ export default function AdminMentorsPage() {
               <div className="flex items-center gap-3">
                 <UserAvatar name={m.full_name} src={m.avatar_url} size="sm" />
                 <div>
-                  <p className="font-medium text-white">{m.full_name}</p>
-                  <p className="text-xs text-gray-400">{m.email}</p>
+                  <p className="font-bold text-slate-900 dark:text-white">{m.full_name}</p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">{m.email}</p>
                 </div>
               </div>
             ),
@@ -84,7 +84,7 @@ export default function AdminMentorsPage() {
           {
             key: 'joined',
             label: 'Joined',
-            render: (m) => <span className="text-gray-400">{new Date(m.created_at).toLocaleDateString()}</span>,
+            render: (m) => <span className="text-slate-500 dark:text-zinc-400 font-medium text-sm">{new Date(m.created_at).toLocaleDateString()}</span>,
           },
         ]}
       />

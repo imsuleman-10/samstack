@@ -2,7 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Users, GraduationCap, Star, Briefcase, Activity, TrendingUp, Award, CheckCircle2, Clock, XCircle, Loader2 } from 'lucide-react';
+import {
+  Users, GraduationCap, Star, Briefcase, Activity, TrendingUp,
+  Award, CheckCircle2, Clock, Loader2, ArrowUpRight, ShieldCheck
+} from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { DataTable } from '@/components/ui/DataTable';
@@ -97,128 +100,142 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const StatCard = ({ title, value, icon: Icon, color, href }: any) => (
+  const StatCard = ({ title, value, icon: Icon, color, href, subtitle }: any) => (
     <Link href={href || '#'} className="block group">
-      <div
-        className="p-5 rounded-2xl border transition-all duration-200 group-hover:scale-[1.02]"
-        style={{
-          background: 'rgba(17,24,39,0.6)',
-          borderColor: 'rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(12px)',
-        }}
-      >
+      <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 shadow-xs hover:shadow-md hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between h-full">
         <div className="flex items-center justify-between mb-3">
-          <div className="p-2.5 rounded-xl" style={{ background: `${color}18` }}>
-            <Icon className="w-5 h-5" style={{ color }} />
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
+            style={{ background: `${color}15`, color }}
+          >
+            <Icon className="w-5 h-5" />
           </div>
-          <TrendingUp className="w-3.5 h-3.5 text-gray-600 group-hover:text-gray-400 transition-colors" />
+          {href ? (
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-brand-600 dark:group-hover:text-brand-400 group-hover:bg-brand-500/10 transition-colors">
+              <ArrowUpRight className="w-4 h-4" />
+            </div>
+          ) : (
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          )}
         </div>
-        <p className="text-3xl font-bold text-white mb-1">
-          {loading ? <span className="inline-block w-10 h-7 rounded bg-white/10 animate-pulse" /> : value}
-        </p>
-        <p className="text-xs text-gray-500 font-medium">{title}</p>
+        <div>
+          <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-0.5">
+            {loading ? <span className="inline-block w-12 h-8 rounded-lg bg-slate-200 dark:bg-zinc-800 animate-pulse" /> : value}
+          </p>
+          <p className="text-xs font-semibold text-slate-500 dark:text-zinc-400">{title}</p>
+        </div>
       </div>
     </Link>
   );
 
   return (
-    <div>
+    <div className="space-y-8 pb-10">
       <PageHeader
-        title="Admin Dashboard"
-        description="Platform analytics, user stats and real-time activity."
+        title="Admin Console"
+        description="Unified system analytics, user accounts, and real-time operations."
       />
 
-      {/* ── Stat Cards ─────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
-        <StatCard title="Total Users"      value={stats.total}   icon={Users}        color="#3b82f6" href="/admin/users" />
-        <StatCard title="Interns"          value={stats.interns} icon={GraduationCap} color="#22d3ee" href="/admin/interns" />
-        <StatCard title="Mentors"          value={stats.mentors} icon={Star}          color="#a78bfa" href="/admin/mentors" />
-        <StatCard title="Staff"            value={stats.staff}   icon={Briefcase}    color="#34d399" href="/admin/staff" />
-        <StatCard title="Active Accounts"  value={stats.active}  icon={Activity}     color="#10b981" />
+      {/* ── Metric Stat Cards ───────────────────────────────────────── */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
+        <StatCard title="Total Users"      value={stats.total}   icon={Users}        color="#0284c7" href="/admin/users" />
+        <StatCard title="Active Interns"  value={stats.interns} icon={GraduationCap} color="#06b6d4" href="/admin/interns" />
+        <StatCard title="Mentors"         value={stats.mentors} icon={Star}          color="#8b5cf6" href="/admin/mentors" />
+        <StatCard title="Staff Members"   value={stats.staff}   icon={Briefcase}    color="#10b981" href="/admin/staff" />
+        <StatCard title="Active Accounts" value={stats.active}  icon={Activity}     color="#16a34a" />
       </div>
 
       {/* ── Charts Row 1 ───────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-        {/* Weekly Registrations takes 2/3 */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
           <WeeklyRegistrationsChart data={stats.weeklyRegistrations} />
         </div>
-        {/* Role Distribution takes 1/3 */}
         <div>
           <RoleDistributionChart data={stats.roleDistribution} />
         </div>
       </div>
 
       {/* ── Charts Row 2 ───────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <TrackDistributionChart data={stats.trackDistribution} />
         <TaskStatusChart data={stats.taskStats} />
       </div>
 
       {/* ── Pending Certificate Requests ────────────────────────────── */}
       {(certsLoading || pendingCerts.length > 0) && (
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)' }}>
-                <Award className="w-4 h-4 text-amber-400" />
+        <div>
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                <Award className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">Pending Certificate Requests</h2>
-                <p className="text-xs text-gray-500">Interns awaiting certificate approval</p>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  Pending Certificate Requests
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">
+                  Interns awaiting administrative verification and issuance
+                </p>
               </div>
               {pendingCerts.length > 0 && (
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20">
+                <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20">
                   {pendingCerts.length}
                 </span>
               )}
             </div>
-            <Link href="/admin/certificates" className="text-sm font-medium text-cyan-400 hover:text-cyan-300">
-              View All →
+            <Link
+              href="/admin/certificates"
+              className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1"
+            >
+              View All Certificates →
             </Link>
           </div>
 
-          <div className="rounded-2xl border overflow-hidden" style={{ background: 'rgba(17,24,39,0.6)', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 shadow-xs overflow-hidden">
             {certsLoading ? (
-              <div className="py-10 flex items-center justify-center gap-2 text-gray-500">
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span className="text-sm">Loading requests...</span>
+              <div className="py-12 flex items-center justify-center gap-2 text-slate-400 dark:text-zinc-500">
+                <Loader2 className="w-5 h-5 animate-spin text-brand-500" />
+                <span className="text-xs font-medium">Loading pending requests...</span>
               </div>
             ) : (
-              <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+              <div className="divide-y divide-slate-100 dark:divide-zinc-800/70">
                 {pendingCerts.map(req => (
-                  <div key={req.intern_id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors">
+                  <div
+                    key={req.intern_id}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50/60 dark:hover:bg-zinc-800/40 transition-colors"
+                  >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
-                        style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.3), rgba(245,158,11,0.1))', border: '1px solid rgba(245,158,11,0.2)' }}>
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-amber-700 dark:text-amber-300 bg-amber-500/15 border border-amber-500/25 shrink-0">
                         {req.full_name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-white">{req.full_name}</p>
-                        <p className="text-xs text-gray-500">{req.email} · {req.roll_number || 'No roll number'}</p>
+                        <p className="text-sm font-bold text-slate-900 dark:text-white">{req.full_name}</p>
+                        <p className="text-xs text-slate-500 dark:text-zinc-400">
+                          {req.email} · <span className="font-mono text-[11px] font-semibold">{req.roll_number || 'No roll number'}</span>
+                        </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.25)' }}>
-                        <Clock className="w-3 h-3" /> Pending
+                    <div className="flex items-center gap-3 self-end sm:self-center">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                        <Clock className="w-3 h-3" /> Awaiting Review
                       </span>
-                      <span className="text-xs text-gray-500">{new Date(req.updated_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</span>
                       <button
                         onClick={() => handleApproveCert(req.intern_id, req.full_name)}
                         disabled={!!processingId}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all disabled:opacity-50"
-                        style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 0 12px rgba(16,185,129,0.3)' }}
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-all shadow-xs disabled:opacity-50"
                       >
-                        {processingId === req.intern_id
-                          ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          : <CheckCircle2 className="w-3.5 h-3.5" />}
+                        {processingId === req.intern_id ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        )}
                         Approve
                       </button>
-                      <Link href={`/admin/users/${req.intern_id}`}
-                        className="px-3 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white transition-colors"
-                        style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
-                        View
+                      <Link
+                        href={`/admin/users/${req.intern_id}`}
+                        className="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
+                      >
+                        Details
                       </Link>
                     </div>
                   </div>
@@ -230,11 +247,17 @@ export default function AdminDashboardPage() {
       )}
 
       {/* ── Recent Registrations Table ─────────────────────────────── */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Recent Registrations</h2>
-          <Link href="/admin/users" className="text-sm font-medium text-cyan-400 hover:text-cyan-300">
-            View All Users →
+      <div>
+        <div className="flex items-center justify-between mb-3.5">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">Recent Registrations</h2>
+            <p className="text-xs text-slate-500 dark:text-zinc-400">Recently created user accounts across all roles</p>
+          </div>
+          <Link
+            href="/admin/users"
+            className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1"
+          >
+            All Accounts →
           </Link>
         </div>
         <DataTable
@@ -249,15 +272,23 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center gap-3">
                   <UserAvatar name={u.full_name} src={u.avatar_url} size="sm" />
                   <div>
-                    <p className="font-medium text-white">{u.full_name}</p>
-                    <p className="text-xs text-gray-400">{u.email}</p>
+                    <p className="font-bold text-slate-900 dark:text-white text-sm">{u.full_name}</p>
+                    <p className="text-xs text-slate-500 dark:text-zinc-400">{u.email}</p>
                   </div>
                 </div>
               ),
             },
             { key: 'role',    label: 'Role',    render: (u) => <RoleBadge role={u.role} /> },
             { key: 'status',  label: 'Status',  render: (u) => <StatusBadge status={u.status} /> },
-            { key: 'created', label: 'Joined',  render: (u) => <span className="text-gray-400 text-sm">{new Date(u.created_at).toLocaleDateString()}</span> },
+            {
+              key: 'created',
+              label: 'Joined',
+              render: (u) => (
+                <span className="text-slate-500 dark:text-zinc-400 text-xs font-medium">
+                  {new Date(u.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+              ),
+            },
           ]}
         />
       </div>
