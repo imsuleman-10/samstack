@@ -118,9 +118,9 @@ export default function AdminUsersPage() {
 
       {/* Bulk Actions Bar */}
       {selectedIds.length > 0 && (
-        <div className="mb-6 p-4 rounded-xl border bg-cyan-900/20 border-cyan-500/30 flex flex-wrap items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="flex items-center gap-3 text-sm text-cyan-100 font-medium">
-            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400">
+        <div className="mb-6 p-4 rounded-2xl border bg-cyan-50 border-cyan-200 dark:bg-cyan-950/40 dark:border-cyan-800/60 flex flex-wrap items-center justify-between gap-4 shadow-xs animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="flex items-center gap-3 text-sm text-cyan-900 dark:text-cyan-100 font-bold">
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-cyan-600 text-white dark:bg-cyan-500/20 dark:text-cyan-400 text-xs">
               {selectedIds.length}
             </span>
             Users Selected
@@ -129,46 +129,46 @@ export default function AdminUsersPage() {
             <button
               onClick={() => handleBulkAction('CHANGE_ROLE', 'intern')}
               disabled={!!bulkAction}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="px-3 py-1.5 rounded-xl text-sm font-semibold bg-cyan-600 text-white hover:bg-cyan-500 dark:bg-cyan-500/10 dark:text-cyan-400 dark:hover:bg-cyan-500/20 border border-cyan-600/30 dark:border-cyan-500/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
             >
               {bulkAction?.type === 'CHANGE_ROLE' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
               Role: Intern
             </button>
 
-            <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-black/20 border border-white/5">
-              <Shield className="w-4 h-4 text-gray-400" />
+            <div className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 shadow-xs">
+              <Shield className="w-4 h-4 text-slate-400 dark:text-zinc-400" />
               <select 
-                className="bg-transparent text-sm text-gray-300 outline-none"
+                className="bg-transparent text-sm text-slate-700 dark:text-zinc-200 outline-none font-medium cursor-pointer"
                 onChange={(e) => { if(e.target.value) { handleBulkAction('CHANGE_ROLE', e.target.value); e.target.value = ''; } }}
                 disabled={!!bulkAction}
               >
-                <option value="" className="bg-gray-900">Change Role...</option>
-                <option value="admin" className="bg-gray-900">Admin</option>
-                <option value="mentor" className="bg-gray-900">Mentor</option>
-                <option value="intern" className="bg-gray-900">Intern</option>
-                <option value="staff" className="bg-gray-900">Staff</option>
-                <option value="member" className="bg-gray-900">Member</option>
+                <option value="" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Change Role...</option>
+                <option value="admin" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Admin</option>
+                <option value="mentor" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Mentor</option>
+                <option value="intern" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Intern</option>
+                <option value="staff" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Staff</option>
+                <option value="member" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Member</option>
               </select>
             </div>
 
-            <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-black/20 border border-white/5">
-              <Activity className="w-4 h-4 text-gray-400" />
+            <div className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 shadow-xs">
+              <Activity className="w-4 h-4 text-slate-400 dark:text-zinc-400" />
               <select 
-                className="bg-transparent text-sm text-gray-300 outline-none"
+                className="bg-transparent text-sm text-slate-700 dark:text-zinc-200 outline-none font-medium cursor-pointer"
                 onChange={(e) => { if(e.target.value) { handleBulkAction('CHANGE_STATUS', e.target.value); e.target.value = ''; } }}
                 disabled={!!bulkAction}
               >
-                <option value="" className="bg-gray-900">Change Status...</option>
-                <option value="active" className="bg-gray-900">Active</option>
-                <option value="suspended" className="bg-gray-900">Suspended</option>
-                <option value="inactive" className="bg-gray-900">Inactive</option>
+                <option value="" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Change Status...</option>
+                <option value="active" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Active</option>
+                <option value="suspended" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Suspended</option>
+                <option value="inactive" className="bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200">Inactive</option>
               </select>
             </div>
 
             <button
               onClick={() => handleBulkAction('DELETE')}
               disabled={!!bulkAction}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="px-3 py-1.5 rounded-xl text-sm font-semibold bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-rose-500/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
             >
               {bulkAction?.type === 'DELETE' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
               Delete
@@ -177,7 +177,7 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setSelectedIds([])}
               disabled={!!bulkAction}
-              className="p-1.5 ml-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-1.5 ml-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-zinc-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -207,8 +207,8 @@ export default function AdminUsersPage() {
               <div className="flex items-center gap-3">
                 <UserAvatar name={u.full_name} src={u.avatar_url} size="sm" />
                 <div>
-                  <p className="font-medium text-white">{u.full_name}</p>
-                  <p className="text-xs text-gray-400">{u.email}</p>
+                  <p className="font-bold text-slate-900 dark:text-white">{u.full_name}</p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">{u.email}</p>
                 </div>
               </div>
             ),
@@ -226,7 +226,7 @@ export default function AdminUsersPage() {
           {
             key: 'joined',
             label: 'Joined',
-            render: (u) => <span suppressHydrationWarning className="text-gray-400">{u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</span>,
+            render: (u) => <span suppressHydrationWarning className="text-slate-500 dark:text-zinc-400 text-xs font-medium">{u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</span>,
           },
           {
             key: 'actions',

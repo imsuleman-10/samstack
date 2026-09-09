@@ -37,46 +37,46 @@ function TaskForm({
   const [form, setForm] = useState({ ...EMPTY_FORM, ...initial });
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0f1724] p-6 space-y-4">
+    <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 space-y-4 shadow-sm">
       <div className="grid grid-cols-1 gap-4">
         <div>
-          <label className="block text-xs text-gray-400 font-semibold mb-1.5">Task Title <span className="text-red-400">*</span></label>
+          <label className="block text-xs text-slate-600 dark:text-zinc-400 font-bold mb-1.5">Task Title <span className="text-red-500">*</span></label>
           <input
             value={form.title}
             onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
             placeholder="e.g. Variables & Data Types"
-            className="w-full h-10 px-4 rounded-xl text-sm text-white bg-white/5 border border-white/10 focus:ring-2 focus:ring-cyan-500 outline-none"
+            className="w-full h-10 px-4 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-cyan-500 outline-none"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 font-semibold mb-1.5">Scope <span className="text-red-400">*</span></label>
+          <label className="block text-xs text-slate-600 dark:text-zinc-400 font-bold mb-1.5">Scope <span className="text-red-500">*</span></label>
           <textarea
             value={form.scope}
             onChange={e => setForm(f => ({ ...f, scope: e.target.value }))}
             rows={2}
             placeholder="Brief description of what the student should build..."
-            className="w-full px-4 py-2.5 rounded-xl text-sm text-white bg-white/5 border border-white/10 focus:ring-2 focus:ring-cyan-500 outline-none resize-none"
+            className="w-full px-4 py-2.5 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-cyan-500 outline-none resize-none"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 font-semibold mb-1.5">Acceptance Criteria <span className="text-red-400">*</span></label>
+          <label className="block text-xs text-slate-600 dark:text-zinc-400 font-bold mb-1.5">Acceptance Criteria <span className="text-red-500">*</span></label>
           <textarea
             value={form.criteria}
             onChange={e => setForm(f => ({ ...f, criteria: e.target.value }))}
             rows={3}
             placeholder="What must be included for the task to be approved..."
-            className="w-full px-4 py-2.5 rounded-xl text-sm text-white bg-white/5 border border-white/10 focus:ring-2 focus:ring-cyan-500 outline-none resize-none"
+            className="w-full px-4 py-2.5 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-cyan-500 outline-none resize-none"
           />
         </div>
         <div className="w-32">
-          <label className="block text-xs text-gray-400 font-semibold mb-1.5">Week #</label>
+          <label className="block text-xs text-slate-600 dark:text-zinc-400 font-bold mb-1.5">Week #</label>
           <input
             type="number"
             min={1}
             max={20}
             value={form.week_number}
             onChange={e => setForm(f => ({ ...f, week_number: parseInt(e.target.value) || 1 }))}
-            className="w-full h-10 px-4 rounded-xl text-sm text-white bg-white/5 border border-white/10 focus:ring-2 focus:ring-cyan-500 outline-none"
+            className="w-full h-10 px-4 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-cyan-500 outline-none"
           />
         </div>
       </div>
@@ -84,14 +84,14 @@ function TaskForm({
         <button
           onClick={() => onSave(form)}
           disabled={saving || !form.title || !form.scope || !form.criteria}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-900 bg-cyan-400 hover:bg-cyan-300 disabled:opacity-50 transition-all"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-900 bg-cyan-400 hover:bg-cyan-300 disabled:opacity-50 transition-all shadow-sm"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Task
         </button>
         <button
           onClick={onCancel}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
           <X className="w-4 h-4" /> Cancel
         </button>
@@ -102,30 +102,30 @@ function TaskForm({
 
 function TaskRow({ task, onEdit, onDelete }: { task: Task; onEdit: () => void; onDelete: () => void }) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl border border-white/7 bg-white/2 hover:border-white/12 transition-all group">
-      <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xs font-bold shrink-0">
+    <div className="flex items-start gap-4 p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 hover:border-slate-300 dark:hover:border-zinc-700 transition-all group shadow-sm">
+      <div className="w-8 h-8 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 text-xs font-bold shrink-0">
         {task.week_number}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-semibold text-white">{task.title}</p>
+          <p className="text-sm font-bold text-slate-900 dark:text-white">{task.title}</p>
           {task.isDefault && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 font-mono">default</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 dark:bg-yellow-500/10 dark:border-yellow-500/20 dark:text-yellow-400 font-mono font-bold">default</span>
           )}
         </div>
-        <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">{task.scope}</p>
-        <p className="text-xs text-gray-600 mt-0.5 leading-relaxed line-clamp-1 italic">{task.criteria}</p>
+        <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 leading-relaxed line-clamp-2">{task.scope}</p>
+        <p className="text-xs text-slate-500 dark:text-zinc-500 mt-0.5 leading-relaxed line-clamp-1 italic">{task.criteria}</p>
       </div>
       <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={onEdit}
-          className="p-1.5 rounded-lg text-gray-500 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all"
+          className="p-1.5 rounded-lg text-slate-400 dark:text-gray-500 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-400/10 transition-all"
         >
           <Pencil className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={onDelete}
-          className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-all"
+          className="p-1.5 rounded-lg text-slate-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-red-400 hover:bg-rose-50 dark:hover:bg-red-400/10 transition-all"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -250,10 +250,10 @@ export default function AdminTasksPage() {
           <button
             key={t.id}
             onClick={() => setSelectedTrack(t.id)}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all border ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border shadow-sm ${
               selectedTrack === t.id
-                ? 'bg-cyan-400/10 border-cyan-400/30 text-cyan-300'
-                : 'bg-white/3 border-white/8 text-gray-500 hover:text-white hover:border-white/15'
+                ? 'bg-cyan-600 dark:bg-cyan-400/10 border-cyan-600 dark:border-cyan-400/30 text-white dark:text-cyan-300'
+                : 'bg-white dark:bg-zinc-900/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-zinc-700'
             }`}
           >
             {t.title.split(' ')[0]}
@@ -262,19 +262,19 @@ export default function AdminTasksPage() {
       </div>
 
       {/* Track info + action */}
-      <div className="p-5 rounded-2xl border border-white/8 bg-[#0d1117] flex items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-cyan-400" />
+          <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 flex items-center justify-center">
+            <BookOpen className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white">{trackInfo?.title}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{tasks.length} task{tasks.length !== 1 ? 's' : ''} defined</p>
+            <p className="text-sm font-bold text-slate-900 dark:text-white">{trackInfo?.title}</p>
+            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">{tasks.length} task{tasks.length !== 1 ? 's' : ''} defined</p>
           </div>
         </div>
         <button
           onClick={() => { setShowAddForm(true); setEditingId(null); }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-900 bg-cyan-400 hover:bg-cyan-300 transition-all shrink-0"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-900 bg-cyan-400 hover:bg-cyan-300 transition-all shrink-0 shadow-sm"
         >
           <Plus className="w-4 h-4" /> Add Task
         </button>

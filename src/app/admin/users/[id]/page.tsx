@@ -206,19 +206,19 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Core Info & Actions */}
         <div className="space-y-6">
-          <div className="p-6 rounded-xl border flex flex-col items-center text-center" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm flex flex-col items-center text-center">
             <UserAvatar src={user.avatar_url} name={user.full_name} size="xl" className="mb-4" />
-            <h2 className="text-xl font-bold text-white mb-1">{user.full_name}</h2>
-            <p className="text-sm text-gray-400 mb-4">{user.email}</p>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-1">{user.full_name}</h2>
+            <p className="text-sm font-medium text-slate-500 dark:text-zinc-400 mb-4">{user.email}</p>
             <div className="flex gap-2">
               <RoleBadge role={user.role} />
               <StatusBadge status={user.status} />
             </div>
             
-            <div className="w-full mt-6 pt-6 border-t border-white/5 space-y-3">
+            <div className="w-full mt-6 pt-6 border-t border-slate-100 dark:border-zinc-800 space-y-3">
               <button 
                 onClick={() => setIsEditing(!isEditing)}
-                className="w-full py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-zinc-200 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2"
               >
                 <Edit3 className="w-4 h-4" />
                 {isEditing ? 'Cancel Editing' : 'Edit User'}
@@ -227,7 +227,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               <button 
                 onClick={handleSendCredentials}
                 disabled={sendingCreds}
-                className="w-full py-2 rounded-lg text-sm font-medium text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-2.5 rounded-xl text-sm font-semibold text-cyan-700 dark:text-cyan-300 bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20 border border-cyan-200 dark:border-cyan-500/20 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
               >
                 {sendingCreds ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 {sendingCreds ? 'Sending...' : 'Auto-Send Credentials'}
@@ -235,7 +235,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
               <button 
                 onClick={() => setShowSetPassword(true)}
-                className="w-full py-2 rounded-lg text-sm font-medium text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-xl text-sm font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 border border-amber-200 dark:border-amber-500/20 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
                 <Lock className="w-4 h-4" />
                 Set Custom Password
@@ -243,7 +243,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               
               <button 
                 onClick={() => setShowSetEmail(true)}
-                className="w-full py-2 rounded-lg text-sm font-medium text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-xl text-sm font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-500/10 dark:hover:bg-blue-500/20 border border-blue-200 dark:border-blue-500/20 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
                 <Mail className="w-4 h-4" />
                 Change Email Address
@@ -251,7 +251,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
               <button 
                 onClick={() => setShowDelete(true)}
-                className="w-full py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-xl text-sm font-semibold text-rose-700 dark:text-red-300 bg-rose-50 hover:bg-rose-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 border border-rose-200 dark:border-red-500/20 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
                 <Trash2 className="w-4 h-4" />
                 Delete Account
@@ -261,7 +261,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                 <button
                   onClick={handleApproveCertificate}
                   disabled={approvingCert}
-                  className="w-full mt-4 py-3 rounded-lg text-sm font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors flex items-center justify-center gap-2 border border-emerald-500/20 disabled:opacity-50"
+                  className="w-full mt-4 py-3 rounded-xl text-sm font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors flex items-center justify-center gap-2 border border-emerald-300 dark:border-emerald-500/20 disabled:opacity-50 shadow-sm"
                 >
                   {approvingCert ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                   {approvingCert ? 'Approving...' : 'Approve Certificate Request'}
@@ -274,45 +274,45 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         {/* Right Column: Details & Edit Form */}
         <div className="lg:col-span-2 space-y-6">
           {isEditing ? (
-            <div className="p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
-              <h3 className="text-lg font-semibold text-white mb-4">Edit Information</h3>
+            <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Edit Information</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">Full Name</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">Full Name</label>
                   <input 
                     type="text" 
                     value={editForm.full_name}
                     onChange={e => setEditForm({ ...editForm, full_name: e.target.value })}
-                    className="w-full h-10 px-3 rounded-lg text-sm text-white bg-white/5 border border-white/10" 
+                    className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-cyan-500" 
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">Role</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">Role</label>
                     <select 
                       value={editForm.role}
                       onChange={e => setEditForm({ ...editForm, role: e.target.value })}
-                      className="w-full h-10 px-3 rounded-lg text-sm text-white bg-white/5 border border-white/10" 
+                      className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-cyan-500" 
                     >
-                      <option value="intern" className="bg-gray-900">Intern</option>
-                      <option value="mentor" className="bg-gray-900">Mentor</option>
-                      <option value="staff" className="bg-gray-900">Staff</option>
-                      <option value="member" className="bg-gray-900">Member</option>
-                      <option value="user" className="bg-gray-900">User</option>
-                      <option value="admin" className="bg-gray-900">Admin</option>
+                      <option value="intern">Intern</option>
+                      <option value="mentor">Mentor</option>
+                      <option value="staff">Staff</option>
+                      <option value="member">Member</option>
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">Status</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">Status</label>
                     <select 
                       value={editForm.status}
                       onChange={e => setEditForm({ ...editForm, status: e.target.value })}
-                      className="w-full h-10 px-3 rounded-lg text-sm text-white bg-white/5 border border-white/10" 
+                      className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-cyan-500" 
                     >
-                      <option value="active" className="bg-gray-900">Active</option>
-                      <option value="inactive" className="bg-gray-900">Inactive</option>
-                      <option value="suspended" className="bg-gray-900">Suspended</option>
-                      <option value="pending" className="bg-gray-900">Pending</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="suspended">Suspended</option>
+                      <option value="pending">Pending</option>
                     </select>
                   </div>
                 </div>
@@ -320,15 +320,15 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                 {/* Track field — only for interns */}
                 {(editForm.role === 'intern' || data?.user?.role === 'intern') && (
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">Internship Track</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">Internship Track</label>
                     <select
                       value={editForm.track_selected || ''}
                       onChange={e => setEditForm({ ...editForm, track_selected: e.target.value })}
-                      className="w-full h-10 px-3 rounded-lg text-sm text-white bg-white/5 border border-white/10"
+                      className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-cyan-500"
                     >
-                      <option value="" className="bg-gray-900">— Not Assigned —</option>
+                      <option value="">— Not Assigned —</option>
                       {Object.values(tracks).map(t => (
-                        <option key={t.id} value={t.id} className="bg-gray-900">{t.title}</option>
+                        <option key={t.id} value={t.id}>{t.title}</option>
                       ))}
                     </select>
                   </div>
@@ -338,7 +338,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                   <button 
                     onClick={handleUpdate}
                     disabled={actionLoading}
-                    className="px-5 py-2 rounded-lg text-sm font-semibold bg-cyan-600 hover:bg-cyan-500 text-white flex items-center gap-2"
+                    className="px-5 py-2.5 rounded-xl text-sm font-bold bg-cyan-600 hover:bg-cyan-500 text-white flex items-center gap-2 shadow-sm"
                   >
                     {actionLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                     Save Changes
@@ -348,65 +348,65 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
             </div>
           ) : (
             <>
-              <div className="p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
-                <h3 className="text-lg font-semibold text-white mb-4 border-b border-white/5 pb-2">Account Overview</h3>
+              <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-zinc-800 pb-2">Account Overview</h3>
                 <div className="grid grid-cols-2 gap-y-4">
                   <div>
-                    <p className="text-sm text-gray-500">Joined Date</p>
-                    <p className="text-sm text-gray-300 mt-1">{new Date(user.created_at).toLocaleDateString()}</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Joined Date</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-zinc-200 mt-1">{new Date(user.created_at).toLocaleDateString()}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Last Login</p>
-                    <p className="text-sm text-gray-300 mt-1">{user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Last Login</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-zinc-200 mt-1">{user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Phone</p>
-                    <p className="text-sm text-gray-300 mt-1">{user.phone || '-'}</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Phone</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-zinc-200 mt-1">{user.phone || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Location</p>
-                    <p className="text-sm text-gray-300 mt-1">{user.city ? `${user.city}, ${user.country}` : '-'}</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Location</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-zinc-200 mt-1">{user.city ? `${user.city}, ${user.country}` : '-'}</p>
                   </div>
                 </div>
               </div>
 
               {roleProfile && (
-                <div className="p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
-                  <h3 className="text-lg font-semibold text-white mb-4 border-b border-white/5 pb-2">
+                <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-zinc-800 pb-2">
                     {user.role === 'intern' ? 'Internship Details' : 'Professional Details'}
                   </h3>
                   <div className="grid grid-cols-2 gap-y-4">
                     {roleProfile.department && (
                       <div>
-                        <p className="text-sm text-gray-500">Department</p>
-                        <p className="text-sm text-gray-300 mt-1">{roleProfile.department}</p>
+                        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Department</p>
+                        <p className="text-sm font-bold text-slate-800 dark:text-zinc-200 mt-1">{roleProfile.department}</p>
                       </div>
                     )}
                     {(roleProfile.position || roleProfile.designation) && (
                       <div>
-                        <p className="text-sm text-gray-500">Designation</p>
-                        <p className="text-sm text-gray-300 mt-1">{roleProfile.position || roleProfile.designation}</p>
+                        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Designation</p>
+                        <p className="text-sm font-bold text-slate-800 dark:text-zinc-200 mt-1">{roleProfile.position || roleProfile.designation}</p>
                       </div>
                     )}
                     {user.role === 'intern' && (
                       <div className="col-span-2">
-                        <p className="text-sm text-gray-500">Internship Track</p>
+                        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Internship Track</p>
                         <p className="text-sm mt-1">
                           {roleProfile?.track_selected || roleProfile?.trackSelected
-                            ? <span className="text-cyan-400 font-medium">{tracks[roleProfile.track_selected || roleProfile.trackSelected]?.title || roleProfile.track_selected || roleProfile.trackSelected}</span>
-                            : <span className="text-gray-600">— Not Assigned —</span>
+                            ? <span className="text-cyan-700 dark:text-cyan-400 font-bold">{tracks[roleProfile.track_selected || roleProfile.trackSelected]?.title || roleProfile.track_selected || roleProfile.trackSelected}</span>
+                            : <span className="text-slate-400 dark:text-zinc-600">— Not Assigned —</span>
                           }
                         </p>
                       </div>
                     )}
                     {user.role === 'intern' && mentorAssignment && (
                       <div className="col-span-2">
-                        <p className="text-sm text-gray-500">Assigned Mentor</p>
-                        <div className="mt-2 p-3 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between">
-                          <span className="text-sm text-gray-300">
+                        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Assigned Mentor</p>
+                        <div className="mt-2 p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700/60 flex items-center justify-between">
+                          <span className="text-sm font-bold text-slate-900 dark:text-white">
                             {mentorAssignment.mentor_name || `ID: ${mentorAssignment.mentor_id}`}
                           </span>
-                          <Link href={`/admin/users/${mentorAssignment.mentor_id}`} className="text-xs text-cyan-400 hover:underline">
+                          <Link href={`/admin/users/${mentorAssignment.mentor_id}`} className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline">
                             View Profile
                           </Link>
                         </div>
@@ -434,35 +434,35 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       {/* Set Password Modal */}
       {showSetPassword && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
             <div className="p-6">
-              <h3 className="text-xl font-bold text-white mb-2">Set Custom Password</h3>
-              <p className="text-sm text-gray-400 mb-6">Manually override the password for <strong className="text-white">{user.email}</strong>.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Set Custom Password</h3>
+              <p className="text-sm text-slate-600 dark:text-zinc-400 mb-6">Manually override the password for <strong className="text-slate-900 dark:text-white font-bold">{user.email}</strong>.</p>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">New Password</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">New Password</label>
                   <input 
                     type="text" 
                     value={customPassword}
                     onChange={e => setCustomPassword(e.target.value)}
                     placeholder="e.g. TempPass123!"
-                    className="w-full h-10 px-3 rounded-lg text-sm text-white bg-black/50 border border-white/10" 
+                    className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-amber-500" 
                   />
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4 bg-gray-900/50 border-t border-white/5 flex justify-end gap-3">
+            <div className="px-6 py-4 bg-slate-50 dark:bg-zinc-900/50 border-t border-slate-100 dark:border-zinc-800 flex justify-end gap-3">
               <button 
                 onClick={() => { setShowSetPassword(false); setCustomPassword(''); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleSetPassword}
                 disabled={settingPassword || customPassword.length < 8}
-                className="px-5 py-2 rounded-lg text-sm font-semibold bg-amber-500 hover:bg-amber-400 text-gray-900 flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2 rounded-xl text-sm font-bold bg-amber-500 hover:bg-amber-400 text-slate-900 flex items-center gap-2 disabled:opacity-50 shadow-sm"
               >
                 {settingPassword ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                 {settingPassword ? 'Saving...' : 'Set Password'}
@@ -475,35 +475,35 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       {/* Set Email Modal */}
       {showSetEmail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
             <div className="p-6">
-              <h3 className="text-xl font-bold text-white mb-2">Change Email Address</h3>
-              <p className="text-sm text-gray-400 mb-6">Update the primary email address for <strong className="text-white">{user.full_name}</strong>. Their old email is {user.email}.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Change Email Address</h3>
+              <p className="text-sm text-slate-600 dark:text-zinc-400 mb-6">Update the primary email address for <strong className="text-slate-900 dark:text-white font-bold">{user.full_name}</strong>. Their old email is {user.email}.</p>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">New Email Address</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">New Email Address</label>
                   <input 
                     type="email" 
                     value={customEmail}
                     onChange={e => setCustomEmail(e.target.value)}
                     placeholder="new@example.com"
-                    className="w-full h-10 px-3 rounded-lg text-sm text-white bg-black/50 border border-white/10" 
+                    className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-blue-500" 
                   />
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4 bg-gray-900/50 border-t border-white/5 flex justify-end gap-3">
+            <div className="px-6 py-4 bg-slate-50 dark:bg-zinc-900/50 border-t border-slate-100 dark:border-zinc-800 flex justify-end gap-3">
               <button 
                 onClick={() => { setShowSetEmail(false); setCustomEmail(''); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleSetEmail}
                 disabled={settingEmail || !customEmail.includes('@')}
-                className="px-5 py-2 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 disabled:opacity-50 shadow-sm"
               >
                 {settingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
                 {settingEmail ? 'Updating...' : 'Update Email'}

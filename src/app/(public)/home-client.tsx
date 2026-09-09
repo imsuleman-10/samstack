@@ -31,15 +31,15 @@ import { motion, useScroll, useTransform } from "framer-motion";
 // ─── Data ─────────────────────────────────────────────────
 
 const stats = [
-  { icon: ServerCog, label: "Enterprise Deployments", value: "14+",    note: "Global Scale",    color: "text-brand-600 dark:text-brand-400",   bg: "bg-brand-50/60 dark:bg-brand-950/30 border-brand-200 dark:border-brand-900",     image: "/images/img-global-scale.jpg" },
-  { icon: Shield,    label: "Uptime Guarantee",       value: "99.9%",  note: "Zero-Downtime",   color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900", image: "/images/img-server-rack.jpg" },
-  { icon: Clock,     label: "Response Time",           value: "<12h",  note: "Priority Support", color: "text-indigo-600 dark:text-indigo-400",  bg: "bg-indigo-50/60 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900",   image: "/images/img-matrix-code.jpg" },
-  { icon: Star,      label: "Client Satisfaction",     value: "9.9/10",note: "Avg NPS Score",    color: "text-amber-600 dark:text-amber-400",    bg: "bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900",      image: "/images/img-team-meeting.jpg" },
+  { icon: ServerCog, label: "Enterprise Deployments", value: "14+", note: "Global Scale", color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50/60 dark:bg-brand-950/30 border-brand-200 dark:border-brand-900", image: "/images/img-global-scale.jpg" },
+  { icon: Shield, label: "Uptime Guarantee", value: "99.9%", note: "Zero-Downtime", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900", image: "/images/img-server-rack.jpg" },
+  { icon: Clock, label: "Response Time", value: "<12h", note: "Priority Support", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50/60 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900", image: "/images/img-matrix-code.jpg" },
+  { icon: Star, label: "Client Satisfaction", value: "9.9/10", note: "Avg NPS Score", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900", image: "/images/img-team-meeting.jpg" },
 ];
 
 const defaultTeam = [
   {
-    image: "/images/image.png",
+    image: "/suleman-zaheer-software-engineer-samstack-tech.jpeg",
     initials: "SZ",
     name: "Suleman Zaheer",
     role: "Founder & DevOps Lead",
@@ -77,10 +77,10 @@ const defaultTeam = [
 ];
 
 const process = [
-  { step: "01", title: "Discovery Call",      desc: "30-minute focused session to discuss your requirements, goals, and technical constraints.",              emoji: "🎯", image: "/images/img-discovery.jpg" },
-  { step: "02", title: "Architecture Draft",  desc: "Our engineers produce a detailed systems blueprint tailored to your stack and business objectives.",     emoji: "📐", image: "/images/img-servers.jpg" },
-  { step: "03", title: "Agile Build Sprints", desc: "Development in structured 2-week sprints with demos, feedback loops, and milestone gates.",              emoji: "⚡", image: "/images/img-coding-laptop.jpg" },
-  { step: "04", title: "Deploy & Support",    desc: "Production deployment, live telemetry monitoring, and post-launch engineering support included.",        emoji: "🚀", image: "/images/img-ai-tech.jpg" },
+  { step: "01", title: "Discovery Call", desc: "30-minute focused session to discuss your requirements, goals, and technical constraints.", emoji: "🎯", image: "/images/img-discovery.jpg" },
+  { step: "02", title: "Architecture Draft", desc: "Our engineers produce a detailed systems blueprint tailored to your stack and business objectives.", emoji: "📐", image: "/images/img-servers.jpg" },
+  { step: "03", title: "Agile Build Sprints", desc: "Development in structured 2-week sprints with demos, feedback loops, and milestone gates.", emoji: "⚡", image: "/images/img-coding-laptop.jpg" },
+  { step: "04", title: "Deploy & Support", desc: "Production deployment, live telemetry monitoring, and post-launch engineering support included.", emoji: "🚀", image: "/images/img-ai-tech.jpg" },
 ];
 
 // ─── Main Component ────────────────────────────────────────
@@ -98,7 +98,7 @@ export default function HomeClient() {
 
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroTextY  = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const heroTextY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   const [heroVideoReady, setHeroVideoReady] = useState(false);
@@ -246,9 +246,9 @@ export default function HomeClient() {
           <AnimateOnScroll variant="fadeUp" delay={0.3}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
               {[
-                { icon: Shield, label: "Full NDA Protection",       desc: "All submitted project ideas are protected under a strict mutual NDA before any discussion.", image: "/images/img-mobile-dev.jpg" },
-                { icon: Zap,    label: "< 12h Guaranteed Response",  desc: "Every inquiry gets a personalised reply from a senior engineer — no bots, no delays.",         image: "/images/img-design-tools.jpg" },
-                { icon: Award,  label: "Quality Guaranteed",          desc: "We stand behind every line of code. Unlimited revisions until you are satisfied.",                image: "/images/img-analytics.jpg" },
+                { icon: Shield, label: "Full NDA Protection", desc: "All submitted project ideas are protected under a strict mutual NDA before any discussion.", image: "/images/img-mobile-dev.jpg" },
+                { icon: Zap, label: "< 12h Guaranteed Response", desc: "Every inquiry gets a personalised reply from a senior engineer — no bots, no delays.", image: "/images/img-design-tools.jpg" },
+                { icon: Award, label: "Quality Guaranteed", desc: "We stand behind every line of code. Unlimited revisions until you are satisfied.", image: "/images/img-analytics.jpg" },
               ].map((item, idx) => (
                 <div key={item.label} className="relative overflow-hidden group/card flex items-start gap-4 p-3 sm:p-4 rounded-2xl bg-white/70 dark:bg-neutral-950/70 border border-slate-200 dark:border-neutral-800 shadow-sm transition-all duration-300 hover:border-brand-300 dark:hover:border-brand-700">
                   {/* Background image */}
@@ -284,15 +284,15 @@ export default function HomeClient() {
             {services.map((svc, i) => (
               <AnimateOnScroll key={svc.id} delay={0.08 * i} variant="fadeUp" className="h-full">
                 <div className="relative h-[200px] sm:h-[260px] lg:h-[300px] w-full rounded-2xl overflow-hidden group/card shadow-lg hover:shadow-2xl transition-all duration-300">
-                  <Image 
-                    src={svc.image} 
-                    alt={svc.title} 
-                    fill 
+                  <Image
+                    src={svc.image}
+                    alt={svc.title}
+                    fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-700 group-hover/card:scale-110" 
+                    className="object-cover transition-transform duration-700 group-hover/card:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/60 transition-opacity duration-300 group-hover/card:opacity-80" />
-                  
+
                   <div className="absolute inset-0 p-6 flex flex-col justify-start">
                     <h3 className="text-xl sm:text-2xl font-bold text-white font-heading leading-snug drop-shadow-md">
                       {svc.title}
@@ -334,33 +334,33 @@ export default function HomeClient() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
             {[
-              { name: "React",          icon: "react",        desc: "Reactive UI",        href: "/services/web-serverless-apps" },
-              { name: "Next.js",        icon: "nextdotjs",    desc: "SSR & Edge",         href: "/services/web-serverless-apps" },
-              { name: "Node.js",        icon: "nodedotjs",    desc: "API Systems",        href: "/services/custom-enterprise-software" },
-              { name: "PostgreSQL",     icon: "postgresql",   desc: "Relational DB",      href: "/services/custom-enterprise-software" },
-              { name: "Docker",         icon: "docker",       desc: "Containerization",   href: "/services/devops-cloud-architectures" },
-              { name: "AWS",            icon: "aws",          src: "https://skillicons.dev/icons?i=aws", desc: "Cloud Infra",        href: "/services/devops-cloud-architectures" },
-              { name: "Python",         icon: "python",       desc: "Agentic AI",         href: "/services/agentic-ai-integrations" },
-              { name: "Tailwind CSS",   icon: "tailwindcss",  desc: "Styling Arch",       href: "/services/web-serverless-apps" },
+              { name: "React", icon: "react", desc: "Reactive UI", href: "/services/web-serverless-apps" },
+              { name: "Next.js", icon: "nextdotjs", desc: "SSR & Edge", href: "/services/web-serverless-apps" },
+              { name: "Node.js", icon: "nodedotjs", desc: "API Systems", href: "/services/custom-enterprise-software" },
+              { name: "PostgreSQL", icon: "postgresql", desc: "Relational DB", href: "/services/custom-enterprise-software" },
+              { name: "Docker", icon: "docker", desc: "Containerization", href: "/services/devops-cloud-architectures" },
+              { name: "AWS", icon: "aws", src: "https://skillicons.dev/icons?i=aws", desc: "Cloud Infra", href: "/services/devops-cloud-architectures" },
+              { name: "Python", icon: "python", desc: "Agentic AI", href: "/services/agentic-ai-integrations" },
+              { name: "Tailwind CSS", icon: "tailwindcss", desc: "Styling Arch", href: "/services/web-serverless-apps" },
             ].map((tech, i) => {
               const iconSrc = (tech as any).src || `https://cdn.simpleicons.org/${tech.icon}`;
               return (
-               <AnimateOnScroll key={tech.name} delay={0.05 * i} variant="fadeUp" className="h-full">
-                 <Link href={tech.href} className="block relative p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 overflow-hidden group/card hover:border-brand-500 transition-all shadow-sm hover:shadow-xl z-10 h-full flex flex-col justify-center">
-                   {/* Huge watermark logo */}
-                   <div className={`absolute -bottom-6 -right-6 w-32 h-32 sm:w-40 sm:h-40 opacity-5 dark:opacity-10 transform rotate-[-15deg] group-hover/card:scale-110 group-hover/card:-rotate-6 group-hover/card:opacity-20 transition-all duration-500 z-0 ${tech.name === "Next.js" || tech.name === "AWS" ? "dark:invert" : ""}`}>
-                     <Image src={iconSrc} alt={tech.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-contain" unoptimized />
-                   </div>
-                   
-                   <div className="relative z-10">
-                     <div className={`w-10 h-10 sm:w-12 sm:h-12 mb-4 relative ${tech.name === "Next.js" || tech.name === "AWS" ? "dark:invert" : ""}`}>
-                       <Image src={iconSrc} alt={tech.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-contain drop-shadow-md" unoptimized />
-                     </div>
-                     <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-heading tracking-tight">{tech.name}</h3>
-                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono tracking-wide uppercase">{tech.desc}</p>
-                   </div>
-                 </Link>
-               </AnimateOnScroll>
+                <AnimateOnScroll key={tech.name} delay={0.05 * i} variant="fadeUp" className="h-full">
+                  <Link href={tech.href} className="block relative p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 overflow-hidden group/card hover:border-brand-500 transition-all shadow-sm hover:shadow-xl z-10 h-full flex flex-col justify-center">
+                    {/* Huge watermark logo */}
+                    <div className={`absolute -bottom-6 -right-6 w-32 h-32 sm:w-40 sm:h-40 opacity-5 dark:opacity-10 transform rotate-[-15deg] group-hover/card:scale-110 group-hover/card:-rotate-6 group-hover/card:opacity-20 transition-all duration-500 z-0 ${tech.name === "Next.js" || tech.name === "AWS" ? "dark:invert" : ""}`}>
+                      <Image src={iconSrc} alt={tech.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-contain" unoptimized />
+                    </div>
+
+                    <div className="relative z-10">
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 mb-4 relative ${tech.name === "Next.js" || tech.name === "AWS" ? "dark:invert" : ""}`}>
+                        <Image src={iconSrc} alt={tech.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-contain drop-shadow-md" unoptimized />
+                      </div>
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-heading tracking-tight">{tech.name}</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono tracking-wide uppercase">{tech.desc}</p>
+                    </div>
+                  </Link>
+                </AnimateOnScroll>
               );
             })}
           </div>
@@ -462,9 +462,9 @@ export default function HomeClient() {
                     <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-black transition-transform duration-700 group-hover/card:scale-105" />
                   )}
 
-                  {/* Elegant Gradient overlays (preserves face visibility) */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 group-hover/card:opacity-85 transition-opacity duration-500" />
-                  
+                  {/* Elegant Gradient overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90 group-hover/card:opacity-85 transition-opacity duration-500" />
+
                   {/* Subtle Top Glow */}
                   <div className="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-brand-500/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-700" />
 
@@ -477,15 +477,15 @@ export default function HomeClient() {
 
                   {/* Content */}
                   <div className="relative z-10 p-8 flex flex-col gap-4 transform transition-transform duration-500">
-                    
+
                     {/* Avatar Circle (Fallback if no full image or just stylized) */}
                     <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 bg-black/50 backdrop-blur-sm shadow-xl flex items-center justify-center shrink-0 group-hover/card:border-brand-400 transition-colors duration-500">
-                       {member.image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                       ) : (
-                          <span className="text-xl font-black text-white">{member.initials}</span>
-                       )}
+                      {member.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xl font-black text-white">{member.initials}</span>
+                      )}
                     </div>
 
                     <div>
@@ -494,7 +494,7 @@ export default function HomeClient() {
                       </h3>
                       <p className="text-[11px] font-bold text-brand-400 uppercase tracking-widest">{member.role}</p>
                     </div>
-                    
+
                     <p className="text-sm text-slate-300/80 leading-relaxed line-clamp-3 transition-opacity duration-500">
                       {member.description}
                     </p>
@@ -543,7 +543,7 @@ export default function HomeClient() {
           </AnimateOnScroll>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full">
-            
+
             {/* Left: Beautiful Realistic Process Photo */}
             <AnimateOnScroll variant="fadeUp" className="hidden lg:block lg:col-span-5 h-[50vh] relative rounded-3xl overflow-hidden shadow-2xl">
               <Image src="/process-photo.png" alt="Team collaborating" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-700 hover:scale-105" />
@@ -580,18 +580,18 @@ export default function HomeClient() {
           ═══════════════════════════════════════════════════ */}
       <section className="z-0 overflow-hidden min-h-[100dvh] flex flex-col justify-center items-center relative bg-slate-50 dark:bg-neutral-950 py-24 px-4 sm:px-6 group/section">
         {/* No background image on section - clean solid background */}<div className="z-10 relative absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] dark:opacity-100 opacity-0" />
-        
+
         <div className="relative z-10 max-w-4xl mx-auto w-full space-y-10">
-          
+
           {/* Quote Card */}
           <AnimateOnScroll variant="scaleUp">
             <div className="relative p-8 md:p-10 rounded-[2rem] border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 backdrop-blur-xl overflow-hidden flex flex-col md:flex-row items-center md:items-start gap-8 shadow-2xl">
               {/* Subtle gradient glow inside card */}
-              
+
               <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex-shrink-0 shadow-xl border-2 border-slate-100 dark:border-neutral-800">
-                <Image src="/images/image.png" alt="Suleman Zaheer" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                <Image src="/suleman-zaheer-software-engineer-samstack-tech.jpeg" alt="Suleman Zaheer" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               </div>
-              
+
               <div className="space-y-5 text-center md:text-left relative z-10 pt-1">
                 <blockquote className="text-slate-900 dark:text-white text-lg md:text-xl font-heading leading-relaxed">
                   "We don't just write code — we engineer <span className="text-brand-600 dark:text-brand-400 italic">competitive advantages</span>. Our studio operates on absolute technical precision, delivering enterprise-grade systems that scale seamlessly."

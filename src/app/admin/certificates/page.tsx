@@ -141,32 +141,32 @@ export default function AdminCertificatesPage() {
   };
 
   // ─── Summary Cards ──────────────────────────────────────────────────────────
-  const SummaryCard = ({ title, count, status, Icon, color, bg, border }: any) => (
-    <button
-      onClick={() => setStatusFilter(prev => prev === status ? 'all' : status)}
-      className="relative p-5 rounded-2xl border text-left transition-all duration-200 hover:scale-[1.02] group overflow-hidden"
-      style={{
-        background: statusFilter === status ? bg : 'rgba(17,24,39,0.6)',
-        borderColor: statusFilter === status ? border : 'rgba(255,255,255,0.08)',
-        backdropFilter: 'blur(16px)',
-      }}
-    >
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-        style={{ background: `radial-gradient(circle at 80% 20%, ${color}08 0%, transparent 60%)` }} />
-      <div className="flex items-center justify-between mb-3">
-        <div className="p-2.5 rounded-xl" style={{ background: bg, border: `1px solid ${border}` }}>
-          <Icon className="w-4 h-4" style={{ color }} />
+  const SummaryCard = ({ title, count, status, Icon, color }: any) => {
+    const isSelected = statusFilter === status;
+    return (
+      <button
+        onClick={() => setStatusFilter(prev => prev === status ? 'all' : status)}
+        className={`relative p-5 rounded-2xl border text-left transition-all duration-200 hover:scale-[1.02] group overflow-hidden shadow-sm ${
+          isSelected
+            ? 'ring-2 ring-cyan-500 bg-cyan-50/70 dark:bg-cyan-950/30 border-cyan-300 dark:border-cyan-700'
+            : 'bg-white dark:bg-zinc-900/60 border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700'
+        }`}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <div className="p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-800/80">
+            <Icon className="w-4 h-4" style={{ color }} />
+          </div>
+          {isSelected && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: color, color: '#000' }}>
+              ACTIVE
+            </span>
+          )}
         </div>
-        {statusFilter === status && (
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: color, color: '#000' }}>
-            ACTIVE
-          </span>
-        )}
-      </div>
-      <p className="text-3xl font-black text-white mb-0.5">{count}</p>
-      <p className="text-xs font-medium text-gray-400">{title}</p>
-    </button>
-  );
+        <p className="text-3xl font-black text-slate-900 dark:text-white mb-0.5">{count}</p>
+        <p className="text-xs font-semibold text-slate-500 dark:text-zinc-400">{title}</p>
+      </button>
+    );
+  };
 
   return (
     <div>
@@ -178,46 +178,43 @@ export default function AdminCertificatesPage() {
       {/* ── Summary Cards ─────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <SummaryCard title="Pending Review" count={summary.pending} status="pending"
-          Icon={Clock} color="#f59e0b" bg="rgba(245,158,11,0.1)" border="rgba(245,158,11,0.25)" />
+          Icon={Clock} color="#f59e0b" />
         <SummaryCard title="Approved" count={summary.approved} status="approved"
-          Icon={CheckCircle2} color="#10b981" bg="rgba(16,185,129,0.1)" border="rgba(16,185,129,0.25)" />
+          Icon={CheckCircle2} color="#10b981" />
         <SummaryCard title="Rejected" count={summary.rejected} status="rejected"
-          Icon={XCircle} color="#ef4444" bg="rgba(239,68,68,0.1)" border="rgba(239,68,68,0.25)" />
+          Icon={XCircle} color="#ef4444" />
       </div>
 
       {/* ── Toolbar ───────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-zinc-500 pointer-events-none" />
           <input
             type="text"
             placeholder="Search by name, email, roll number, university..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full h-10 pl-10 pr-4 rounded-xl text-sm text-white placeholder-gray-500 outline-none focus:ring-2"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+            className="w-full h-10 pl-10 pr-4 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 outline-none focus:ring-2 focus:ring-cyan-500/50"
           />
         </div>
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-zinc-500 pointer-events-none" />
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value as CertStatus | 'all')}
-            className="h-10 pl-9 pr-8 rounded-xl text-sm text-white outline-none appearance-none cursor-pointer"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+            className="h-10 pl-9 pr-8 rounded-xl text-sm text-slate-900 dark:text-white bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-cyan-500/50"
           >
-            <option value="all" className="bg-gray-900">All Statuses</option>
-            <option value="pending" className="bg-gray-900">Pending</option>
-            <option value="approved" className="bg-gray-900">Approved</option>
-            <option value="rejected" className="bg-gray-900">Rejected</option>
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
           </select>
-          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-zinc-500 pointer-events-none" />
         </div>
         <button
           onClick={fetchRequests}
           disabled={loading}
-          className="h-10 px-4 rounded-xl text-sm font-medium text-gray-300 hover:text-white flex items-center gap-2 transition-colors"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+          className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-700 dark:text-zinc-200 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800/80 flex items-center gap-2 transition-colors shadow-sm"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -225,10 +222,9 @@ export default function AdminCertificatesPage() {
       </div>
 
       {/* ── Table ─────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border overflow-hidden" style={{ background: 'rgba(17,24,39,0.6)', borderColor: 'rgba(255,255,255,0.08)' }}>
+      <div className="rounded-2xl border border-slate-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 overflow-hidden shadow-sm">
         {/* Header */}
-        <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 border-b text-[11px] font-bold uppercase tracking-widest text-gray-500"
-          style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 border-b border-slate-200/80 dark:border-zinc-800 text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-zinc-400 bg-slate-50/70 dark:bg-zinc-900/40">
           <span>Intern</span>
           <span>Track</span>
           <span>Requested</span>
@@ -237,20 +233,20 @@ export default function AdminCertificatesPage() {
         </div>
 
         {loading ? (
-          <div className="py-20 flex flex-col items-center gap-3 text-gray-500">
+          <div className="py-20 flex flex-col items-center gap-3 text-slate-400 dark:text-zinc-500">
             <Loader2 className="w-7 h-7 animate-spin" />
-            <p className="text-sm">Loading requests...</p>
+            <p className="text-sm font-medium">Loading requests...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-20 flex flex-col items-center gap-3 text-gray-500">
-            <FileCheck2 className="w-10 h-10 text-gray-700" />
-            <p className="font-semibold text-white">No requests found</p>
+          <div className="py-20 flex flex-col items-center gap-3 text-slate-400 dark:text-zinc-500">
+            <FileCheck2 className="w-10 h-10 text-slate-300 dark:text-zinc-700" />
+            <p className="font-bold text-slate-800 dark:text-white">No requests found</p>
             <p className="text-sm">
               {searchQuery || statusFilter !== 'all' ? 'Try adjusting your filters.' : 'No certificate requests have been submitted yet.'}
             </p>
           </div>
         ) : (
-          <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+          <div className="divide-y divide-slate-100 dark:divide-zinc-800/60">
             {filtered.map(req => {
               const sc = STATUS_CONFIG[req.certificate_status];
               const StatusIcon = sc.icon;
@@ -262,26 +258,26 @@ export default function AdminCertificatesPage() {
                 <div key={req.intern_id}>
                   {/* Main row */}
                   <div
-                    className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-4 transition-colors hover:bg-white/[0.02] cursor-pointer"
+                    className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-4 transition-colors hover:bg-slate-50/80 dark:hover:bg-white/[0.02] cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : req.intern_id)}
                   >
                     {/* Intern info */}
                     <div className="flex items-center gap-3 min-w-0">
                       <UserAvatar src={req.avatar_url} name={req.full_name} size="sm" />
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold text-white truncate">{req.full_name}</p>
-                        <p className="text-xs text-gray-500 truncate">{req.email}</p>
+                        <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{req.full_name}</p>
+                        <p className="text-xs text-slate-500 dark:text-zinc-400 truncate">{req.email}</p>
                       </div>
                     </div>
 
                     {/* Track */}
                     <div className="flex items-center">
-                      <span className="text-xs font-medium text-gray-300 truncate">{trackTitle}</span>
+                      <span className="text-xs font-semibold text-slate-700 dark:text-zinc-300 truncate">{trackTitle}</span>
                     </div>
 
                     {/* Date */}
                     <div className="flex items-center">
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">
                         {req.updated_at ? new Date(req.updated_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
                       </span>
                     </div>
@@ -289,8 +285,13 @@ export default function AdminCertificatesPage() {
                     {/* Status badge */}
                     <div className="flex items-center">
                       <span
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold"
-                        style={{ background: sc.bg, color: sc.color, border: `1px solid ${sc.border}` }}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                          req.certificate_status === 'approved'
+                            ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30'
+                            : req.certificate_status === 'rejected'
+                            ? 'bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/30'
+                            : 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
+                        }`}
                       >
                         <StatusIcon className="w-3 h-3" />
                         {sc.label}
@@ -304,8 +305,7 @@ export default function AdminCertificatesPage() {
                           <button
                             onClick={() => handleApprove(req.intern_id, req.full_name)}
                             disabled={!!processingId}
-                            className="h-8 px-3 rounded-lg text-xs font-bold text-emerald-400 hover:text-white hover:bg-emerald-500 flex items-center gap-1.5 transition-all disabled:opacity-40"
-                            style={{ border: '1px solid rgba(16,185,129,0.3)' }}
+                            className="h-8 px-3 rounded-lg text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/15 hover:bg-emerald-100 dark:hover:bg-emerald-500/25 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1.5 transition-all disabled:opacity-40"
                           >
                             {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
                             Approve
@@ -313,8 +313,7 @@ export default function AdminCertificatesPage() {
                           <button
                             onClick={() => handleReject(req.intern_id, req.full_name)}
                             disabled={!!processingId}
-                            className="h-8 px-3 rounded-lg text-xs font-bold text-red-400 hover:text-white hover:bg-red-500 flex items-center gap-1.5 transition-all disabled:opacity-40"
-                            style={{ border: '1px solid rgba(239,68,68,0.3)' }}
+                            className="h-8 px-3 rounded-lg text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-500/15 hover:bg-rose-100 dark:hover:bg-rose-500/25 border border-rose-300 dark:border-rose-500/30 flex items-center gap-1.5 transition-all disabled:opacity-40"
                           >
                             <XCircle className="w-3 h-3" />
                             Reject
@@ -325,8 +324,7 @@ export default function AdminCertificatesPage() {
                       {req.certificate_status === 'approved' && (
                         <button
                           onClick={() => handleDownload(req.intern_id, req.full_name)}
-                          className="h-8 px-3 rounded-lg text-xs font-bold text-cyan-400 hover:text-white hover:bg-cyan-500/20 flex items-center gap-1.5 transition-all"
-                          style={{ border: '1px solid rgba(34,211,238,0.3)' }}
+                          className="h-8 px-3 rounded-lg text-xs font-bold text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-500/15 hover:bg-cyan-100 dark:hover:bg-cyan-500/25 border border-cyan-300 dark:border-cyan-500/30 flex items-center gap-1.5 transition-all"
                         >
                           <Download className="w-3 h-3" />
                           Download
@@ -335,15 +333,14 @@ export default function AdminCertificatesPage() {
 
                       <Link
                         href={`/admin/users/${req.intern_id}`}
-                        className="h-8 w-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-all"
-                        style={{ border: '1px solid rgba(255,255,255,0.1)' }}
+                        className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-200 dark:border-zinc-800 transition-all"
                         title="View Profile"
                       >
                         <Eye className="w-3.5 h-3.5" />
                       </Link>
 
                       <ChevronDown
-                        className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                        className={`w-4 h-4 text-slate-400 dark:text-zinc-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
                       />
                     </div>
                   </div>
@@ -351,8 +348,7 @@ export default function AdminCertificatesPage() {
                   {/* Expanded Detail Panel */}
                   {isExpanded && (
                     <div
-                      className="px-6 pb-5 pt-0 border-t"
-                      style={{ background: 'rgba(0,0,0,0.2)', borderColor: 'rgba(255,255,255,0.05)' }}
+                      className="px-6 pb-5 pt-0 border-t border-slate-100 dark:border-zinc-800/60 bg-slate-50/60 dark:bg-black/20"
                     >
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
                         {[
@@ -362,12 +358,12 @@ export default function AdminCertificatesPage() {
                           { icon: Calendar, label: 'Request Date', value: req.updated_at ? new Date(req.updated_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : '—' },
                         ].map(({ icon: Icon, label, value }) => (
                           <div key={label} className="flex items-start gap-2.5">
-                            <div className="p-1.5 rounded-lg mt-0.5 shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                              <Icon className="w-3.5 h-3.5 text-gray-500" />
+                            <div className="p-1.5 rounded-lg mt-0.5 shrink-0 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700">
+                              <Icon className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />
                             </div>
                             <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-500 mb-0.5">{label}</p>
-                              <p className="text-sm font-medium text-gray-200">{value}</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 mb-0.5">{label}</p>
+                              <p className="text-sm font-semibold text-slate-800 dark:text-zinc-200">{value}</p>
                             </div>
                           </div>
                         ))}
@@ -375,15 +371,14 @@ export default function AdminCertificatesPage() {
 
                       {req.certificate_status === 'approved' && req.certificate_id && (
                         <div
-                          className="mt-4 flex items-center gap-3 p-3 rounded-xl"
-                          style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.2)' }}
+                          className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20"
                         >
-                          <div className="p-2 rounded-lg" style={{ background: 'rgba(16,185,129,0.1)' }}>
-                            <Sparkles className="w-4 h-4 text-emerald-400" />
+                          <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-500/20">
+                            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                           </div>
                           <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-0.5">Certificate ID</p>
-                            <p className="text-sm font-black font-mono text-emerald-300 select-all tracking-wider">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-0.5">Certificate ID</p>
+                            <p className="text-sm font-black font-mono text-emerald-700 dark:text-emerald-300 select-all tracking-wider">
                               {req.certificate_id}
                             </p>
                           </div>
@@ -399,13 +394,13 @@ export default function AdminCertificatesPage() {
 
         {/* Footer */}
         {filtered.length > 0 && (
-          <div className="px-6 py-3 border-t flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-            <span className="text-xs text-gray-500">
-              Showing <span className="text-white font-semibold">{filtered.length}</span> of{' '}
-              <span className="text-white font-semibold">{requests.length}</span> requests
+          <div className="px-6 py-3 border-t border-slate-200/80 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-zinc-900/30">
+            <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">
+              Showing <span className="text-slate-900 dark:text-white font-bold">{filtered.length}</span> of{' '}
+              <span className="text-slate-900 dark:text-white font-bold">{requests.length}</span> requests
             </span>
             {statusFilter !== 'all' && (
-              <button onClick={() => setStatusFilter('all')} className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
+              <button onClick={() => setStatusFilter('all')} className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline">
                 Clear filter
               </button>
             )}

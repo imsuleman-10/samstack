@@ -7,11 +7,10 @@ import { Settings, Bell, Shield, Globe, Database, Mail } from 'lucide-react';
 function SettingsSection({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
     <div
-      className="p-6 rounded-xl border"
-      style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}
+      className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm"
     >
-      <h3 className="text-base font-semibold text-white mb-5 flex items-center gap-2">
-        <Icon className="w-4 h-4 text-gray-400" />
+      <h3 className="text-base font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2">
+        <Icon className="w-4 h-4 text-slate-500 dark:text-zinc-400" />
         {title}
       </h3>
       {children}
@@ -21,10 +20,10 @@ function SettingsSection({ title, icon: Icon, children }: { title: string; icon:
 
 function SettingRow({ label, description, children }: { label: string; description?: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+    <div className="flex items-center justify-between py-3.5 border-b border-slate-100 dark:border-zinc-800/60 last:border-0">
       <div>
-        <p className="text-sm font-medium text-gray-300">{label}</p>
-        {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
+        <p className="text-sm font-semibold text-slate-800 dark:text-zinc-200">{label}</p>
+        {description && <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">{description}</p>}
       </div>
       <div className="ml-4 shrink-0">{children}</div>
     </div>
@@ -36,10 +35,10 @@ function Toggle({ defaultChecked = false }: { defaultChecked?: boolean }) {
   return (
     <button
       onClick={() => setOn(!on)}
-      className={`w-11 h-6 rounded-full transition-colors ${on ? 'bg-cyan-500' : 'bg-gray-700'} relative`}
+      className={`w-11 h-6 rounded-full transition-colors ${on ? 'bg-cyan-600 dark:bg-cyan-500' : 'bg-slate-300 dark:bg-zinc-700'} relative shadow-inner`}
     >
       <span
-        className={`block w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${on ? 'translate-x-6' : 'translate-x-1'}`}
+        className={`block w-4 h-4 bg-white rounded-full absolute top-1 transition-transform shadow ${on ? 'translate-x-6' : 'translate-x-1'}`}
       />
     </button>
   );
@@ -71,7 +70,7 @@ export default function AdminSettingsPage() {
             <Toggle />
           </SettingRow>
           <SettingRow label="Session Timeout" description="Auto-logout after inactivity">
-            <select className="bg-gray-800 border border-white/10 text-gray-300 text-sm rounded-lg px-3 py-1.5 outline-none">
+            <select className="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-800 dark:text-zinc-200 text-sm rounded-xl px-3 py-1.5 outline-none font-medium">
               <option>30 minutes</option>
               <option>1 hour</option>
               <option>4 hours</option>
@@ -94,7 +93,7 @@ export default function AdminSettingsPage() {
 
         <SettingsSection title="Email Service" icon={Mail}>
           <SettingRow label="SMTP Provider" description="Currently using Resend (resend.com)">
-            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30">
               Connected
             </span>
           </SettingRow>
@@ -109,17 +108,17 @@ export default function AdminSettingsPage() {
         <div className="lg:col-span-2">
           <SettingsSection title="Database" icon={Database}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-xs text-gray-500 mb-1">Database Provider</p>
-                <p className="text-sm font-semibold text-white">Firebase Firestore</p>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700/60">
+                <p className="text-xs font-semibold text-slate-500 dark:text-zinc-400 mb-1">Database Provider</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Firebase Firestore</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-xs text-gray-500 mb-1">Auth Provider</p>
-                <p className="text-sm font-semibold text-white">Firebase Auth</p>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700/60">
+                <p className="text-xs font-semibold text-slate-500 dark:text-zinc-400 mb-1">Auth Provider</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Firebase Auth</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-xs text-gray-500 mb-1">Storage</p>
-                <p className="text-sm font-semibold text-white">Firebase Storage</p>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700/60">
+                <p className="text-xs font-semibold text-slate-500 dark:text-zinc-400 mb-1">Storage</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Firebase Storage</p>
               </div>
             </div>
           </SettingsSection>

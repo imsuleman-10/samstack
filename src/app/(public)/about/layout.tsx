@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -59,7 +59,7 @@ const aboutJsonLd = {
       "jobTitle": "Founder & Lead Engineer",
       "description": "Full-stack engineer and DevOps lead specializing in Next.js, cloud architecture, and AI agent systems.",
       "url": "https://suleman-zaheer.vercel.app",
-      "image": "https://samstack-tech.vercel.app/images/image.png",
+      "image": "https://samstack-tech.vercel.app/suleman-zaheer-software-engineer-samstack-tech.jpeg",
       "worksFor": { "@type": "Organization", "name": "SAMStack Tech" },
       "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Engineering and Technology (UET), Lahore" },
       "sameAs": ["https://github.com/imsuleman-10", "https://www.linkedin.com/in/suleman-zaheer-mughal"]

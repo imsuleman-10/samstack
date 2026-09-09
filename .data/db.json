@@ -57,7 +57,7 @@
       "id": "intern-1779257196141-dsqhbqgfn",
       "rollNumber": "SAM-2026-0003",
       "applicationTimestamp": "2026-05-20T06:06:36.141Z",
-      "status": "SUBMITTED",
+      "status": "APPROVED",
       "submissionData": {
         "submissionTimestamp": "2026-05-20T06:08:05.914Z",
         "githubRepositoryUrl": "https://github.com/imsuleman-10",
@@ -79,6 +79,14 @@
       "recipientName": "Suleman Zaheer",
       "trackTitle": "Full Stack MERN Enterprise Ecosystems",
       "issuanceDate": "2026-05-17T17:40:49.281Z",
+      "isValid": true
+    },
+    {
+      "certificateNumber": "SAM-CERT-2026-1MF56G",
+      "associatedRollNumber": "SAM-2026-0003",
+      "recipientName": "abdullah",
+      "trackTitle": "MERN",
+      "issuanceDate": "2026-09-09T01:27:48.949Z",
       "isValid": true
     }
   ],

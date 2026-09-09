@@ -122,40 +122,40 @@ export function UserQuickActionsMenu({ user, onRefresh }: { user: PlatformUser, 
     <div className="relative" ref={menuRef}>
       <button
         onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
-        className="p-1.5 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+        className="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-white/10"
       >
         <MoreVertical className="w-5 h-5" />
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-56 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
+        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
           <div className="py-1">
             <button
               onClick={(e) => handleSendCredentials(e)}
               disabled={sendingCreds}
-              className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-2"
             >
-              {sendingCreds ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 text-cyan-400" />}
+              {sendingCreds ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />}
               Send Login Credentials
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); setOpen(false); setShowSetPassword(true); }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-2"
             >
-              <Lock className="w-4 h-4 text-amber-400" />
+              <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               Set Custom Password
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); setOpen(false); setShowSetEmail(true); }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-2"
             >
-              <Mail className="w-4 h-4 text-blue-400" />
+              <Mail className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Change Email Address
             </button>
-            <div className="border-t border-gray-800 my-1"></div>
+            <div className="border-t border-slate-100 dark:border-zinc-800 my-1"></div>
             <button
               onClick={(e) => { e.stopPropagation(); setOpen(false); setShowDelete(true); }}
-              className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-800 hover:text-red-300 flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 text-sm font-semibold text-rose-600 dark:text-red-400 hover:bg-rose-50 dark:hover:bg-zinc-800 flex items-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
               Delete User
@@ -167,35 +167,35 @@ export function UserQuickActionsMenu({ user, onRefresh }: { user: PlatformUser, 
       {/* Set Password Modal */}
       {showSetPassword && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={(e) => e.stopPropagation()}>
-          <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xl">
             <div className="p-6">
-              <h3 className="text-xl font-bold text-white mb-2">Set Custom Password</h3>
-              <p className="text-sm text-gray-400 mb-6">Manually override the password for <strong className="text-white">{user.email}</strong>.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Set Custom Password</h3>
+              <p className="text-sm text-slate-600 dark:text-zinc-400 mb-6">Manually override the password for <strong className="text-slate-900 dark:text-white font-bold">{user.email}</strong>.</p>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">New Password</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">New Password</label>
                   <input 
                     type="text" 
                     value={customPassword}
                     onChange={e => setCustomPassword(e.target.value)}
                     placeholder="e.g. TempPass123!"
-                    className="w-full h-10 px-3 rounded-lg text-sm text-white bg-black/50 border border-white/10" 
+                    className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-amber-500" 
                   />
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4 bg-gray-900/50 border-t border-white/5 flex justify-end gap-3">
+            <div className="px-6 py-4 bg-slate-50 dark:bg-zinc-900/50 border-t border-slate-100 dark:border-zinc-800 flex justify-end gap-3">
               <button 
                 onClick={(e) => { e.stopPropagation(); setShowSetPassword(false); setCustomPassword(''); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleSetPassword}
                 disabled={settingPassword || customPassword.length < 8}
-                className="px-5 py-2 rounded-lg text-sm font-semibold bg-amber-500 hover:bg-amber-400 text-gray-900 flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2 rounded-xl text-sm font-bold bg-amber-500 hover:bg-amber-400 text-slate-900 flex items-center gap-2 disabled:opacity-50 shadow-sm"
               >
                 {settingPassword ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                 {settingPassword ? 'Saving...' : 'Set Password'}
@@ -208,35 +208,35 @@ export function UserQuickActionsMenu({ user, onRefresh }: { user: PlatformUser, 
       {/* Set Email Modal */}
       {showSetEmail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={(e) => e.stopPropagation()}>
-          <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xl">
             <div className="p-6">
-              <h3 className="text-xl font-bold text-white mb-2">Change Email Address</h3>
-              <p className="text-sm text-gray-400 mb-6">Update the primary email address for <strong className="text-white">{user.full_name}</strong>. Their old email is {user.email}.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Change Email Address</h3>
+              <p className="text-sm text-slate-600 dark:text-zinc-400 mb-6">Update the primary email address for <strong className="text-slate-900 dark:text-white font-bold">{user.full_name}</strong>. Their old email is {user.email}.</p>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">New Email Address</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-zinc-300 mb-1.5">New Email Address</label>
                   <input 
                     type="email" 
                     value={customEmail}
                     onChange={e => setCustomEmail(e.target.value)}
                     placeholder="new@example.com"
-                    className="w-full h-10 px-3 rounded-lg text-sm text-white bg-black/50 border border-white/10" 
+                    className="w-full h-10 px-3 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-blue-500" 
                   />
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4 bg-gray-900/50 border-t border-white/5 flex justify-end gap-3">
+            <div className="px-6 py-4 bg-slate-50 dark:bg-zinc-900/50 border-t border-slate-100 dark:border-zinc-800 flex justify-end gap-3">
               <button 
                 onClick={(e) => { e.stopPropagation(); setShowSetEmail(false); setCustomEmail(''); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleSetEmail}
                 disabled={settingEmail || !customEmail.includes('@')}
-                className="px-5 py-2 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 disabled:opacity-50 shadow-sm"
               >
                 {settingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
                 {settingEmail ? 'Updating...' : 'Update Email'}

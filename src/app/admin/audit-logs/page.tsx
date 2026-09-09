@@ -58,21 +58,20 @@ export default function AuditLogsPage() {
               l.actor ? (
                 <div className="flex items-center gap-2">
                   <UserAvatar name={l.actor.full_name} size="xs" />
-                  <span className="text-sm text-gray-300">{l.actor.full_name}</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">{l.actor.full_name}</span>
                 </div>
               ) : (
-                <span className="text-gray-500 text-sm">System</span>
+                <span className="text-slate-500 dark:text-zinc-500 text-sm font-medium">System</span>
               ),
           },
           {
             key: 'action',
             label: 'Action',
             render: (l) => {
-              const cfg = ACTION_LABELS[l.action] || { label: l.action, color: '#94a3b8' };
+              const cfg = ACTION_LABELS[l.action] || { label: l.action, color: '#0284c7' };
               return (
                 <span
-                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                  style={{ background: `${cfg.color}15`, color: cfg.color }}
+                  className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-800 dark:text-zinc-200"
                 >
                   {cfg.label}
                 </span>
@@ -85,18 +84,18 @@ export default function AuditLogsPage() {
             render: (l) =>
               l.target_user ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-300">{l.target_user.full_name}</span>
+                  <span className="text-sm font-semibold text-slate-800 dark:text-zinc-200">{l.target_user.full_name}</span>
                   <RoleBadge role={l.target_user.role} />
                 </div>
               ) : (
-                <span className="text-gray-600 text-sm">—</span>
+                <span className="text-slate-400 dark:text-zinc-600 text-sm italic">—</span>
               ),
           },
           {
             key: 'created_at',
             label: 'Time',
             render: (l) => (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-slate-500 dark:text-zinc-400 font-medium">
                 {new Date(l.created_at).toLocaleString()}
               </span>
             ),

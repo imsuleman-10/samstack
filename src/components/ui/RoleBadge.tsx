@@ -3,13 +3,31 @@
 import React from 'react';
 import type { UserRole } from '@/lib/firestore-schema';
 
-const ROLE_CONFIG: Record<UserRole, { label: string; bg: string; text: string }> = {
-  admin:   { label: 'Admin',   bg: 'rgba(251,191,36,0.15)',  text: '#fbbf24' },
-  mentor:  { label: 'Mentor',  bg: 'rgba(167,139,250,0.15)', text: '#a78bfa' },
-  intern:  { label: 'Intern',  bg: 'rgba(34,211,238,0.15)',  text: '#22d3ee' },
-  staff:   { label: 'Staff',   bg: 'rgba(52,211,153,0.15)',  text: '#34d399' },
-  member:  { label: 'Member',  bg: 'rgba(251,146,60,0.15)',  text: '#fb923c' },
-  user:    { label: 'User',    bg: 'rgba(148,163,184,0.12)', text: '#94a3b8' },
+const ROLE_CLASSES: Record<UserRole, { label: string; classes: string }> = {
+  admin: {
+    label: 'Admin',
+    classes: 'bg-amber-100 text-amber-900 border border-amber-300/80 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30',
+  },
+  mentor: {
+    label: 'Mentor',
+    classes: 'bg-purple-100 text-purple-900 border border-purple-300/80 dark:bg-purple-500/15 dark:text-purple-300 dark:border-purple-500/30',
+  },
+  intern: {
+    label: 'Intern',
+    classes: 'bg-sky-100 text-sky-900 border border-sky-300/80 dark:bg-sky-500/15 dark:text-sky-300 dark:border-sky-500/30',
+  },
+  staff: {
+    label: 'Staff',
+    classes: 'bg-emerald-100 text-emerald-900 border border-emerald-300/80 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30',
+  },
+  member: {
+    label: 'Member',
+    classes: 'bg-orange-100 text-orange-900 border border-orange-300/80 dark:bg-orange-500/15 dark:text-orange-300 dark:border-orange-500/30',
+  },
+  user: {
+    label: 'User',
+    classes: 'bg-slate-100 text-slate-800 border border-slate-300/80 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700',
+  },
 };
 
 interface RoleBadgeProps {
@@ -18,11 +36,10 @@ interface RoleBadgeProps {
 }
 
 export function RoleBadge({ role, className = '' }: RoleBadgeProps) {
-  const cfg = ROLE_CONFIG[role] ?? ROLE_CONFIG.user;
+  const cfg = ROLE_CLASSES[role] ?? ROLE_CLASSES.user;
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide ${className}`}
-      style={{ background: cfg.bg, color: cfg.text }}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide ${cfg.classes} ${className}`}
     >
       {cfg.label}
     </span>

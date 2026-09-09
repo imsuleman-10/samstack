@@ -108,8 +108,8 @@ export default function AdminInternsPage() {
               <div className="flex items-center gap-3">
                 <UserAvatar name={i.full_name} src={i.avatar_url} size="sm" />
                 <div>
-                  <p className="font-medium text-white">{i.full_name}</p>
-                  <p className="text-xs text-gray-400">{i.email}</p>
+                  <p className="font-bold text-slate-900 dark:text-white">{i.full_name}</p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">{i.email}</p>
                 </div>
               </div>
             ),
@@ -118,7 +118,7 @@ export default function AdminInternsPage() {
             key: 'track',
             label: 'Track',
             render: (i: any) => (
-              <span className="text-sm text-gray-300">
+              <span className="text-sm font-semibold text-slate-700 dark:text-zinc-300">
                 {i.track_selected || i.internProfile?.track_selected || '—'}
               </span>
             ),
@@ -127,7 +127,7 @@ export default function AdminInternsPage() {
             key: 'roll',
             label: 'Roll No.',
             render: (i: any) => (
-              <span className="text-xs font-mono text-gray-400">
+              <span className="text-xs font-mono font-bold text-slate-600 dark:text-zinc-400">
                 {i.roll_number || i.internProfile?.roll_number || '—'}
               </span>
             ),
@@ -140,7 +140,7 @@ export default function AdminInternsPage() {
           {
             key: 'joined',
             label: 'Joined',
-            render: (i: any) => <span className="text-gray-400">{new Date(i.created_at).toLocaleDateString()}</span>,
+            render: (i: any) => <span className="text-slate-500 dark:text-zinc-400 text-xs font-medium">{new Date(i.created_at).toLocaleDateString()}</span>,
           },
           {
             key: 'actions',

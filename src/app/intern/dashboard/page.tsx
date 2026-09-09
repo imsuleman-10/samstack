@@ -65,9 +65,8 @@ const QuickLinkCard = ({ href, onClick, icon: Icon, title, desc, color, locked }
   const content = (
     <div
       onClick={locked ? undefined : onClick}
-      className={`p-6 rounded-xl border block transition-all duration-300 relative overflow-hidden group cursor-pointer ${
-        locked ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg'
-      }`}
+      className={`p-6 rounded-xl border block transition-all duration-300 relative overflow-hidden group cursor-pointer ${locked ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg'
+        }`}
       style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}
     >
       {locked && (
@@ -240,11 +239,10 @@ function SubmitTasksTab({
                 key={t.id}
                 type="button"
                 onClick={() => setSelectedTaskId(t.id)}
-                className={`p-4 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden flex flex-col justify-between gap-2.5 ${
-                  isSelected
-                    ? 'border-cyan-400 bg-cyan-500/15 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/50 -translate-y-0.5'
-                    : 'border-white/10 bg-slate-900/60 hover:bg-slate-800/80 hover:border-white/20'
-                }`}
+                className={`p-4 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden flex flex-col justify-between gap-2.5 ${isSelected
+                  ? 'border-cyan-400 bg-cyan-500/15 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/50 -translate-y-0.5'
+                  : 'border-white/10 bg-slate-900/60 hover:bg-slate-800/80 hover:border-white/20'
+                  }`}
               >
                 <div className="flex items-center justify-between w-full">
                   <span className={`text-[11px] font-mono font-bold ${isSelected ? 'text-cyan-300' : 'text-gray-400'}`}>
@@ -296,13 +294,12 @@ function SubmitTasksTab({
               </div>
 
               <div className="flex items-center gap-2">
-                <span className={`px-2.5 py-0.5 rounded-lg text-xs font-bold ${
-                  detailedTask.difficulty === 'Beginner'
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                    : detailedTask.difficulty === 'Intermediate'
+                <span className={`px-2.5 py-0.5 rounded-lg text-xs font-bold ${detailedTask.difficulty === 'Beginner'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  : detailedTask.difficulty === 'Intermediate'
                     ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
                     : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-                }`}>
+                  }`}>
                   {detailedTask.difficulty}
                 </span>
                 <span className="px-2.5 py-0.5 rounded-lg text-xs font-medium bg-slate-800 text-gray-300 border border-white/10 flex items-center gap-1">
@@ -315,7 +312,7 @@ function SubmitTasksTab({
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-3">
                 {selectedTask.title}
               </h3>
-              
+
               {/* Skills tags */}
               <div className="flex flex-wrap items-center gap-1.5 mb-4">
                 <span className="text-[11px] text-gray-500 font-semibold mr-1">Key Skills:</span>
@@ -345,44 +342,40 @@ function SubmitTasksTab({
               <button
                 type="button"
                 onClick={() => setActiveTab('guide')}
-                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
-                  activeTab === 'guide'
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'guide'
+                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Code2 className="w-3.5 h-3.5" /> How-To Steps
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('criteria')}
-                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
-                  activeTab === 'criteria'
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'criteria'
+                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <ListChecks className="w-3.5 h-3.5" /> Acceptance Criteria
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('deliverables')}
-                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
-                  activeTab === 'deliverables'
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'deliverables'
+                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Layers className="w-3.5 h-3.5" /> Deliverables
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('tips')}
-                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
-                  activeTab === 'tips'
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'tips'
+                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Sparkles className="w-3.5 h-3.5" /> Pro Tips
               </button>
@@ -503,13 +496,12 @@ function SubmitTasksTab({
         {/* Right Column: Submission & Review Console (4 Cols) */}
         <div className="lg:col-span-4 space-y-6">
           {/* Submission Status & Review Card */}
-          <div className={`p-6 rounded-3xl border transition-all ${
-            existingSubmission?.status === 'completed'
-              ? 'bg-emerald-950/20 border-emerald-500/30'
-              : existingSubmission?.status === 'reviewing'
+          <div className={`p-6 rounded-3xl border transition-all ${existingSubmission?.status === 'completed'
+            ? 'bg-emerald-950/20 border-emerald-500/30'
+            : existingSubmission?.status === 'reviewing'
               ? 'bg-yellow-950/20 border-yellow-500/30'
               : 'bg-slate-900/70 border-white/10'
-          }`}>
+            }`}>
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-semibold text-gray-400">Current Status:</span>
               {existingSubmission?.status === 'completed' && (
@@ -839,8 +831,8 @@ function DocumentsTab({ completedCount = 0 }: { completedCount?: number }) {
             {profile?.certificate_status === 'approved' || profile?.certificate_status === 'issued'
               ? 'Your certificate is approved! Download it now.'
               : profile?.certificate_status === 'pending'
-              ? 'Your certificate application is currently pending review by your mentor or admin.'
-              : `Complete at least 3 mini projects to apply for your official certificate. (${completedCount}/3 tasks completed)`}
+                ? 'Your certificate application is currently pending review by your mentor or admin.'
+                : `Complete at least 3 mini projects to apply for your official certificate. (${completedCount}/3 tasks completed)`}
           </p>
         </div>
 
@@ -1071,33 +1063,30 @@ function InternDashboardContent() {
       <div className="flex border-b border-white/10 overflow-x-auto gap-2 pb-1">
         <button
           onClick={() => setActiveTab('dashboard')}
-          className={`px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all flex items-center gap-2 border-b-2 whitespace-nowrap ${
-            activeTab === 'dashboard'
-              ? 'border-cyan-400 text-cyan-400 bg-cyan-500/10'
-              : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-          }`}
+          className={`px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all flex items-center gap-2 border-b-2 whitespace-nowrap ${activeTab === 'dashboard'
+            ? 'border-cyan-400 text-cyan-400 bg-cyan-500/10'
+            : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
         >
           <Trophy className="w-4 h-4" /> Dashboard Overview
         </button>
 
         <button
           onClick={() => setActiveTab('submit_task')}
-          className={`px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all flex items-center gap-2 border-b-2 whitespace-nowrap ${
-            activeTab === 'submit_task'
-              ? 'border-cyan-400 text-cyan-400 bg-cyan-500/10'
-              : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-          }`}
+          className={`px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all flex items-center gap-2 border-b-2 whitespace-nowrap ${activeTab === 'submit_task'
+            ? 'border-cyan-400 text-cyan-400 bg-cyan-500/10'
+            : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
         >
           <FileText className="w-4 h-4" /> Submit Tasks
         </button>
 
         <button
           onClick={() => setActiveTab('documents')}
-          className={`px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all flex items-center gap-2 border-b-2 whitespace-nowrap ${
-            activeTab === 'documents'
-              ? 'border-cyan-400 text-cyan-400 bg-cyan-500/10'
-              : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-          }`}
+          className={`px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all flex items-center gap-2 border-b-2 whitespace-nowrap ${activeTab === 'documents'
+            ? 'border-cyan-400 text-cyan-400 bg-cyan-500/10'
+            : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
         >
           <Award className="w-4 h-4" /> My Documents
         </button>
@@ -1149,11 +1138,10 @@ function InternDashboardContent() {
                         {missingFields.map(f => (
                           <span
                             key={f.label}
-                            className={`px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 ${
-                              f.compulsory
-                                ? 'bg-red-500/20 text-red-300 border border-red-500/40 font-bold'
-                                : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'
-                            }`}
+                            className={`px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 ${f.compulsory
+                              ? 'bg-red-500/20 text-red-300 border border-red-500/40 font-bold'
+                              : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'
+                              }`}
                           >
                             <span>✕</span> {f.label}
                           </span>
@@ -1365,11 +1353,10 @@ function InternDashboardContent() {
                   {missingFields.map(f => (
                     <span
                       key={f.label}
-                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold ${
-                        f.compulsory
-                          ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                          : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'
-                      }`}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold ${f.compulsory
+                        ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                        : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'
+                        }`}
                     >
                       ✕ {f.label}
                     </span>

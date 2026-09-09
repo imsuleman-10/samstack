@@ -122,8 +122,6 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
 
-  const isHome = pathname === "/";
-
   useEffect(() => {
     setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -137,18 +135,44 @@ export default function SiteHeader() {
     setOpenMenu(null);
   }, [pathname]);
 
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = (label: string) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setOpenMenu(label);
+  };
+
+  const handleMouseLeave = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      setOpenMenu(null);
+    }, 200);
+  };
+
+  const cancelClose = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
   const toggleDesktopMenu = (label: string) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
     setOpenMenu((prev) => (prev === label ? null : label));
   };
 
   return (
     <>
       <header
-        className={`fixed top-0 z-50 w-full transition-all duration-500 ${
-          !isHome || scrolled || mobileOpen || openMenu
-            ? "bg-white/95 dark:bg-neutral-950/95 backdrop-blur-xl border-b border-slate-200/70 dark:border-neutral-800/70 shadow-sm"
-            : "bg-transparent"
-        }`}
+        className="fixed top-0 z-50 w-full transition-all duration-300 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-xl border-b border-slate-200/70 dark:border-neutral-800/70 shadow-sm"
       >
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
 
@@ -176,7 +200,12 @@ export default function SiteHeader() {
             {NAV_ITEMS.map((item) => {
               const isOpen = openMenu === item.label;
               return (
-                <div key={item.label}>
+                <div
+                  key={item.label}
+                  onMouseEnter={() => handleMouseEnter(item.label)}
+                  onMouseLeave={handleMouseLeave}
+                  className="relative"
+                >
                   <button
                     onClick={() => toggleDesktopMenu(item.label)}
                     className={`flex items-center gap-1 px-3.5 py-2 text-[13px] font-semibold rounded-md transition-colors duration-150 cursor-pointer ${
@@ -252,6 +281,8 @@ export default function SiteHeader() {
         <AnimatePresence>
           {openMenu && (
             <motion.div
+              onMouseEnter={cancelClose}
+              onMouseLeave={handleMouseLeave}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}

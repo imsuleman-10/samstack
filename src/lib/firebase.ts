@@ -39,16 +39,17 @@ let realtimeDbObj: any;
 let authObj: any;
 
 // Prevent duplicate initialization in Next.js hot-reload environments
-if (getApps().length === 0) {
-  app = initializeApp(firebaseConfig);
+try {
+  if (getApps().length === 0) {
+    app = initializeApp(firebaseConfig);
+  } else {
+    app = getApps()[0];
+  }
   firestoreDb = getFirestore(app);
   realtimeDbObj = getRealtimeFirestore(app);
   authObj = getAuth(app);
-} else {
-  app = getApps()[0];
-  firestoreDb = getFirestore(app);
-  realtimeDbObj = getRealtimeFirestore(app);
-  authObj = getAuth(app);
+} catch (error: any) {
+  console.warn("[Firebase] Client initialization warning:", error.message);
 }
 
 export const firestore = firestoreDb;

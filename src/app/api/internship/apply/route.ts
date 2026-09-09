@@ -49,6 +49,84 @@ export async function POST(request: NextRequest) {
     if (!covenantAccepted) {
       return NextResponse.json({ error: "You must accept the Honor Covenant." }, { status: 400 });
     }
+    const normalizedEmail = email?.trim().toLowerCase();
+    if (!normalizedEmail) {
+      return NextResponse.json({ error: "A valid email address is required." }, { status: 400 });
+    }
+
+    // ─── Prevent Duplicate Submissions ───
+    if (adminDb && process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
+      try {
+        // 1. Check if application already exists in intern_profiles
+        const duplicateProfileSnap = await adminDb
+          .collection("intern_profiles")
+          .where("email", "==", normalizedEmail)
+          .limit(1)
+          .get();
+
+        if (!duplicateProfileSnap.empty) {
+          return NextResponse.json(
+            { error: "An application has already been submitted with this email address. Multiple applications with the same email are not allowed." },
+            { status: 409 }
+          );
+        }
+
+        // 2. Check legacy interns collection
+        const duplicateLegacySnap = await adminDb
+          .collection("interns")
+          .where("email", "==", normalizedEmail)
+          .limit(1)
+          .get();
+
+        if (!duplicateLegacySnap.empty) {
+          return NextResponse.json(
+            { error: "An application has already been submitted with this email address. Multiple applications with the same email are not allowed." },
+            { status: 409 }
+          );
+        }
+
+        // 3. Check if user already exists with intern role
+        const duplicateUserSnap = await adminDb
+          .collection("users")
+          .where("email", "==", normalizedEmail)
+          .limit(1)
+          .get();
+
+        if (!duplicateUserSnap.empty) {
+          const uData = duplicateUserSnap.docs[0].data();
+          if (uData.role === "intern") {
+            return NextResponse.json(
+              { error: "An application has already been submitted with this email address. Multiple applications with the same email are not allowed." },
+              { status: 409 }
+            );
+          }
+        }
+      } catch (dbErr: any) {
+        console.warn("[Duplicate Check] Warning checking existing records:", dbErr.message);
+      }
+    }
+
+    // 4. Check local database .data/db.json (for local development fallback)
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const dbPath = path.join(process.cwd(), ".data", "db.json");
+      if (fs.existsSync(dbPath)) {
+        const dbData = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
+        const existingIntern = dbData.interns?.find(
+          (i: any) => (i.email || "").trim().toLowerCase() === normalizedEmail
+        );
+        if (existingIntern) {
+          return NextResponse.json(
+            { error: "An application has already been submitted with this email address. Multiple applications with the same email are not allowed." },
+            { status: 409 }
+          );
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (!firebaseUid || !firebaseToken) {
       return NextResponse.json({ error: "Authentication failed. Please try again." }, { status: 400 });
     }
@@ -110,7 +188,7 @@ export async function POST(request: NextRequest) {
       await adb.users.create(firebaseUid, {
         full_name: fullName,
         phone_number: phone.trim(),
-        email: email?.trim().toLowerCase() || null,
+        email: normalizedEmail,
         role: 'intern',
         gender: gender || null,
         image_url: null,
@@ -120,7 +198,7 @@ export async function POST(request: NextRequest) {
       await adb.users.update(firebaseUid, {
         full_name: fullName,
         phone_number: phone.trim(),
-        email: email?.trim().toLowerCase() || null,
+        email: normalizedEmail,
         gender: gender || null,
       });
     }
@@ -181,6 +259,31 @@ export async function POST(request: NextRequest) {
           console.error("Offer letter email error:", e);
         }
       })();
+    }
+
+    // ─── Sync local database .data/db.json (for local development fallback) ───
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const dbPath = path.join(process.cwd(), ".data", "db.json");
+      if (fs.existsSync(dbPath)) {
+        const dbData = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
+        if (!dbData.interns) dbData.interns = [];
+        dbData.interns.push({
+          id: `intern-${Date.now()}`,
+          fullName,
+          email: normalizedEmail,
+          trackSelected: uppercaseTrack,
+          university: university?.trim() || "Not Specified",
+          rollNumber,
+          applicationTimestamp: new Date().toISOString(),
+          status: "APPLIED",
+          submissionData: null,
+        });
+        fs.writeFileSync(dbPath, JSON.stringify(dbData, null, 2), "utf-8");
+      }
+    } catch {
+      // ignore
     }
 
     return NextResponse.json({

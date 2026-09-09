@@ -102,6 +102,23 @@ export default function LoginPage() {
     e.preventDefault(); setLoading(true); clear();
     try {
       let fbEmail = loginId.trim();
+
+      // Check admin credentials first
+      try {
+        const adminRes = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: fbEmail, password: loginPw }),
+        });
+        if (adminRes.ok) {
+          const d = await adminRes.json();
+          window.location.href = d.dashboard || '/admin';
+          return;
+        }
+      } catch {
+        // Fallthrough to Firebase login
+      }
+
       if (!isEmailInput(fbEmail)) {
         const res = await fetch('/api/auth/lookup', {
           method: 'POST',
