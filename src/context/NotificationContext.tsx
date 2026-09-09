@@ -36,7 +36,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   
   useEffect(() => {
     if (!user?.id || !realtimeDb) {
-      setNotifications([]);
+      setNotifications((prev) => (prev.length > 0 ? [] : prev));
       return;
     }
 

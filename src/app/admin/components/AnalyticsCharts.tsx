@@ -25,7 +25,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 // ─── Chart Card wrapper ───────────────────────────────────────────────────────
-function ChartCard({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function ChartCard({ title, subtitle, children, minHeight = 200 }: { title: string; subtitle?: string; children: React.ReactNode; minHeight?: number }) {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div
       className="p-5 rounded-2xl border"
@@ -35,7 +40,11 @@ function ChartCard({ title, subtitle, children }: { title: string; subtitle?: st
         <h3 className="font-semibold text-white text-sm">{title}</h3>
         {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
       </div>
-      {children}
+      {mounted ? children : (
+        <div style={{ height: minHeight }} className="flex items-center justify-center animate-pulse">
+          <div className="w-full h-full rounded-xl bg-white/[0.03] border border-white/[0.04]" />
+        </div>
+      )}
     </div>
   );
 }
@@ -89,7 +98,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
 export function RoleDistributionChart({ data }: { data: { name: string; value: number; color: string }[] }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
   return (
-    <ChartCard title="Role Distribution" subtitle={`${total} users total`}>
+    <ChartCard title="Role Distribution" subtitle={`${total} users total`} minHeight={180}>
       <div className="flex items-center gap-4">
         <ResponsiveContainer width="55%" height={180}>
           <PieChart>

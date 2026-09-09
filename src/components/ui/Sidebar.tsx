@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, createContext, useContext, useEffect } from 'react';
+import React, { useState, createContext, useContext, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import {
   LayoutDashboard, Users, GraduationCap, Star, Briefcase,
-  UserCircle, Link2, Globe, Bell, Settings, LogOut,
+  UserCircle, Link2, Bell, Settings, LogOut,
   ChevronLeft, ChevronRight, FileText, Users2, Award, Menu, X,
   TrendingUp, ShieldCheck, Activity, BookOpen, Trophy
 } from 'lucide-react';
@@ -38,7 +38,6 @@ const NAV_BY_ROLE: Record<UserRole, NavItem[]> = {
     { label: 'Assignments', href: '/admin/mentor-assignments', icon: Link2 },
     { label: 'Tasks',       href: '/admin/tasks',              icon: BookOpen },
     { label: 'Certificates',href: '/admin/certificates',       icon: Award },
-    { label: 'Community',   href: '/community',                icon: Globe },
     { label: 'Audit Logs',  href: '/admin/audit-logs',         icon: FileText },
     { label: 'Settings',    href: '/admin/settings',           icon: Settings },
   ],
@@ -48,42 +47,41 @@ const NAV_BY_ROLE: Record<UserRole, NavItem[]> = {
     { label: 'Manage Tasks',     href: '/mentor/tasks',      icon: BookOpen },
     { label: 'Certificates',     href: '/admin/certificates', icon: Award },
     { label: 'Intern Directory', href: '/interns',           icon: Users },
-    { label: 'Community',        href: '/community',         icon: Globe },
     { label: 'Tools',            href: '/mentor/tools',      icon: Award },
     { label: 'Profile',          href: '/profile',           icon: UserCircle },
     { label: 'Notifications',    href: '/notifications',     icon: Bell },
   ],
   intern: [
-    { label: 'Dashboard',        href: '/intern/dashboard',  icon: LayoutDashboard },
-    { label: 'My Mentor',        href: '/intern/mentor',     icon: Star },
-    { label: 'My Tasks',         href: '/intern/tasks',      icon: FileText },
-    { label: 'My Documents',     href: '/intern/documents',  icon: Award },
-    { label: 'Leaderboard',      href: '/intern/leaderboard',icon: Trophy },
-    { label: 'Intern Directory', href: '/interns',           icon: Users },
-    { label: 'Community',        href: '/community',         icon: Globe },
-    { label: 'Profile',          href: '/profile',           icon: UserCircle },
-    { label: 'Notifications',    href: '/notifications',     icon: Bell },
+    { label: 'Dashboard',        href: '/intern/dashboard',                 icon: LayoutDashboard },
+    { label: 'My Mentor',        href: '/intern/mentor',                    icon: Star },
+    { label: 'Submit Tasks',     href: '/intern/dashboard?tab=submit_task', icon: FileText },
+    { label: 'My Documents',     href: '/intern/dashboard?tab=documents',   icon: Award },
+    { label: 'Leaderboard',      href: '/intern/leaderboard',               icon: Trophy },
+    { label: 'Intern Directory', href: '/interns',                          icon: Users },
+    { label: 'Profile',          href: '/profile',                          icon: UserCircle },
+    { label: 'Notifications',    href: '/notifications',                    icon: Bell },
   ],
   staff: [
     { label: 'Dashboard',     href: '/staff/dashboard',  icon: LayoutDashboard },
     { label: 'Users',         href: '/admin/users',       icon: Users },
-    { label: 'Community',     href: '/community',         icon: Globe },
     { label: 'Tools',         href: '/staff/tools',       icon: Award },
     { label: 'Profile',       href: '/profile',           icon: UserCircle },
     { label: 'Notifications', href: '/notifications',     icon: Bell },
   ],
   member: [
     { label: 'Dashboard',     href: '/dashboard',         icon: LayoutDashboard },
-    { label: 'Community',     href: '/community',         icon: Globe },
     { label: 'Directory',     href: '/interns',           icon: Users },
     { label: 'Profile',       href: '/profile',           icon: UserCircle },
     { label: 'Notifications', href: '/notifications',     icon: Bell },
   ],
   user: [
-    { label: 'Dashboard',     href: '/dashboard',         icon: LayoutDashboard },
-    { label: 'Community',     href: '/community',         icon: Globe },
-    { label: 'Profile',       href: '/profile',           icon: UserCircle },
-    { label: 'Notifications', href: '/notifications',     icon: Bell },
+    { label: 'Dashboard',        href: '/intern/dashboard',                 icon: LayoutDashboard },
+    { label: 'My Mentor',        href: '/intern/mentor',                    icon: Star },
+    { label: 'Submit Tasks',     href: '/intern/dashboard?tab=submit_task', icon: FileText },
+    { label: 'My Documents',     href: '/intern/dashboard?tab=documents',   icon: Award },
+    { label: 'Leaderboard',      href: '/intern/leaderboard',               icon: Trophy },
+    { label: 'Profile',          href: '/profile',                          icon: UserCircle },
+    { label: 'Notifications',    href: '/notifications',                    icon: Bell },
   ],
 };
 
@@ -93,7 +91,7 @@ const ROLE_ACCENT: Record<UserRole, { color: string; bg: string; label: string }
   intern: { color: '#22d3ee', bg: 'rgba(34,211,238,0.1)',  label: 'Intern' },
   staff:  { color: '#34d399', bg: 'rgba(52,211,153,0.1)',  label: 'Staff Member' },
   member: { color: '#fb923c', bg: 'rgba(251,146,60,0.1)',  label: 'Member' },
-  user:   { color: '#94a3b8', bg: 'rgba(148,163,184,0.1)', label: 'User' },
+  user:   { color: '#22d3ee', bg: 'rgba(34,211,238,0.1)',  label: 'Intern' },
 };
 
 interface AppSidebarProps {
@@ -106,21 +104,43 @@ export function AppSidebar({ role, userName, userAvatar }: AppSidebarProps) {
   const { unreadCount } = useNotifications();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Defer active-state to client only to avoid SSR/client hydration mismatch
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const nav = NAV_BY_ROLE[role] ?? NAV_BY_ROLE.user;
   const accent = ROLE_ACCENT[role];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     window.location.href = '/login';
   };
 
-  const isActive = (href: string) =>
-    href === '/admin' || href === '/dashboard' || href === '/mentor/dashboard' || href === '/intern/dashboard' || href === '/staff/dashboard'
-      ? pathname === href
-      : pathname.startsWith(href);
+  const searchParams = useSearchParams();
+  const isActive = (href: string): boolean => {
+    if (!mounted) return false; // SSR: no active state — prevents hydration mismatch
+    const [basePath, queryStr] = href.split('?');
+    if (queryStr) {
+      // Match both path AND query param (e.g. ?tab=submit_task)
+      const hrefParams = new URLSearchParams(queryStr);
+      const currentParams = searchParams;
+      const pathMatches = pathname === basePath;
+      const paramsMatch = Array.from(hrefParams.entries()).every(
+        ([k, v]) => currentParams.get(k) === v
+      );
+      return pathMatches && paramsMatch;
+    }
+    // Exact match for dashboard roots, prefix match for sub-pages
+    const dashboardRoots = ['/admin', '/dashboard', '/mentor/dashboard', '/intern/dashboard', '/staff/dashboard'];
+    return dashboardRoots.includes(basePath)
+      ? pathname === basePath
+      : pathname.startsWith(basePath);
+  };
 
-  const SidebarContent = () => (
+  const renderSidebarContent = () => (
     <aside
       className="flex flex-col h-full bg-[var(--card)] border-r border-[var(--border)] transition-colors duration-300"
     >
@@ -174,6 +194,7 @@ export function AppSidebar({ role, userName, userAvatar }: AppSidebarProps) {
               onClick={() => setMobileOpen(false)}
               title={collapsed ? item.label : undefined}
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 group relative"
+              suppressHydrationWarning
               style={{
                 background: active ? accent.bg : 'transparent',
                 color: active ? 'var(--foreground)' : 'var(--input-text)',
@@ -228,7 +249,7 @@ export function AppSidebar({ role, userName, userAvatar }: AppSidebarProps) {
           >
             {userAvatar
               ? <img src={userAvatar} className="w-full h-full rounded-lg object-cover" alt="" />
-              : userName.charAt(0).toUpperCase()}
+              : (userName || "U").charAt(0).toUpperCase()}
           </div>
 
           {!collapsed && (
@@ -265,7 +286,7 @@ export function AppSidebar({ role, userName, userAvatar }: AppSidebarProps) {
         className={`fixed top-0 left-0 h-full z-50 transition-transform duration-300 lg:hidden w-64`}
         style={{ transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)' }}
       >
-        <SidebarContent />
+        {renderSidebarContent()}
       </div>
 
       {/* ── Desktop Sidebar ─────────────────────────── */}
@@ -273,7 +294,7 @@ export function AppSidebar({ role, userName, userAvatar }: AppSidebarProps) {
         className="hidden lg:flex flex-col h-full shrink-0 transition-all duration-300"
         style={{ width: collapsed ? 68 : 240 }}
       >
-        <SidebarContent />
+        {renderSidebarContent()}
       </aside>
 
       {/* ── Mobile Top Bar ──────────────────────────── */}

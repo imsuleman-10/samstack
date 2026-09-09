@@ -226,7 +226,7 @@ export default function AdminUsersPage() {
           {
             key: 'joined',
             label: 'Joined',
-            render: (u) => <span className="text-gray-400">{new Date(u.created_at).toLocaleDateString()}</span>,
+            render: (u) => <span suppressHydrationWarning className="text-gray-400">{u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</span>,
           },
           {
             key: 'actions',

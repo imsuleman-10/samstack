@@ -25,8 +25,11 @@ export default function MentorInternDetailPage({ params }: { params: Promise<{ i
       if (!id) return;
       try {
         const res = await fetch(`/api/mentor/interns/${id}`);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Failed to load intern details');
+        }
         const json = await res.json();
-        if (!res.ok) throw new Error(json.error || 'Failed to load intern details');
         setData(json);
       } catch (err: any) {
         setError(err.message);
@@ -68,7 +71,7 @@ export default function MentorInternDetailPage({ params }: { params: Promise<{ i
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'approve_certificate' })
       });
-      const d = await res.json();
+      const d = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(d.error || 'Failed to approve');
       toast.success(`✓ Certificate approved for ${intern.full_name}`);
       setData((prev: any) => ({

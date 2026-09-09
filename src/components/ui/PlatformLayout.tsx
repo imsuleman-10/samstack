@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { AppSidebar } from '@/components/ui/Sidebar';
 import { getSession } from '@/lib/adminAuth';
 import { redirect } from 'next/navigation';
@@ -18,7 +18,7 @@ export default async function PlatformLayout({
   }
 
   if (allowedRoles && !allowedRoles.includes(session.role)) {
-    redirect(`/${session.role === 'admin' ? 'admin' : session.role === 'staff' ? 'staff/dashboard' : session.role === 'intern' ? 'intern/dashboard' : session.role === 'mentor' ? 'mentor/dashboard' : 'dashboard'}`);
+    redirect(`/${session.role === 'admin' ? 'admin' : session.role === 'staff' ? 'staff/dashboard' : (session.role === 'intern' || session.role === 'user') ? 'intern/dashboard' : session.role === 'mentor' ? 'mentor/dashboard' : 'dashboard'}`);
   }
 
   return (
@@ -27,10 +27,14 @@ export default async function PlatformLayout({
       style={{ position: 'fixed', inset: 0, width: '100%' }}
     >
       {/* Sidebar */}
-      <AppSidebar
-        role={session.role as any}
-        userName={session.email || 'User'}
-      />
+      <Suspense fallback={
+        <div style={{ width: 240 }} className="hidden lg:flex flex-col h-full shrink-0 bg-[var(--card)] border-r border-[var(--border)]" />
+      }>
+        <AppSidebar
+          role={session.role as any}
+          userName={session.email || 'User'}
+        />
+      </Suspense>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -43,7 +47,7 @@ export default async function PlatformLayout({
             <span className="text-xs text-gray-500 font-medium">System Online</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-[var(--foreground)] opacity-70">
+            <span suppressHydrationWarning className="text-xs text-[var(--foreground)] opacity-70">
               {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
             </span>
             <div

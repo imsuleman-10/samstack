@@ -6,7 +6,9 @@ export default function Loading() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    let mounted = true;
     const interval = setInterval(() => {
+      if (!mounted) return;
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
@@ -15,7 +17,7 @@ export default function Loading() {
         return prev + Math.random() * 15 + 5;
       });
     }, 120);
-    return () => clearInterval(interval);
+    return () => { mounted = false; clearInterval(interval); };
   }, []);
 
   return (

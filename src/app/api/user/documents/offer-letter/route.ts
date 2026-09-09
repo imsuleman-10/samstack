@@ -7,7 +7,7 @@ import { generateOfferLetterPDF } from "@/lib/pdfTemplates";
 export async function GET(req: NextRequest) {
   try {
     // Only logged in users
-    const auth = await requireAuth(req, ["intern", "admin", "staff", "mentor"]);
+    const auth = await requireAuth(req, ["intern", "user", "admin", "staff", "mentor"]);
     if (isAuthError(auth)) return auth;
 
     const { session } = auth;
@@ -20,13 +20,22 @@ export async function GET(req: NextRequest) {
     if (!userSnap.exists) return NextResponse.json({ error: "User not found" }, { status: 404 });
     const user = userSnap.data();
 
-    if (user?.role !== 'intern') {
-      return NextResponse.json({ error: "Only interns can generate offer letters." }, { status: 403 });
-    }
-
-    const internSnap = await adminDb.collection(FS.INTERN_PROFILES).doc(userId).get();
+    let internSnap = await adminDb.collection(FS.INTERN_PROFILES).doc(userId).get();
     if (!internSnap.exists) {
-      return NextResponse.json({ error: "Intern profile not found." }, { status: 404 });
+      // Auto-create intern profile for user
+      const now = new Date().toISOString();
+      const rollNumber = `SAM-WD-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+      await adminDb.collection(FS.INTERN_PROFILES).doc(userId).set({
+        user_id: userId,
+        track_selected: user?.track || "WEB_DEV",
+        roll_number: rollNumber,
+        certificate_status: null,
+        offer_letter_sent: false,
+        created_at: now,
+        updated_at: now,
+      });
+      await adminDb.collection(FS.USERS).doc(userId).update({ role: 'intern' }).catch(() => {});
+      internSnap = await adminDb.collection(FS.INTERN_PROFILES).doc(userId).get();
     }
     const internProfile = internSnap.data();
 

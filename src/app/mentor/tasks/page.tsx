@@ -169,16 +169,19 @@ export default function MentorTasksPage() {
 
   // Get my session ID for ownership checks
   useEffect(() => {
-    fetch('/api/dashboard').then(r => r.json()).then(d => {
-      setMyId(d.user?.id || null);
-    });
+    fetch('/api/dashboard')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (d?.user?.id) setMyId(d.user.id);
+      })
+      .catch(() => {});
   }, []);
 
   const fetchTasks = async (track: string) => {
     setLoading(true);
     try {
       const res = await fetch(`/api/mentor/tasks?track=${track}`);
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       setTasks(data.tasks || []);
     } catch {
       showToast('Failed to load tasks', false);
@@ -201,7 +204,10 @@ export default function MentorTasksPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, track_id: selectedTrack }),
       });
-      if (!res.ok) throw new Error((await res.json()).error);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to add task');
+      }
       showToast('Task added!');
       setShowAddForm(false);
       fetchTasks(selectedTrack);
@@ -220,7 +226,10 @@ export default function MentorTasksPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ taskId, ...form }),
       });
-      if (!res.ok) throw new Error((await res.json()).error);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to update task');
+      }
       showToast('Task updated!');
       setEditingId(null);
       fetchTasks(selectedTrack);
@@ -235,7 +244,10 @@ export default function MentorTasksPage() {
     if (!confirm('Delete this task?')) return;
     try {
       const res = await fetch(`/api/mentor/tasks?taskId=${taskId}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error((await res.json()).error);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to delete task');
+      }
       showToast('Task deleted');
       fetchTasks(selectedTrack);
     } catch (e: any) {

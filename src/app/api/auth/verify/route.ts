@@ -12,17 +12,19 @@ const ROLE_DASHBOARD: Record<UserRole, string> = {
   intern: "/intern/dashboard",
   staff: "/staff/dashboard",
   member: "/dashboard",
-  user: "/dashboard",
+  user: "/intern/dashboard",
 };
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, fullName, phone, email } = body as {
+    const { token, fullName, phone, email, track, gender } = body as {
       token?: string;
       fullName?: string;
       phone?: string;
       email?: string;
+      track?: string;
+      gender?: string;
     };
 
     if (!token) {
@@ -68,28 +70,34 @@ export async function POST(request: NextRequest) {
     let user: Record<string, unknown>;
 
     if (!userSnapshot.exists) {
-      // New user — default role is "user" (not "intern" — PRD §6)
+      // New user — if track is provided, set as intern, else user
+      const assignedRole: UserRole = track ? "intern" : "intern";
       const insertPayload: Record<string, unknown> = {
         id: firebaseUid,
-        full_name: fullName?.trim() || "New User",
-        role: "user" as UserRole,
+        full_name: fullName?.trim() || "New Intern",
+        role: assignedRole,
         status: "active" as AccountStatus,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
       if (resolvedPhone) insertPayload.phone_number = resolvedPhone;
       if (resolvedEmail) insertPayload.email = resolvedEmail;
+      if (gender) insertPayload.gender = gender;
+      if (track) insertPayload.track = track;
 
       await userDocRef.set(insertPayload);
       user = insertPayload;
     } else {
       user = userSnapshot.data() as Record<string, unknown>;
 
-      // Update missing fields — NEVER overwrite existing role
+      // Update missing fields — upgrade generic "user" role to "intern"
       const updates: Record<string, unknown> = {};
+      if (user.role === "user") updates.role = "intern";
       if (!user.phone_number && resolvedPhone) updates.phone_number = resolvedPhone;
       if (!user.email && resolvedEmail) updates.email = resolvedEmail;
       if (!user.full_name && fullName?.trim()) updates.full_name = fullName.trim();
+      if (!user.gender && gender) updates.gender = gender;
+      if (!user.track && track) updates.track = track;
       if (!user.status) updates.status = "active";
       if (Object.keys(updates).length > 0) {
         updates.updated_at = new Date().toISOString();
@@ -98,7 +106,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const role = (user.role as UserRole) ?? "user";
+    // If track was provided or user is intern, ensure intern_profiles exists
+    if (track || user.role === "intern") {
+      const internRef = adminDb.collection("intern_profiles").doc(firebaseUid);
+      const internSnap = await internRef.get();
+      if (!internSnap.exists && track) {
+        const rollNumber = `SAM-${track.toUpperCase().slice(0, 2)}-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+        await internRef.set({
+          user_id: firebaseUid,
+          track_selected: track,
+          roll_number: rollNumber,
+          certificate_status: null,
+          offer_letter_sent: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+      }
+    }
+
+    const role = (user.role as UserRole) ?? "intern";
     const status = (user.status as AccountStatus) ?? "active";
 
     // ─── Block suspended/inactive accounts ──────────────────────────────────

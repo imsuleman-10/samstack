@@ -6,7 +6,8 @@ import { createAdminDb } from "@/lib/db";
 export async function POST(request: NextRequest) {
   try {
     const { phone, email } = await request.json();
-    const adb = createAdminDb(adminDb!);
+    if (!adminDb) return NextResponse.json({ error: "Database not initialized" }, { status: 503 });
+    const adb = createAdminDb(adminDb);
 
     // Normalize phone
     const cleaned = (phone || '').replace(/[^0-9+]/g, '');

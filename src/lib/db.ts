@@ -1,4 +1,4 @@
-import {
+﻿import {
   collection,
   doc,
   getDoc,
@@ -200,7 +200,7 @@ By offloading PDF rendering and SMTP mailing to a decoupled cloud service, our E
     author: {
       name: "Suleman Zaheer",
       role: "Founder & Lead Engineer",
-      avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpg"
+      avatarUrl: "/images/image.png"
     },
     tags: ["NEXTJS", "DEVOPS", "SERVERLESS"],
     publishedAt: "2026-05-15T08:00:00.000Z",
@@ -249,7 +249,7 @@ Applying smooth CSS transformations and subtle cyan-glowing shadows on hover ele
     author: {
       name: "Suleman Zaheer",
       role: "Founder & Lead Engineer",
-      avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpg"
+      avatarUrl: "/images/image.png"
     },
     tags: ["UI_UX", "CSS", "BRANDING"],
     publishedAt: "2026-05-16T12:00:00.000Z",

@@ -9,10 +9,13 @@ import { ProfileCompletion } from '@/components/ui/ProfileCompletion';
 import { Loader2, Edit3, Globe, MapPin, Briefcase, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import type { PlatformUser, InternProfile, MentorProfile } from '@/lib/firestore-schema';
+import { getTrackTitle } from '@/lib/curriculum';
 
 function calcCompletionFields(user: PlatformUser, intern?: InternProfile | null, mentor?: MentorProfile | null) {
   const fields = [
     { label: 'Full Name', done: !!user.full_name },
+    { label: 'Age', done: !!(user.age || user.date_of_birth) },
+    { label: 'Gender', done: !!user.gender },
     { label: 'Bio', done: !!user.bio },
     { label: 'City', done: !!user.city },
     { label: 'Skills', done: (user.skills?.length ?? 0) > 0 },
@@ -21,8 +24,9 @@ function calcCompletionFields(user: PlatformUser, intern?: InternProfile | null,
     { label: 'Avatar', done: !!user.avatar_url },
   ];
 
-  if (user.role === 'intern' && intern) {
+  if ((user.role === 'intern' || user.role === 'user') && intern) {
     fields.push(
+      { label: 'Track Selected', done: !!intern.track_selected },
       { label: 'University', done: !!intern.university },
       { label: 'Department', done: !!intern.department },
       { label: 'Semester', done: !!intern.semester },
@@ -48,8 +52,11 @@ export default function ProfilePage() {
     async function fetchProfile() {
       try {
         const res = await fetch('/api/profile');
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => null);
+          throw new Error(errJson?.error || `Failed to load profile (${res.status})`);
+        }
         const json = await res.json();
-        if (!res.ok) throw new Error(json.error || 'Failed to load profile');
         setData({ user: json.user, internProfile: json.internProfile, mentorProfile: json.mentorProfile });
       } catch (err: any) {
         setError(err.message);
@@ -122,6 +129,18 @@ export default function ProfilePage() {
             )}
 
             <div className="w-full mt-5 pt-5 border-t border-white/5 space-y-3 text-left">
+              {user.gender && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <span className="text-gray-500 text-xs">Gender:</span>
+                  <span className="text-gray-300 font-medium">{user.gender}</span>
+                </div>
+              )}
+              {(user.age || user.date_of_birth) && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <span className="text-gray-500 text-xs">Age:</span>
+                  <span className="text-gray-300 font-medium">{user.age || user.date_of_birth}</span>
+                </div>
+              )}
               {user.city && (
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <MapPin className="w-4 h-4 text-gray-600" />
@@ -165,25 +184,51 @@ export default function ProfilePage() {
           {roleProfile && (
             <div className="p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
               <h3 className="text-base font-semibold text-white mb-4 pb-3 border-b border-white/5">
-                {user.role === 'intern' ? 'Internship Details' : 'Professional Details'}
+                {user.role === 'intern' || user.role === 'user' ? 'Internship Details' : 'Professional Details'}
               </h3>
-              <div className="grid grid-cols-2 gap-y-4">
-                {(roleProfile as any).department && (
-                  <div>
-                    <p className="text-xs text-gray-500">Department</p>
-                    <p className="text-sm text-gray-300 mt-0.5">{(roleProfile as any).department}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                {(roleProfile as any).track_selected && (
+                  <div className="sm:col-span-2 p-3 rounded-lg bg-cyan-500/5 border border-cyan-500/20">
+                    <p className="text-xs text-cyan-400 font-semibold uppercase tracking-wider">Assigned Track</p>
+                    <p className="text-base text-white font-bold mt-0.5">
+                      {getTrackTitle((roleProfile as any).track_selected)}
+                    </p>
                   </div>
                 )}
                 {(roleProfile as any).university && (
                   <div>
                     <p className="text-xs text-gray-500">University</p>
-                    <p className="text-sm text-gray-300 mt-0.5">{(roleProfile as any).university}</p>
+                    <p className="text-sm text-gray-300 mt-0.5 font-medium">{(roleProfile as any).university}</p>
+                  </div>
+                )}
+                {(roleProfile as any).department && (
+                  <div>
+                    <p className="text-xs text-gray-500">Department</p>
+                    <p className="text-sm text-gray-300 mt-0.5 font-medium">{(roleProfile as any).department}</p>
                   </div>
                 )}
                 {(roleProfile as any).semester && (
                   <div>
                     <p className="text-xs text-gray-500">Semester</p>
-                    <p className="text-sm text-gray-300 mt-0.5">{(roleProfile as any).semester}</p>
+                    <p className="text-sm text-gray-300 mt-0.5 font-medium">{(roleProfile as any).semester}</p>
+                  </div>
+                )}
+                {(roleProfile as any).degree && (
+                  <div>
+                    <p className="text-xs text-gray-500">Degree</p>
+                    <p className="text-sm text-gray-300 mt-0.5 font-medium">{(roleProfile as any).degree}</p>
+                  </div>
+                )}
+                {(roleProfile as any).cgpa && (
+                  <div>
+                    <p className="text-xs text-gray-500">CGPA</p>
+                    <p className="text-sm text-gray-300 mt-0.5 font-medium">{(roleProfile as any).cgpa}</p>
+                  </div>
+                )}
+                {(roleProfile as any).roll_number && (
+                  <div>
+                    <p className="text-xs text-gray-500">Roll Number</p>
+                    <p className="text-sm text-cyan-400 font-mono mt-0.5">{(roleProfile as any).roll_number}</p>
                   </div>
                 )}
                 {(roleProfile as any).designation && (

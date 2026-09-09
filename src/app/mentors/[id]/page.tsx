@@ -22,8 +22,11 @@ export default function MentorProfilePage({ params }: { params: Promise<{ id: st
       if (!id) return;
       try {
         const res = await fetch(`/api/mentors/${id}`);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Failed to load profile');
+        }
         const json = await res.json();
-        if (!res.ok) throw new Error(json.error || 'Failed to load profile');
         setData(json);
       } catch (err: any) {
         setError(err.message);

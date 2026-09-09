@@ -2,19 +2,25 @@ import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore/lite";
 import { getFirestore as getRealtimeFirestore } from "firebase/firestore";
 
-// Suppress known Firebase GRPC background connection errors in Next.js Server Components
-const originalConsoleError = console.error;
-console.error = (...args) => {
-  const msg = args.map(a => (a && typeof a === 'object' && a.message) ? a.message : String(a)).join(' ');
-  if (
-    msg.includes("GRPC error has no .code") || 
-    msg.includes("GrpcConnection RPC") ||
-    msg.includes("@firebase/firestore")
-  ) {
-    return;
-  }
-  originalConsoleError.apply(console, args);
-};
+// Suppress known Firebase GRPC background connection errors in Next.js
+// Only override once and only on the client side to avoid SSR/React mount issues
+if (typeof window !== 'undefined') {
+  const _orig = console.error;
+  console.error = (...args: any[]) => {
+    const msg = args.map((a: any) =>
+      a && typeof a === 'object' && a.message ? a.message : String(a)
+    ).join(' ');
+    if (
+      msg.includes('GRPC error has no .code') ||
+      msg.includes('GrpcConnection RPC') ||
+      msg.includes('@firebase/firestore')
+    ) {
+      return;
+    }
+    _orig.apply(console, args);
+  };
+}
+
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

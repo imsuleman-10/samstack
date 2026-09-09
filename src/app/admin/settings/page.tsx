@@ -90,9 +90,6 @@ export default function AdminSettingsPage() {
           <SettingRow label="Open Registrations" description="Allow anyone to create a new account">
             <Toggle defaultChecked={true} />
           </SettingRow>
-          <SettingRow label="Community Feed" description="Enable the public community feed">
-            <Toggle defaultChecked={true} />
-          </SettingRow>
         </SettingsSection>
 
         <SettingsSection title="Email Service" icon={Mail}>

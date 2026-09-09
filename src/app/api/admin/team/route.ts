@@ -3,12 +3,7 @@ import { adminDb, adminStorage } from "@/lib/firebase-admin";
 export const dynamic = "force-dynamic";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabaseUpload } from "@/lib/supabase";
 
 const getSecretKey = () => {
   const secret = process.env.JWT_SECRET;
@@ -89,22 +84,14 @@ export async function POST(req: NextRequest) {
     const path = `team/${targetUserId}-team.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(path, buffer, {
-        contentType: file.type,
-        upsert: true,
-      });
+    const uploadedUrl = await supabaseUpload({
+      bucket: "avatars",
+      path,
+      body: buffer,
+      contentType: file.type || "image/jpeg",
+    });
       
-    if (uploadError) {
-      throw new Error("Supabase upload failed: " + uploadError.message);
-    }
-
-    const { data: publicUrlData } = supabase.storage
-      .from("avatars")
-      .getPublicUrl(path);
-      
-    image_url = `${publicUrlData.publicUrl}?t=${Date.now()}`;
+    image_url = `${uploadedUrl}?t=${Date.now()}`;
   }
 
   const teamRef = adminDb.collection("homepage_team");

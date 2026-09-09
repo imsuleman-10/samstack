@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { useRouter } from 'next/navigation';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function CreateUserPage() {
   const router = useRouter();
@@ -45,9 +46,11 @@ export default function CreateUserPage() {
         throw new Error(data.error || 'Failed to create user');
       }
 
+      toast.success('User created successfully!');
       router.push('/admin/users');
     } catch (err: any) {
       setError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }

@@ -7,7 +7,7 @@ import { generateCertificatePDF } from "@/lib/pdfTemplates";
 export async function GET(req: NextRequest) {
   try {
     // Only logged in users
-    const auth = await requireAuth(req, ["intern", "admin", "staff", "mentor"]);
+    const auth = await requireAuth(req, ["intern", "user", "admin", "staff", "mentor"]);
     if (isAuthError(auth)) return auth;
 
     const { session } = auth;
@@ -19,10 +19,6 @@ export async function GET(req: NextRequest) {
     const userSnap = await adminDb.collection(FS.USERS).doc(userId).get();
     if (!userSnap.exists) return NextResponse.json({ error: "User not found" }, { status: 404 });
     const user = userSnap.data();
-
-    if (user?.role !== 'intern') {
-      return NextResponse.json({ error: "Only interns can generate certificates." }, { status: 403 });
-    }
 
     const internSnap = await adminDb.collection(FS.INTERN_PROFILES).doc(userId).get();
     if (!internSnap.exists) {

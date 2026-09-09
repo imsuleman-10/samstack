@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Globe, FileText, Bell, Users, Loader2, MessageSquare, Shield, FolderGit2, CheckCircle2, Upload, Trash2, Download, Lock } from 'lucide-react';
+import { FileText, Bell, Users, Loader2, MessageSquare, Shield, FolderGit2, CheckCircle2, Upload, Trash2, Download, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { PlatformUser, InternProfile, StaffProfile, CompanyProject } from '@/lib/firestore-schema';
 import { toast } from 'sonner';
 
@@ -29,6 +30,7 @@ const StatPill = ({ label, value, color }: { label: string; value: string | numb
 );
 
 export default function UserDashboardPage() {
+  const router = useRouter();
   const [user, setUser] = useState<PlatformUser | null>(null);
   const [internProfile, setInternProfile] = useState<InternProfile | null>(null);
   const [staffProfile, setStaffProfile] = useState<StaffProfile | null>(null);
@@ -41,23 +43,28 @@ export default function UserDashboardPage() {
 
   useEffect(() => {
     fetch('/api/profile')
-      .then(r => r.json())
+      .then(r => (r.ok ? r.json() : null))
       .then(d => { 
+        if (!d) return;
+        if (d.user?.role === 'intern' || d.user?.role === 'user') {
+          router.replace('/intern/dashboard');
+          return;
+        }
         if (d.user) setUser(d.user);
         if (d.internProfile) setInternProfile(d.internProfile);
         if (d.staffProfile) setStaffProfile(d.staffProfile);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (user?.role === 'staff' && staffProfile?.department === 'Support + Marketing') {
       setFetchingProjects(true);
       fetch('/api/staff-projects')
-        .then(r => r.json())
+        .then(r => (r.ok ? r.json() : null))
         .then(d => {
-          if (d.projects) setProjects(d.projects);
+          if (d?.projects) setProjects(d.projects);
         })
         .catch(console.error)
         .finally(() => setFetchingProjects(false));
@@ -79,7 +86,7 @@ export default function UserDashboardPage() {
       fd.append('file', file);
       
       const res = await fetch('/api/staff-projects', { method: 'POST', body: fd });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({}));
       
       if (!res.ok) throw new Error(json.error || 'Failed to upload');
       
@@ -137,8 +144,7 @@ export default function UserDashboardPage() {
       )}
 
       {/* Quick Nav */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <QuickLinkCard href="/community"     icon={Globe}          title="Community"      desc="Engage with the organization feed."  color="#3b82f6" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <QuickLinkCard href="/interns"       icon={Users}          title="Directory"      desc="Browse public profiles."             color="#22d3ee" />
         <QuickLinkCard href="/profile"       icon={FileText}       title="My Profile"     desc="Update your professional details."   color="#10b981" />
         <QuickLinkCard href="/notifications" icon={Bell}           title="Notifications"  desc="Check your latest updates."         color="#f59e0b" />

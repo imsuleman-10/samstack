@@ -25,6 +25,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Application already pending." }, { status: 400 });
     }
 
+    // Check completed tasks count (must be at least 3 completed tasks)
+    // Uses "task_progress" collection — same collection the tasks API writes to
+    const submissionsSnap = await adminDb
+      .collection("task_progress")
+      .where("intern_id", "==", session.id)
+      .where("status", "==", "completed")
+      .get();
+
+    const completedCount = submissionsSnap.size;
+    if (completedCount < 3) {
+      return NextResponse.json(
+        { error: `You must complete at least 3 tasks before applying for a certificate. Current completed: ${completedCount}/3` },
+        { status: 400 }
+      );
+    }
+
     // Update status to pending
     await profileRef.update({
       certificate_status: 'pending',

@@ -4,6 +4,7 @@ import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
 import type { PlatformUser, InternProfile, MentorProfile, StaffProfile } from "@/lib/firestore-schema";
 
+
 // ─── GET /api/profile — own profile ──────────────────────────────────────────
 export async function GET(req: NextRequest) {
   const auth = await requireAuth(req);
@@ -42,7 +43,7 @@ export async function PATCH(req: NextRequest) {
   // Fields a user is allowed to update on their own profile
   const allowedUserFields: (keyof PlatformUser)[] = [
     "full_name", "bio", "username", "city", "country", "address",
-    "gender", "region", "language", "date_of_birth", "phone", "skills", "social_links", "visibility",
+    "gender", "age", "region", "language", "date_of_birth", "phone", "skills", "social_links", "visibility",
   ];
 
   const userUpdates: Record<string, unknown> = { updated_at: new Date().toISOString() };
@@ -55,7 +56,7 @@ export async function PATCH(req: NextRequest) {
   // Update role-specific profile fields
   const now = new Date().toISOString();
 
-  if (session.role === "intern" && body.internProfile) {
+  if ((session.role === "intern" || session.role === "user") && body.internProfile) {
     const allowedInternFields: (keyof InternProfile)[] = [
       "university", "high_education", "current_education", "degree", "semester", "cgpa", "department",
       "position", "skills", "joining_date", "end_date", "roll_number", "track_selected",
@@ -71,6 +72,10 @@ export async function PATCH(req: NextRequest) {
       await internRef.update(internUpdates);
     } else {
       await internRef.set({ user_id: session.id, ...internUpdates, created_at: now });
+    }
+
+    if (session.role === "user") {
+      await adminDb.collection(FS.USERS).doc(session.id).update({ role: "intern", updated_at: now }).catch(() => {});
     }
   }
 

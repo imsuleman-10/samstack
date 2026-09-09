@@ -3,13 +3,8 @@ import { adminDb } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
 import type { CompanyProject } from "@/lib/firestore-schema";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseUpload } from "@/lib/supabase";
 import { v4 as uuidv4 } from "uuid";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // GET /api/staff-projects - Get all projects for the logged-in staff member
 export async function GET(req: NextRequest) {
@@ -68,23 +63,13 @@ export async function POST(req: NextRequest) {
     const ext = file.name.split('.').pop() || 'bin';
     const fileName = `projects/${session.id}-${Date.now()}.${ext}`;
 
-    // Upload to Supabase Storage 'resumes' bucket (acting as general public bucket)
-    const { error: uploadError } = await supabase.storage
-      .from("resumes")
-      .upload(fileName, rawBuffer, {
-        contentType: file.type || "application/octet-stream",
-        upsert: true,
-      });
-
-    if (uploadError) {
-      throw new Error("Supabase upload failed: " + uploadError.message);
-    }
-
-    const { data: publicUrlData } = supabase.storage
-      .from("resumes")
-      .getPublicUrl(fileName);
-      
-    const publicUrl = publicUrlData.publicUrl;
+    // Upload to 'resumes' bucket with auto-retry and local fallback
+    const publicUrl = await supabaseUpload({
+      bucket: "resumes",
+      path: fileName,
+      body: rawBuffer,
+      contentType: file.type || "application/octet-stream",
+    });
 
     const newProject: CompanyProject = {
       id: uuidv4(),

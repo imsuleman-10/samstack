@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -101,7 +101,7 @@ const team = [
   {
     name: "Suleman Zaheer",
     role: "System Architecture & AI",
-    image: "/suleman-zaheer-software-engineer-samstack-tech.jpg",
+    image: "/images/image.png",
     badge: "Founder & Lead",
     badgeBg: "bg-blue-500/20 border-blue-500/30",
     badgeText: "text-blue-400",
@@ -253,7 +253,7 @@ export default function AboutPage() {
               {/* Founder card */}
               <Link href="/team/suleman-zaheer" className="flex items-center gap-4 p-5 rounded-2xl bg-white/80 dark:bg-neutral-900 border border-slate-100 dark:border-neutral-800 shadow-sm hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-lg transition-all group">
                 <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-brand-200 dark:border-brand-800 shrink-0">
-                  <Image src="/suleman-zaheer-software-engineer-samstack-tech.jpg" alt="Suleman Zaheer - Founder" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover object-top" />
+                  <Image src="/images/image.png" alt="Suleman Zaheer - Founder" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover object-top" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">Suleman Zaheer</div>

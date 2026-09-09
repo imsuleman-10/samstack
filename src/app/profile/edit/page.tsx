@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { PlatformUser, InternProfile, MentorProfile } from '@/lib/firestore-schema';
 import { compressImage, blobToFile } from '@/lib/compressImage';
+import { tracks } from '@/lib/curriculum';
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div>
@@ -44,8 +45,11 @@ export default function ProfileEditPage() {
     async function fetchProfile() {
       try {
         const res = await fetch('/api/profile');
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => null);
+          throw new Error(errJson?.error || `Failed to load profile (${res.status})`);
+        }
         const json = await res.json();
-        if (!res.ok) throw new Error(json.error || 'Failed to load profile');
 
         setData({ user: json.user, internProfile: json.internProfile, mentorProfile: json.mentorProfile });
         setForm({
@@ -57,6 +61,7 @@ export default function ProfileEditPage() {
           region: json.user.region || '',
           language: json.user.language || '',
           gender: json.user.gender || '',
+          age: json.user.age ?? '',
           skills: json.user.skills || [],
           visibility: json.user.visibility || 'organization',
           social_links: json.user.social_links || {},
@@ -112,7 +117,7 @@ export default function ProfileEditPage() {
       const fd = new FormData();
       fd.append('avatar', file);
       const res = await fetch('/api/upload/avatar', { method: 'POST', body: fd });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || 'Upload failed');
       setData(prev => prev ? { ...prev, user: { ...prev.user, avatar_url: json.avatar_url } } : null);
       toast.success('Profile photo updated successfully.');
@@ -133,7 +138,7 @@ export default function ProfileEditPage() {
       const fd = new FormData();
       fd.append('resume', file);
       const res = await fetch('/api/upload/resume', { method: 'POST', body: fd });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || 'Upload failed');
       
       setInternForm((prev: any) => ({ ...prev, resume_url: json.resume_url }));
@@ -165,7 +170,7 @@ export default function ProfileEditPage() {
 
     try {
       const payload: any = { ...form };
-      if (data?.user.role === 'intern') payload.internProfile = internForm;
+      if (data?.user.role === 'intern' || data?.user.role === 'user') payload.internProfile = internForm;
       if (data?.user.role === 'mentor') payload.mentorProfile = mentorForm;
 
       const res = await fetch('/api/profile', {
@@ -173,7 +178,7 @@ export default function ProfileEditPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || 'Failed to save');
 
       setSuccess(true);
@@ -256,6 +261,17 @@ export default function ProfileEditPage() {
                 <option value="Prefer not to say" className="bg-gray-900">Prefer not to say</option>
               </select>
             </Field>
+            <Field label="Age">
+              <input
+                type="number"
+                min="14"
+                max="100"
+                value={form.age}
+                onChange={e => setForm({ ...form, age: e.target.value })}
+                className={inputClass}
+                placeholder="e.g. 21"
+              />
+            </Field>
             <Field label="City">
               <input type="text" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} className={inputClass} />
             </Field>
@@ -334,18 +350,32 @@ export default function ProfileEditPage() {
         </div>
 
         {/* Intern-specific */}
-        {data.user.role === 'intern' && (
+        {(data.user.role === 'intern' || data.user.role === 'user') && (
           <div className="p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
             <h2 className="text-base font-semibold text-white mb-6">Internship Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Field label="College / University"><input type="text" value={internForm.university} onChange={e => setInternForm({ ...internForm, university: e.target.value })} className={inputClass} /></Field>
+              <div className="sm:col-span-2">
+                <Field label="Internship Track / Specialization">
+                  <select
+                    value={internForm.track_selected}
+                    onChange={e => setInternForm({ ...internForm, track_selected: e.target.value })}
+                    className={inputClass}
+                  >
+                    <option value="" className="bg-gray-900">Select Track</option>
+                    {Object.values(tracks).map(t => (
+                      <option key={t.id} value={t.id} className="bg-gray-900">{t.title}</option>
+                    ))}
+                  </select>
+                </Field>
+              </div>
+              <Field label="College / University"><input type="text" value={internForm.university} onChange={e => setInternForm({ ...internForm, university: e.target.value })} className={inputClass} placeholder="e.g. Stanford, FAST NUCES" /></Field>
               <Field label="High Education"><input type="text" value={internForm.high_education} onChange={e => setInternForm({ ...internForm, high_education: e.target.value })} className={inputClass} placeholder="e.g. A Levels, FSC" /></Field>
               <Field label="Current Education"><input type="text" value={internForm.current_education} onChange={e => setInternForm({ ...internForm, current_education: e.target.value })} className={inputClass} placeholder="e.g. BSCS, BBA" /></Field>
-              <Field label="Degree / Program"><input type="text" value={internForm.degree} onChange={e => setInternForm({ ...internForm, degree: e.target.value })} className={inputClass} /></Field>
-              <Field label="Semester / Year"><input type="text" value={internForm.semester} onChange={e => setInternForm({ ...internForm, semester: e.target.value })} className={inputClass} /></Field>
-              <Field label="CGPA"><input type="text" value={internForm.cgpa} onChange={e => setInternForm({ ...internForm, cgpa: e.target.value })} className={inputClass} /></Field>
-              <Field label="Department"><input type="text" value={internForm.department} onChange={e => setInternForm({ ...internForm, department: e.target.value })} className={inputClass} /></Field>
-              <Field label="Roll Number"><input type="text" value={internForm.roll_number} onChange={e => setInternForm({ ...internForm, roll_number: e.target.value })} className={inputClass} /></Field>
+              <Field label="Degree / Program"><input type="text" value={internForm.degree} onChange={e => setInternForm({ ...internForm, degree: e.target.value })} className={inputClass} placeholder="e.g. BS Computer Science" /></Field>
+              <Field label="Semester / Year"><input type="text" value={internForm.semester} onChange={e => setInternForm({ ...internForm, semester: e.target.value })} className={inputClass} placeholder="e.g. 5th Semester" /></Field>
+              <Field label="CGPA"><input type="text" value={internForm.cgpa} onChange={e => setInternForm({ ...internForm, cgpa: e.target.value })} className={inputClass} placeholder="e.g. 3.65" /></Field>
+              <Field label="Department"><input type="text" value={internForm.department} onChange={e => setInternForm({ ...internForm, department: e.target.value })} className={inputClass} placeholder="e.g. Computer Science & Software Engineering" /></Field>
+              <Field label="Roll Number"><input type="text" value={internForm.roll_number} onChange={e => setInternForm({ ...internForm, roll_number: e.target.value })} className={inputClass} placeholder="Assigned Roll Number" /></Field>
             </div>
 
             {/* Resume Upload (Interns Only) */}
@@ -468,8 +498,8 @@ export default function ProfileEditPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ newPassword: pwForm.newPassword }),
               });
-              const d = await res.json();
-              if (!res.ok) throw new Error(d.error);
+              const d = await res.json().catch(() => ({}));
+              if (!res.ok) throw new Error(d.error || 'Failed to change password');
               toast.success('Password changed successfully!');
               setPwForm({ newPassword: '', confirmPassword: '' });
             } catch (err: any) {

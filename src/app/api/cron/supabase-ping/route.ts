@@ -1,30 +1,30 @@
 /**
  * GET /api/cron/supabase-ping
  *
- * A lightweight keep-alive endpoint for the Supabase free-tier project.
- * Supabase pauses free projects after ~1 week of inactivity, causing
- * "fetch failed" errors on the first upload after a quiet period.
- *
- * This route performs a cheap storage list (1 item) to wake the project.
- *
- * Schedule this via an external cron service (e.g. cron-job.org, GitHub Actions,
- * or Vercel Cron) to run every 3-5 days to prevent the project from pausing.
- *
- * Secure with CRON_SECRET env var — set it to any random secret string.
- * The caller must send: Authorization: Bearer <CRON_SECRET>
+ * Dedicated keep-alive endpoint for the Supabase project.
+ * Scheduled via Vercel Cron (vercel.json) or external services
+ * to ensure Supabase NEVER pauses due to 7 days of inactivity.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { pingSupabase } from "@/lib/supabase";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  // Security: check bearer token to prevent abuse
+  // Allow if called by Vercel Cron
+  const isVercelCron = request.headers.get("x-vercel-cron") !== null;
+
+  // Security check if CRON_SECRET is configured
   const secret = process.env.CRON_SECRET;
-  if (secret) {
+  if (secret && !isVercelCron) {
     const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${secret}`) {
+    const queryKey = request.nextUrl.searchParams.get("key");
+    const isAuthorized =
+      authHeader === `Bearer ${secret}` || queryKey === secret;
+
+    if (!isAuthorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
   }
@@ -37,18 +37,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         ok: false,
-        message: "Supabase ping failed — project may still be waking up. Try again in 30s.",
+        message: "Supabase ping returned failure — project is either paused or resolving DNS. If paused, restore from Supabase dashboard.",
         latencyMs,
         timestamp: new Date().toISOString(),
       },
-      { status: 503 }
+      { status: 200 } // Return 200 to prevent Vercel cron from failing completely
     );
   }
 
   return NextResponse.json({
     ok: true,
-    message: "Supabase is awake and responding.",
+    message: "Supabase is alive and active. Inactivity timer renewed successfully.",
     latencyMs,
     timestamp: new Date().toISOString(),
   });
+}
+
+export async function POST(request: NextRequest) {
+  return GET(request);
 }

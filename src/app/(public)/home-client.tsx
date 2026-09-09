@@ -39,7 +39,7 @@ const stats = [
 
 const defaultTeam = [
   {
-    image: "/suleman-zaheer-software-engineer-samstack-tech.jpg",
+    image: "/images/image.png",
     initials: "SZ",
     name: "Suleman Zaheer",
     role: "Founder & DevOps Lead",
@@ -101,6 +101,8 @@ export default function HomeClient() {
   const heroTextY  = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
+
   return (
     <div className="flex-1 w-full">
 
@@ -111,9 +113,20 @@ export default function HomeClient() {
         ref={heroRef}
         className="z-0 overflow-hidden relative min-h-[100dvh] w-full flex flex-col justify-center items-center pt-20 group/section"
       >
-        {/* No background image on section - clean solid background */}{/* Video */}
-        <div className="absolute inset-0">
-          <video preload="metadata" poster="/logo.png" autoPlay loop muted playsInline className="w-full h-full object-cover bg-zinc-950" src="/hero-video.mp4" />
+        {/* Video Background */}
+        <div className="absolute inset-0 bg-slate-950">
+          <video
+            preload="auto"
+            autoPlay
+            loop
+            muted
+            playsInline
+            onCanPlay={() => setHeroVideoReady(true)}
+            className={`w-full h-full object-cover transition-opacity duration-700 ${
+              heroVideoReady ? 'opacity-100' : 'opacity-40'
+            }`}
+            src="/hero-video.mp4"
+          />
           <div className="absolute inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-[2px]" />
           <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-slate-50 dark:from-black to-transparent" />
         </div>
@@ -438,13 +451,19 @@ export default function HomeClient() {
                 <div className="relative h-[440px] w-full flex flex-col justify-end rounded-[2rem] overflow-hidden group/card bg-neutral-900 border border-white/10 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-brand-500/20">
                   {/* Background Image / Placeholder */}
                   {member.image ? (
-                    <Image src={member.image} alt={member.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-700 group-hover/card:scale-110 opacity-60 group-hover/card:opacity-80" />
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover object-top transition-transform duration-700 group-hover/card:scale-105 opacity-80 group-hover/card:opacity-95"
+                    />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-black transition-transform duration-700 group-hover/card:scale-105" />
                   )}
 
-                  {/* Elegant Gradient overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-100" />
+                  {/* Elegant Gradient overlays (preserves face visibility) */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 group-hover/card:opacity-85 transition-opacity duration-500" />
                   
                   {/* Subtle Top Glow */}
                   <div className="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-brand-500/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-700" />
@@ -570,7 +589,7 @@ export default function HomeClient() {
               {/* Subtle gradient glow inside card */}
               
               <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex-shrink-0 shadow-xl border-2 border-slate-100 dark:border-neutral-800">
-                <Image src="/suleman-zaheer-software-engineer-samstack-tech.jpg" alt="Suleman Zaheer" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                <Image src="/images/image.png" alt="Suleman Zaheer" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               </div>
               
               <div className="space-y-5 text-center md:text-left relative z-10 pt-1">

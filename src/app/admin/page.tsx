@@ -41,25 +41,51 @@ export default function AdminDashboardPage() {
   const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
+    async function safeFetch(url: string, retries = 1): Promise<Response | null> {
+      try {
+        return await fetch(url);
+      } catch {
+        if (retries > 0 && !cancelled) {
+          await new Promise(r => setTimeout(r, 800));
+          return safeFetch(url, retries - 1);
+        }
+        return null;
+      }
+    }
+
     async function fetchData() {
       try {
+        // Fetch independently so one failure doesn't block the other
         const [statsRes, usersRes] = await Promise.all([
-          fetch('/api/admin/stats'),
-          fetch('/api/admin/users?limit=10'),
+          safeFetch('/api/admin/stats'),
+          safeFetch('/api/admin/users?limit=10'),
         ]);
-        const [statsData, usersData]: any[] = await Promise.all([
-          statsRes.ok ? statsRes.json() : {},
-          usersRes.ok ? usersRes.json() : {},
-        ]);
-        if (usersData?.users) setRecentUsers(usersData.users);
-        if (statsData.total !== undefined) setStats(statsData);
+
+        if (cancelled) return;
+
+        if (statsRes?.ok) {
+          try {
+            const statsData = await statsRes.json();
+            if (!cancelled && statsData.total !== undefined) setStats(statsData);
+          } catch { /* ignore parse error */ }
+        }
+
+        if (usersRes?.ok) {
+          try {
+            const usersData = await usersRes.json();
+            if (!cancelled && usersData?.users) setRecentUsers(usersData.users);
+          } catch { /* ignore parse error */ }
+        }
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        if (!cancelled) console.error('Error fetching dashboard data:', error);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     fetchData();
+    return () => { cancelled = true; };
   }, []);
 
   // Fetch pending certificate requests

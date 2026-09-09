@@ -58,7 +58,7 @@ export function InternDrawer({
 }: InternDrawerProps) {
   const track = tracks[intern.trackSelected];
   const sc = statusConfig[intern.status] ?? statusConfig.APPLIED;
-  const initial = intern.fullName.charAt(0).toUpperCase();
+  const initial = (intern.fullName || intern.name || intern.email || "U").charAt(0).toUpperCase();
 
   return (
     <>
@@ -78,7 +78,7 @@ export function InternDrawer({
               {initial}
             </div>
             <div>
-              <div className="font-bold text-sm text-slate-900 dark:text-white leading-tight">{intern.fullName}</div>
+              <div className="font-bold text-sm text-slate-900 dark:text-white leading-tight">{intern.fullName || intern.name || "Intern"}</div>
               <div className="text-[11px] font-mono text-brand-500 dark:text-brand-400">{intern.rollNumber}</div>
             </div>
           </div>

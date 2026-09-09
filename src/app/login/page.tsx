@@ -20,7 +20,7 @@ const firebaseErrorMessage = (code: string): string => {
     'auth/invalid-credential':       'Invalid email or password. Please check and try again.',
     'auth/wrong-password':           'Incorrect password. Please try again.',
     'auth/user-not-found':           'No account found with this email. Please sign up.',
-    'auth/email-already-in-use':     'This email is already registered. Please log in instead.',
+    'auth/email-already-in-use':     '__EMAIL_EXISTS__',
     'auth/weak-password':            'Password is too weak. Please use at least 6 characters.',
     'auth/invalid-email':            'Please enter a valid email address.',
     'auth/user-disabled':            'This account has been disabled. Contact support.',
@@ -31,7 +31,7 @@ const firebaseErrorMessage = (code: string): string => {
     'auth/invalid-action-code':      'Invalid or already used reset link.',
     'auth/requires-recent-login':    'Please log out and log in again before making this change.',
     'auth/operation-not-allowed':    'This sign-in method is not enabled. Contact support.',
-    'auth/account-exists-with-different-credential': 'An account with this email already exists with a different sign-in method.',
+    'auth/account-exists-with-different-credential': '__EMAIL_EXISTS__',
     'auth/unauthorized-domain':      'This domain/IP is not authorized for Google Sign-In. Please access the app via localhost:3000 to use Google Login.',
   };
   return map[code] || code;
@@ -56,7 +56,7 @@ export default function LoginPage() {
   const [sigPw, setSigPw] = useState('');
   const [showSigPw, setShowSigPw] = useState(false);
   const [sigGender, setSigGender] = useState('Male');
-  const [sigTrack, setSigTrack] = useState('Frontend');
+  const [sigTrack, setSigTrack] = useState('WEB_DEV');
 
   // Forgot Password
   const [forgotId, setForgotId] = useState('');
@@ -69,6 +69,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [emailExists, setEmailExists] = useState(false);
   
   // Rate limiting countdown
   const [countdown, setCountdown] = useState(0);
@@ -81,20 +82,20 @@ export default function LoginPage() {
     return () => clearTimeout(timer);
   }, [countdown]);
 
-  const clear = () => { setError(''); setSuccess(''); };
+  const clear = () => { setError(''); setSuccess(''); setEmailExists(false); };
   const switchMode = (m: Mode) => { setMode(m); clear(); setForgotSent(false); setOtp(''); };
 
-  const verifyOnServer = async (user: any, n?: string, p?: string, e?: string) => {
+  const verifyOnServer = async (user: any, n?: string, p?: string, e?: string, track?: string, gender?: string) => {
     const token = await user.getIdToken();
     const res = await fetch('/api/auth/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, fullName: n, phone: p, email: e }),
+      body: JSON.stringify({ token, fullName: n, phone: p, email: e, track, gender }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'Server error');
-    // Role-based redirect is driven by the server — no role logic needed here
-    router.push(data.dashboard || '/dashboard');
+    // Role-based redirect is driven by the server
+    router.push(data.dashboard || '/intern/dashboard');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -139,8 +140,12 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: sigEmail.trim() }),
       });
-      const chkData = await chk.json();
-      if (!chk.ok) { setError(chkData.error || 'Check failed.'); return; }
+      const chkData = await chk.json().catch(() => ({}));
+      if (!chk.ok) {
+        // Show email-already-exists inline prompt with Login button
+        setEmailExists(true);
+        return;
+      }
 
       // Only email flow supported now
       const res = await fetch('/api/auth/send-email-otp', {
@@ -148,13 +153,18 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: sigEmail.trim() })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to send verification code');
       setSuccess(`Verification code sent to ${sigEmail}`);
       setMode('OTP_SIGNUP');
     } catch (err: any) {
       if (err.code === 'auth/too-many-requests') setCountdown(60);
-      setError(firebaseErrorMessage(err.code) || err.message || 'Failed to send verification code.');
+      // Check if firebase threw email-already-in-use
+      if (err.code === 'auth/email-already-in-use' || err.code === 'auth/account-exists-with-different-credential') {
+        setEmailExists(true);
+      } else {
+        setError(firebaseErrorMessage(err.code) || err.message || 'Failed to send verification code.');
+      }
     } finally { setLoading(false); }
   };
 
@@ -169,8 +179,8 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: sigEmail.trim(), otp })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Invalid verification code');
       
       // Create intern account using the new API
       const signupRes = await fetch('/api/auth/intern-signup', {
@@ -184,8 +194,16 @@ export default function LoginPage() {
           track: sigTrack,
         })
       });
-      const signupData = await signupRes.json();
-      if (!signupRes.ok) throw new Error(signupData.error || 'Failed to create intern account.');
+      const signupData = await signupRes.json().catch(() => ({}));
+      if (!signupRes.ok) {
+        // If account already existed at intern-signup stage, show login prompt
+        if (signupData.error?.toLowerCase().includes('already') || signupData.error?.toLowerCase().includes('exists')) {
+          setEmailExists(true);
+          setMode('SIGNUP');
+          return;
+        }
+        throw new Error(signupData.error || 'Failed to create intern account.');
+      }
       
       // Small delay to allow Firebase Auth to propagate the new user before sign-in
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -219,8 +237,8 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: id })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to send reset code');
       
       setForgotSent(true);
       setSuccess(`Verification code sent to ${id}`);
@@ -242,8 +260,8 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotId.trim(), otp, isPasswordReset: true })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Invalid verification code');
       
       setResetToken(data.resetToken);
       setMode('NEW_PASSWORD');
@@ -266,8 +284,8 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotId.trim(), newPassword, resetToken })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to update password');
 
       setSuccess('Password updated successfully! You can now sign in.');
       setResetToken('');
@@ -281,8 +299,26 @@ export default function LoginPage() {
     setLoading(true); clear();
     try {
       const cred = await signInWithPopup(auth, new GoogleAuthProvider());
-      await verifyOnServer(cred.user, cred.user.displayName || 'Google User', undefined, cred.user.email || undefined);
-    } catch (err: any) { setError(firebaseErrorMessage(err.code) || err.message || 'Google login failed.'); }
+      await verifyOnServer(
+        cred.user,
+        cred.user.displayName || 'Google User',
+        undefined,
+        cred.user.email || undefined,
+        sigTrack,
+        sigGender
+      );
+    } catch (err: any) {
+      if (err.code === 'auth/email-already-in-use' || err.code === 'auth/account-exists-with-different-credential') {
+        setEmailExists(true);
+        if (mode === 'SIGNUP') {
+          // Stay on signup, show the inline prompt
+        } else {
+          setError('An account with this email already exists. Please sign in instead.');
+        }
+      } else {
+        setError(firebaseErrorMessage(err.code) || err.message || 'Google login failed.');
+      }
+    }
     finally { setLoading(false); }
   };
 
@@ -348,6 +384,40 @@ export default function LoginPage() {
               ))}
             </div>
           )}
+
+          {/* Email Already Exists Banner */}
+          <AnimatePresence>
+            {emailExists && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-5 overflow-hidden"
+              >
+                <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-700/50 flex flex-col gap-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <span className="text-amber-500 text-lg leading-none mt-0.5">⚠️</span>
+                    <div>
+                      <p className="text-amber-800 dark:text-amber-300 text-sm font-bold leading-snug">
+                        Is Gmail pe pehle se account hai
+                      </p>
+                      <p className="text-amber-700 dark:text-amber-400 text-xs font-medium mt-0.5">
+                        This email is already registered. Please sign in instead.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => switchMode('LOGIN')}
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-white text-xs font-extrabold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 shadow-sm"
+                  >
+                    <ArrowRight className="w-3.5 h-3.5" />
+                    Sign In Instead
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Alert */}
           <AnimatePresence>
@@ -466,8 +536,13 @@ export default function LoginPage() {
                   <div>
                     <label className={lbl}>Track</label>
                     <select value={sigTrack} onChange={e => setSigTrack(e.target.value)} className={inp} required>
-                      <option value="Frontend">Frontend</option>
-                      <option value="Backend">Backend</option>
+                      <option value="WEB_DEV">Web Development Basics (HTML/CSS/JS)</option>
+                      <option value="REACT">React.js Basics</option>
+                      <option value="PYTHON">Python Development Basics</option>
+                      <option value="CPP">C++ Programming Basics</option>
+                      <option value="UI_UX">Basic UI/UX Design</option>
+                      <option value="NEXT_JS">Next.js Fundamentals</option>
+                      <option value="MERN">MERN Stack Introduction</option>
                     </select>
                   </div>
                 </div>

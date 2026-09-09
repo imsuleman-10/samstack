@@ -9,10 +9,6 @@ export const FS = {
   STAFF_PROFILES: "staff_profiles",
   MEMBER_PROFILES: "member_profiles",
   MENTOR_ASSIGNMENTS: "mentor_assignments",
-  POSTS: "community_posts",
-  POST_LIKES: "post_likes",
-  POST_COMMENTS: "post_comments",
-  FOLLOWS: "follows",
   NOTIFICATIONS: "notifications",
   AUDIT_LOGS: "audit_logs",
   COMPANY_PROJECTS: "company_projects",
@@ -36,6 +32,7 @@ export interface PlatformUser {
   phone?: string | null;
   avatar_url?: string | null;
   date_of_birth?: string | null;
+  age?: number | string | null;
   gender?: string | null;
   address?: string | null;
   city?: string | null;
@@ -136,46 +133,6 @@ export interface MentorAssignment {
   updated_at: string;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Community
-// ─────────────────────────────────────────────────────────────────────────────
-
-export type PostVisibility = "organization" | "public" | "private";
-
-export interface CommunityPost {
-  id: string;
-  author_id: string;
-  content: string;
-  media_url?: string | null;
-  visibility: PostVisibility;
-  like_count: number;
-  comment_count: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface PostLike {
-  id: string;
-  post_id: string;
-  user_id: string;
-  created_at: string;
-}
-
-export interface PostComment {
-  id: string;
-  post_id: string;
-  user_id: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Follow {
-  id: string;
-  follower_id: string;
-  following_id: string;
-  created_at: string;
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Notifications

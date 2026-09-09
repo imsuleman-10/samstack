@@ -10,11 +10,14 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
     async function fetchUser() {
       try {
         const res = await fetch('/api/profile');
+        if (!mounted) return;
         if (res.ok) {
           const data = await res.json();
+          if (!mounted) return;
           setUser(data.user);
           setInternProfile(data.internProfile);
           setMentorProfile(data.mentorProfile);
@@ -24,15 +27,17 @@ export function useAuth() {
           setMentorProfile(null);
         }
       } catch (err) {
+        if (!mounted) return;
         setUser(null);
         setInternProfile(null);
         setMentorProfile(null);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     }
 
     fetchUser();
+    return () => { mounted = false; };
   }, []);
 
   return { user, internProfile, mentorProfile, loading };

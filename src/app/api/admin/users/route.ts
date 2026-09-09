@@ -146,11 +146,41 @@ export async function POST(req: NextRequest) {
 
     await auditLog(session.id, "CREATE_USER", fbUid, { role, email });
     return NextResponse.json({ success: true, id: fbUid }, { status: 201 });
-  } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : "Unknown error";
-    console.error("Create user error:", msg);
-    if (msg.includes("email-already-exists"))
-      return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
-    return NextResponse.json({ error: "Failed to create user." }, { status: 500 });
+  } catch (error: any) {
+    const msg = error?.message || "Unknown error";
+    const code = error?.code || "";
+    console.error("Create user error:", code, msg);
+
+    if (
+      code === "auth/email-already-exists" ||
+      code === "auth/email-already-in-use" ||
+      msg.toLowerCase().includes("email-already-exists") ||
+      msg.toLowerCase().includes("already in use") ||
+      msg.toLowerCase().includes("already exists")
+    ) {
+      return NextResponse.json(
+        { error: "An account with this email address already exists." },
+        { status: 409 }
+      );
+    }
+
+    if (code === "auth/invalid-password" || code === "auth/weak-password" || msg.toLowerCase().includes("password")) {
+      return NextResponse.json(
+        { error: msg || "Password must be at least 6 characters long." },
+        { status: 400 }
+      );
+    }
+
+    if (code === "auth/invalid-email" || msg.toLowerCase().includes("invalid email")) {
+      return NextResponse.json(
+        { error: "The provided email address is invalid." },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: msg || "Failed to create user." },
+      { status: 400 }
+    );
   }
 }

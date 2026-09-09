@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 
@@ -143,12 +143,6 @@ const organizationJsonLd = {
   "areaServed": [{ "@type": "Place", "name": "Worldwide" }],
   "serviceType": ["Web Application Development", "Enterprise Software", "AI & Machine Learning", "DevOps & Cloud Infrastructure", "UI/UX Design", "Mobile App Development"],
   "priceRange": "$$",
-  "founder": {
-    "@type": "Person",
-    "name": "Suleman Zaheer",
-    "jobTitle": "Founder & Lead Engineer",
-    "url": "https://samstack-tech.vercel.app/team/suleman-zaheer"
-  },
   "employees": [
     {
       "@type": "Person",
@@ -162,9 +156,6 @@ const organizationJsonLd = {
       "jobTitle": "Frontend Engineer",
       "url": "https://samstack-tech.vercel.app/team/saqib-javed"
     }
-  ],
-  "sameAs": [
-    "https://github.com/imsuleman-10"
   ],
   "openingHours": "Mo-Su 00:00-23:59",
   "aggregateRating": {
@@ -224,7 +215,7 @@ const personJsonLd = {
   "familyName": "Zaheer",
   "alternateName": "Suleman Zaheer Mughal",
   "url": "https://suleman-zaheer.vercel.app",
-  "image": "https://samstack-tech.vercel.app/suleman-zaheer-software-engineer-samstack-tech.jpg",
+  "image": "https://samstack-tech.vercel.app/images/image.png",
   "jobTitle": "Full Stack Engineer & DevOps Lead",
   "description": "Founder of SAMStack Tech — an elite software engineering studio based in Lahore, Pakistan. Specializes in Next.js, DevOps, cloud architecture, and AI agent systems.",
   "telephone": "+923285778715",

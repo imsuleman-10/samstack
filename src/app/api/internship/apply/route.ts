@@ -85,6 +85,25 @@ export async function POST(request: NextRequest) {
 
     const adb = createAdminDb(adminDb!);
 
+    // ─── Enforce 1 account per email / prevent duplicate signups ───
+    if (email) {
+      const existingEmailUser = await adb.users.getByEmail(email.trim().toLowerCase());
+      if (existingEmailUser && existingEmailUser.id !== firebaseUid) {
+        return NextResponse.json(
+          { error: "Already an account exists with this email. Please login instead." },
+          { status: 409 }
+        );
+      }
+    }
+
+    const existingProfile = await adb.internProfiles.get(firebaseUid);
+    if (existingProfile) {
+      return NextResponse.json(
+        { error: "An application has already been submitted for this account. Please login to access your portal." },
+        { status: 409 }
+      );
+    }
+
     // ─── Upsert user in Firestore ───
     const existingUser = await adb.users.get(firebaseUid);
     if (!existingUser) {

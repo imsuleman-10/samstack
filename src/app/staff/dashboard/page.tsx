@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Users, Globe, FileText, Bell, Loader2, Shield } from 'lucide-react';
+import { Users, FileText, Bell, Loader2, Shield } from 'lucide-react';
 import Link from 'next/link';
 import type { PlatformUser } from '@/lib/firestore-schema';
 
@@ -33,8 +33,8 @@ export default function StaffDashboardPage() {
 
   useEffect(() => {
     fetch('/api/profile')
-      .then(r => r.json())
-      .then(d => { if (d.user) setUser(d.user); })
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => { if (d?.user) setUser(d.user); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -50,7 +50,7 @@ export default function StaffDashboardPage() {
     <div>
       <PageHeader
         title={loading ? 'Staff Dashboard' : `${greeting()}, ${user?.full_name?.split(' ')[0] ?? 'Staff'}!`}
-        description="Your staff workspace — user directory, community and profile tools."
+        description="Your staff workspace — user directory and profile tools."
       />
 
       {/* Quick Stats */}
@@ -69,9 +69,8 @@ export default function StaffDashboardPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <QuickLinkCard href="/admin/users"   icon={Users}    title="User Directory"  desc="Browse platform users and profiles."    color="#3b82f6" />
-        <QuickLinkCard href="/community"     icon={Globe}    title="Community"       desc="Engage with the organization feed."     color="#22d3ee" />
         <QuickLinkCard href="/profile"       icon={FileText} title="My Profile"      desc="Update your professional details."      color="#10b981" />
         <QuickLinkCard href="/notifications" icon={Bell}     title="Notifications"   desc="Check your latest updates."            color="#f59e0b" />
       </div>

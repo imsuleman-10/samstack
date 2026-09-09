@@ -108,8 +108,11 @@ export default function InternProfilePage({ params }: { params: Promise<{ id: st
     (async () => {
       try {
         const res = await fetch(`/api/interns/${id}`);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Failed to load profile');
+        }
         const json = await res.json();
-        if (!res.ok) throw new Error(json.error || 'Failed to load profile');
         setData(json);
       } catch (err: any) {
         setError(err.message);

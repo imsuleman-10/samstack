@@ -78,10 +78,10 @@ export const InternTable = React.memo(function InternTable({
                 <td className="py-5 px-6">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500/20 to-indigo-500/20 border border-brand-500/10 flex items-center justify-center text-sm font-bold text-brand-600 dark:text-brand-400 shrink-0">
-                      {intern.fullName.charAt(0).toUpperCase()}
+                      {(intern.fullName || intern.name || intern.email || "U").charAt(0).toUpperCase()}
                     </div>
                     <div className="space-y-0.5">
-                      <div className="font-bold text-slate-900 dark:text-white text-sm leading-tight">{intern.fullName}</div>
+                      <div className="font-bold text-slate-900 dark:text-white text-sm leading-tight">{intern.fullName || intern.name || "Intern"}</div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5 flex-wrap">
                         <span className="text-brand-600 dark:text-brand-400 font-semibold">{intern.rollNumber}</span>
                         <span className="text-slate-300 dark:text-white/20">•</span>

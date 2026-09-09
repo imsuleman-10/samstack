@@ -5,7 +5,7 @@ import { FS } from "@/lib/firestore-schema";
 import { generateCertificatePDF, generateOfferLetterPDF } from "@/lib/pdfTemplates";
 
 export async function GET(req: NextRequest) {
-  const auth = await requireAuth(req, ["intern"]);
+  const auth = await requireAuth(req, ["intern", "user"]);
   if (isAuthError(auth)) return auth;
   const { session } = auth;
   if (!adminDb) return NextResponse.json({ error: "DB not available" }, { status: 500 });
@@ -14,21 +14,39 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get("type");
 
   try {
-    const [userSnap, profileSnap] = await Promise.all([
-      adminDb.collection(FS.USERS).doc(session.id).get(),
-      adminDb.collection(FS.INTERN_PROFILES).doc(session.id).get(),
-    ]);
+    const userSnap = await adminDb.collection(FS.USERS).doc(session.id).get();
+    let profileSnap = await adminDb.collection(FS.INTERN_PROFILES).doc(session.id).get();
 
-    if (!userSnap.exists || !profileSnap.exists) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    if (!userSnap.exists) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const userData = userSnap.data();
+
+    // If intern profile doc does not exist yet (e.g. Google sign-in), create default
+    if (!profileSnap.exists) {
+      const now = new Date().toISOString();
+      const defaultTrack = userData?.track || "WEB_DEV";
+      const rollNumber = `SAM-WD-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+      
+      const newProfileData = {
+        user_id: session.id,
+        track_selected: defaultTrack,
+        roll_number: rollNumber,
+        certificate_status: null,
+        offer_letter_sent: false,
+        created_at: now,
+        updated_at: now,
+      };
+      await adminDb.collection(FS.INTERN_PROFILES).doc(session.id).set(newProfileData);
+      profileSnap = await adminDb.collection(FS.INTERN_PROFILES).doc(session.id).get();
+    }
+
     const profileData = profileSnap.data();
 
-    const fullName = userData?.full_name || "Intern";
-    const track = profileData?.track_selected || "Engineering";
-    const rollNumber = profileData?.roll_number || "PENDING";
+    const fullName = userData?.full_name || session.email?.split('@')[0] || "Intern";
+    const track = profileData?.track_selected || userData?.track || "Web Development";
+    const rollNumber = profileData?.roll_number || `SAM-IN-${session.id.slice(0, 6).toUpperCase()}`;
     const certificateId = profileData?.certificate_id || rollNumber;
     const certificateStatus = profileData?.certificate_status || "pending";
     const date = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });

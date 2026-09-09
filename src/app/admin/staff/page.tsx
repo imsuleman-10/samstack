@@ -151,8 +151,8 @@ export default function AdminStaffPage() {
             key: 'joined',
             label: 'Joined',
             render: (u) => (
-              <span className="text-gray-400 text-sm">
-                {new Date(u.created_at).toLocaleDateString()}
+              <span suppressHydrationWarning className="text-gray-400 text-sm">
+                {u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}
               </span>
             ),
           },

@@ -33,17 +33,16 @@ const PROTECTED_ROUTES: RouteRule[] = [
   { prefix: "/api/mentor", allowedRoles: ["mentor", "admin"], isPage: false },
 
   // Intern pages & API
-  { prefix: "/intern", allowedRoles: ["intern", "admin"], isPage: true },
-  { prefix: "/api/intern", allowedRoles: ["intern", "admin"], isPage: false },
+  { prefix: "/intern", allowedRoles: ["intern", "user", "admin"], isPage: true },
+  { prefix: "/api/intern", allowedRoles: ["intern", "user", "admin"], isPage: false },
 
   // Staff pages
   { prefix: "/staff", allowedRoles: ["staff", "admin"], isPage: true },
   { prefix: "/api/staff", allowedRoles: ["staff", "admin"], isPage: false },
 
-  // General authenticated areas (all roles)
-  { prefix: "/dashboard", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: true },
+  // General authenticated areas
+  { prefix: "/dashboard", allowedRoles: ["admin", "mentor", "staff", "member"], isPage: true },
   { prefix: "/profile", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: true },
-  { prefix: "/community", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: true },
   { prefix: "/interns", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: true },
   { prefix: "/mentors", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: true },
 
@@ -51,7 +50,6 @@ const PROTECTED_ROUTES: RouteRule[] = [
   { prefix: "/api/profile", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
   { prefix: "/api/interns", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
   { prefix: "/api/mentors", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
-  { prefix: "/api/community", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
   { prefix: "/api/notifications", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
   { prefix: "/api/upload", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
   { prefix: "/api/dashboard", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
@@ -112,7 +110,7 @@ export async function middleware(request: NextRequest) {
         intern: "/intern/dashboard",
         staff: "/staff/dashboard",
         member: "/dashboard",
-        user: "/dashboard",
+        user: "/intern/dashboard",
       };
       return NextResponse.redirect(new URL(dashMap[session.role] ?? "/dashboard", request.url));
     }
@@ -134,13 +132,11 @@ export const config = {
     "/api/staff/:path*",
     "/dashboard/:path*",
     "/profile/:path*",
-    "/community/:path*",
     "/interns/:path*",
     "/mentors/:path*",
     "/api/profile/:path*",
     "/api/interns/:path*",
     "/api/mentors/:path*",
-    "/api/community/:path*",
     "/api/notifications/:path*",
     "/api/upload/:path*",
     "/api/dashboard/:path*",

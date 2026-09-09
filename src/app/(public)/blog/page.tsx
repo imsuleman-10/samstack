@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -20,7 +20,7 @@ import { blogPosts, getFeaturedPost } from "@/lib/data/blog-posts";
 const tags = ["All Logs", "Next.js", "DevOps", "Serverless", "AI & Agents", "Architecture", "TypeScript"];
 
 const getAuthorImage = (name: string) => {
-  if (name.includes("Suleman")) return "/suleman-zaheer-software-engineer-samstack-tech.jpg";
+  if (name.includes("Suleman")) return "/images/image.png";
   if (name.includes("Abdullah")) return "/syed-abdullah-software-engineer-samstack-tech.png";
   if (name.includes("Saqib")) return "/saqib-javed-software-engineer-samstack-tech.jpg";
   return null;

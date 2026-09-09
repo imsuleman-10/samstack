@@ -3,6 +3,7 @@ import { adminDb } from "@/lib/firebase-admin";
 import { tracks } from "@/lib/curriculum";
 import { generateOfferLetterPDF, generateCertificatePDF } from "@/lib/pdfTemplates";
 import { sendOfferLetterEmail, sendCertificateEmail } from "@/lib/mailer";
+import { verifyAdminSession } from "@/lib/adminAuth";
 import crypto from "crypto";
 
 /**
@@ -15,6 +16,9 @@ import crypto from "crypto";
  */
 export async function POST(request: NextRequest) {
   try {
+    const admin = await verifyAdminSession();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
     const body = await request.json();
     const { rollNumber, type } = body;
 
