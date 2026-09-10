@@ -124,7 +124,8 @@ export default function SiteHeader() {
 
   useEffect(() => {
     setMounted(true);
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -133,6 +134,7 @@ export default function SiteHeader() {
   useEffect(() => {
     setMobileOpen(false);
     setOpenMenu(null);
+    setScrolled(window.scrollY > 20);
   }, [pathname]);
 
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -169,10 +171,17 @@ export default function SiteHeader() {
     setOpenMenu((prev) => (prev === label ? null : label));
   };
 
+  const isHomePage = pathname === "/" || !pathname;
+  const isTransparent = isHomePage && !scrolled && !openMenu && !mobileOpen;
+
   return (
     <>
       <header
-        className="fixed top-0 z-50 w-full transition-all duration-300 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-xl border-b border-slate-200/70 dark:border-neutral-800/70 shadow-sm"
+        className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+          isTransparent
+            ? "bg-transparent border-b border-transparent shadow-none"
+            : "bg-white/95 dark:bg-neutral-950/95 backdrop-blur-xl border-b border-slate-200/70 dark:border-neutral-800/70 shadow-sm"
+        }`}
       >
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
 
@@ -211,6 +220,8 @@ export default function SiteHeader() {
                     className={`flex items-center gap-1 px-3.5 py-2 text-[13px] font-semibold rounded-md transition-colors duration-150 cursor-pointer ${
                       isOpen
                         ? "text-brand-600 dark:text-brand-400 bg-brand-50/70 dark:bg-brand-500/10"
+                        : isTransparent
+                        ? "text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                         : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-white/5"
                     }`}
                   >
@@ -231,7 +242,11 @@ export default function SiteHeader() {
               <button
                 onClick={toggleTheme}
                 aria-label="Toggle theme"
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+                className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
+                  isTransparent
+                    ? "text-slate-700 dark:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10"
+                    : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10"
+                }`}
               >
                 {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
               </button>
@@ -242,7 +257,11 @@ export default function SiteHeader() {
             {/* Login CTA (outlined) */}
             <Link
               href="/login"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-all duration-200"
+              className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg border transition-all duration-200 ${
+                isTransparent
+                  ? "border-slate-300/80 dark:border-white/20 text-slate-800 dark:text-slate-200 hover:bg-white/40 dark:hover:bg-white/10 backdrop-blur-sm"
+                  : "border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-neutral-800"
+              }`}
             >
               <UserCheck className="w-3.5 h-3.5" />
               Login
@@ -251,7 +270,11 @@ export default function SiteHeader() {
             {/* Internship CTA (outlined) */}
             <Link
               href="/internship"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg border border-brand-500 text-brand-600 dark:text-brand-400 dark:border-brand-500/60 hover:bg-brand-50 dark:hover:bg-brand-500/10 transition-all duration-200"
+              className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg border border-brand-500 text-brand-600 dark:text-brand-400 dark:border-brand-500/60 transition-all duration-200 ${
+                isTransparent
+                  ? "hover:bg-brand-500/15 backdrop-blur-sm bg-brand-50/40 dark:bg-brand-500/5"
+                  : "hover:bg-brand-50 dark:hover:bg-brand-500/10"
+              }`}
             >
               <GraduationCap className="w-3.5 h-3.5" />
               Internship
@@ -269,7 +292,11 @@ export default function SiteHeader() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen((o) => !o)}
-              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+              className={`lg:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
+                isTransparent
+                  ? "text-slate-800 dark:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10"
+              }`}
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
