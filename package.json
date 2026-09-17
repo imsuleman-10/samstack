@@ -21,7 +21,7 @@
     "firebase-admin": "^14.2.0",
     "framer-motion": "^12.40.0",
     "html2pdf.js": "^0.14.0",
-    "jose": "^6.2.3",
+    "jose": "^4.15.9",
     "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "nodemailer": "^8.0.11",
@@ -48,5 +48,8 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wait-on": "^9.0.10"
+  },
+  "overrides": {
+    "jose": "^4.15.9"
   }
 }
