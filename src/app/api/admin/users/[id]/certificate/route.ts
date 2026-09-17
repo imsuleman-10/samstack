@@ -3,7 +3,8 @@ import { adminDb } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
 import { generateUniqueCertificateId } from "@/lib/certificate";
-// Imports moved inside POST
+
+export const maxDuration = 60; // Set max duration to 60 seconds for Vercel Serverless
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireAuth(req, ["admin"]);

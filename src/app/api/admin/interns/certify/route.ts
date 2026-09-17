@@ -6,6 +6,8 @@ import { generateCertificatePDF } from "@/lib/pdfTemplates";
 import { sendCertificateEmail } from "@/lib/mailer";
 import crypto from "crypto";
 
+export const maxDuration = 60; // Set max duration to 60 seconds for Vercel Serverless
+
 export async function POST(request: NextRequest) {
   // Require admin authentication
   const auth = await requireAuth(request, ["admin"]);
