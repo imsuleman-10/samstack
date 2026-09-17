@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+
   serverExternalPackages: ['pdf-lib', '@pdf-lib/fontkit', 'nodemailer', 'firebase-admin'],
   images: {
     remotePatterns: [
