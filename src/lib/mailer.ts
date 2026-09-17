@@ -1,12 +1,20 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Lazy transporter — created on first use to avoid module-load crashes
+let _transporter: nodemailer.Transporter | null = null;
+
+function getTransporter() {
+  if (!_transporter) {
+    _transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+  }
+  return _transporter;
+}
 
 export const sendOfferLetterEmail = async (
   email: string,
@@ -41,7 +49,7 @@ export const sendOfferLetterEmail = async (
     ],
   };
 
-  await transporter.sendMail(mailOptions);
+  await getTransporter().sendMail(mailOptions);
 };
 
 export const sendCertificateEmail = async (
@@ -77,7 +85,7 @@ export const sendCertificateEmail = async (
     ],
   };
 
-  await transporter.sendMail(mailOptions);
+  await getTransporter().sendMail(mailOptions);
 };
 
 export const sendWelcomeEmailWithPassword = async (
@@ -107,7 +115,7 @@ export const sendWelcomeEmailWithPassword = async (
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  await getTransporter().sendMail(mailOptions);
 };
 
 export const sendWelcomeEmailGoogle = async (
@@ -131,5 +139,5 @@ export const sendWelcomeEmailGoogle = async (
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  await getTransporter().sendMail(mailOptions);
 };
