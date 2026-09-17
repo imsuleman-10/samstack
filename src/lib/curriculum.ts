@@ -324,7 +324,7 @@ export const getTrackTasks = (trackKey: string): Task[] => {
 };
 
 export function getDetailedTask(task: Task, trackKey?: string): DetailedTask {
-  const normTrack = normalizeTrackKey(trackKey || (task as any).track_id);
+  const normTrack = normalizeTrackKey(trackKey || (task as Task & { track_id?: string }).track_id);
   const isUiUx = normTrack === 'UI_UX' || task.id.startsWith('UI');
   const isPython = normTrack === 'PYTHON' || task.id.startsWith('PY');
   const isCpp = normTrack === 'CPP' || task.id.startsWith('CP');

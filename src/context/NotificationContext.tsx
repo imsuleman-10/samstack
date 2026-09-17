@@ -34,11 +34,15 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   
+  // Clear notifications when user signs out or is unavailable
   useEffect(() => {
-    if (!user?.id || !realtimeDb) {
-      setNotifications((prev) => (prev.length > 0 ? [] : prev));
-      return;
+    if (!user?.id) {
+      setNotifications([]);
     }
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!user?.id || !realtimeDb) return;
 
     // Query for user notifications (excluding orderBy to avoid composite index requirements)
     const q = query(

@@ -191,11 +191,11 @@ function ApplyForm() {
       // Step 3: Create Firebase Account
       let firebaseUser;
       try {
-        const cred = await createUserWithEmailAndPassword(auth, emailAddr, password);
+        const cred = await createUserWithEmailAndPassword(auth!, emailAddr, password);
         firebaseUser = cred.user;
       } catch (err: any) {
         if (err.code === "auth/email-already-in-use") {
-          const cred = await signInWithEmailAndPassword(auth, emailAddr, password);
+          const cred = await signInWithEmailAndPassword(auth!, emailAddr, password);
           firebaseUser = cred.user;
         } else {
           throw err;

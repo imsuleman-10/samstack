@@ -264,7 +264,7 @@ export function AppSidebar({
     return pathname.startsWith(href);
   };
 
-  const SidebarContent = () => (
+  const renderSidebarContent = () => (
     <aside className="flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-slate-200/90 dark:border-zinc-800 transition-all duration-300 select-none shadow-xs">
       {/* ── Brand Header ─────────────────────────────── */}
       <div className="h-16 shrink-0 flex items-center justify-between px-3.5 border-b border-slate-200/80 dark:border-zinc-800/80">
@@ -479,7 +479,7 @@ export function AppSidebar({
 
           {/* Slide-over */}
           <div className="fixed top-0 bottom-0 left-0 w-72 max-w-[85vw] shadow-2xl z-50 flex flex-col animate-in slide-in-from-left duration-200">
-            <SidebarContent />
+            {renderSidebarContent()}
           </div>
         </div>
       )}
@@ -489,7 +489,7 @@ export function AppSidebar({
         className="hidden lg:flex flex-col h-full shrink-0 transition-all duration-300"
         style={{ width: collapsed ? 72 : 256 }}
       >
-        <SidebarContent />
+        {renderSidebarContent()}
       </div>
     </>
   );

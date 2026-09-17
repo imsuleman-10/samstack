@@ -429,7 +429,7 @@ export const db = {
         await seedPostsIfNeeded();
         const snap = await getDocs(collection(firestore, COLLECTIONS.POSTS));
         return snap.docs.map(d => d.data() as BlogPost);
-      } catch (_) {
+      } catch {
         console.warn("Falling back to local INITIAL_POSTS due to Firebase error.");
         return INITIAL_POSTS;
       }
@@ -445,7 +445,7 @@ export const db = {
         const snap = await getDocs(q);
         if (snap.empty) return null;
         return snap.docs[0].data() as BlogPost;
-      } catch (_) {
+      } catch {
         console.warn("Falling back to local INITIAL_POSTS for slug due to Firebase error.");
         return INITIAL_POSTS.find(p => p.slug === slug) || null;
       }

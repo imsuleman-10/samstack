@@ -13,7 +13,8 @@
  */
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-// Imports moved inside saveLocalFallback
+import fs from "fs";
+import path from "path";
 
 // ─── Singleton Client ─────────────────────────────────────────────────────────
 
@@ -55,8 +56,6 @@ export async function saveLocalFallback(
   body: Buffer | Uint8Array | Blob
 ): Promise<string> {
   try {
-    const fs = require("fs");
-    const path = require("path");
     const cleanPath = filePath.replace(/^[/\\]+/, "").replace(/\\/g, "/");
     const targetDir = path.join(process.cwd(), "public", "uploads", bucket, path.dirname(cleanPath));
     const targetFile = path.join(process.cwd(), "public", "uploads", bucket, cleanPath);
@@ -118,7 +117,7 @@ export async function pingSupabase(): Promise<boolean> {
     if (!error) {
       storageSuccess = true;
     }
-  } catch (err: any) {
+  } catch {
     // Expected if project paused or waking
   }
 
@@ -140,7 +139,7 @@ export async function pingSupabase(): Promise<boolean> {
     if (res.ok || res.status === 401 || res.status === 404 || res.status === 200) {
       restSuccess = true;
     }
-  } catch (err: any) {
+  } catch {
     // Expected if project paused or DNS unresolvable
   }
 

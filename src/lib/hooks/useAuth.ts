@@ -26,7 +26,7 @@ export function useAuth() {
           setInternProfile(null);
           setMentorProfile(null);
         }
-      } catch (err) {
+      } catch {
         if (!mounted) return;
         setUser(null);
         setInternProfile(null);

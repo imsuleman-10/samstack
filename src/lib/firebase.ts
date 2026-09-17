@@ -1,14 +1,17 @@
-import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore/lite";
-import { getFirestore as getRealtimeFirestore } from "firebase/firestore";
+import { initializeApp, getApps, FirebaseApp } from "firebase/app";
+import { getFirestore as getLiteFirestore, Firestore as LiteFirestore } from "firebase/firestore/lite";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getAuth, Auth } from "firebase/auth";
 
 // Suppress known Firebase GRPC background connection errors in Next.js
 // Only override once and only on the client side to avoid SSR/React mount issues
 if (typeof window !== 'undefined') {
   const _orig = console.error;
-  console.error = (...args: any[]) => {
-    const msg = args.map((a: any) =>
-      a && typeof a === 'object' && a.message ? a.message : String(a)
+  console.error = (...args: unknown[]) => {
+    const msg = args.map((a: unknown) =>
+      a && typeof a === 'object' && (a as { message?: string }).message
+        ? (a as { message: string }).message
+        : String(a)
     ).join(' ');
     if (
       msg.includes('GRPC error has no .code') ||
@@ -31,12 +34,10 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-import { getAuth } from "firebase/auth";
-
-let app;
-let firestoreDb: any;
-let realtimeDbObj: any;
-let authObj: any;
+let app: FirebaseApp;
+let firestoreDb: LiteFirestore | undefined;
+let realtimeDbObj: Firestore | undefined;
+let authObj: Auth | undefined;
 
 // Prevent duplicate initialization in Next.js hot-reload environments
 try {
@@ -45,13 +46,13 @@ try {
   } else {
     app = getApps()[0];
   }
-  firestoreDb = getFirestore(app);
-  realtimeDbObj = getRealtimeFirestore(app);
+  firestoreDb = getLiteFirestore(app);
+  realtimeDbObj = getFirestore(app);
   authObj = getAuth(app);
-} catch (error: any) {
-  console.warn("[Firebase] Client initialization warning:", error.message);
+} catch (error: unknown) {
+  console.warn("[Firebase] Client initialization warning:", (error as Error).message);
 }
 
-export const firestore = firestoreDb;
-export const realtimeDb = realtimeDbObj;
-export const auth = authObj;
+export const firestore = firestoreDb as LiteFirestore;
+export const realtimeDb = realtimeDbObj as Firestore;
+export const auth = authObj as Auth;

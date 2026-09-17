@@ -1,11 +1,12 @@
 import { FS } from "./firestore-schema";
 import crypto from "crypto";
+import type { Firestore } from "firebase-admin/firestore";
 
 /**
  * Generates a globally unique certificate ID.
  * Format: SAM-CERT-YYYY-XXXXXX
  */
-export async function generateUniqueCertificateId(adminDb: any): Promise<string> {
+export async function generateUniqueCertificateId(adminDb: Firestore): Promise<string> {
   const year = new Date().getFullYear();
   let unique = false;
   let certId = "";

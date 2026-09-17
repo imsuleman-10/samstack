@@ -1,16 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useSyncExternalStore } from 'react';
 import { useTheme } from '@/app/components/ThemeProvider';
 import { Sun, Moon } from 'lucide-react';
 
+// useSyncExternalStore-based mount detection: correct React 19 pattern for SSR
+const emptySubscribe = () => () => {};
+function useIsMounted() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+}
+
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useIsMounted();
 
   return (
     <button
