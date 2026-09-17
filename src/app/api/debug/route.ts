@@ -1,42 +1,39 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
-import { FS } from "@/lib/firestore-schema";
 
 export const dynamic = 'force-dynamic';
 
-export async function POST() {
-  if (!adminDb) return NextResponse.json({ error: "no db" });
-  
-  const snap = await adminDb.collection("mentor_assignments").get();
-  
-  const usersSnap = await adminDb.collection("users").get();
-  const users = usersSnap.docs.map(d => ({ id: d.id, ...d.data() } as Record<string, any>));
-  
-  if (snap.empty) {
-    // Seed an assignment
-    const mentor = users.find(u => u.role === "mentor" && u.email === "sulemanzaheer09@gmail.com");
-    const intern = users.find(u => u.role === "intern");
-    const admin = users.find(u => u.role === "admin");
-    
-    if (mentor && intern && admin) {
-      const newRef = adminDb.collection("mentor_assignments").doc();
-      const now = new Date().toISOString();
-      await newRef.set({
-        id: newRef.id,
-        mentor_id: mentor.id,
-        intern_id: intern.id,
-        assigned_by: admin.id,
-        status: "active",
-        assigned_at: now,
-        ended_at: null,
-        created_at: now,
-        updated_at: now,
-      });
-    }
+export async function GET() {
+  // Safe diagnostic endpoint - only reports if vars EXIST, never their values
+  const envReport = {
+    FIREBASE_CLIENT_EMAIL: !!process.env.FIREBASE_CLIENT_EMAIL,
+    FIREBASE_PRIVATE_KEY: !!process.env.FIREBASE_PRIVATE_KEY,
+    FIREBASE_PRIVATE_KEY_VALID: process.env.FIREBASE_PRIVATE_KEY?.includes('BEGIN PRIVATE KEY') ?? false,
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID: !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    JWT_SECRET: !!process.env.JWT_SECRET,
+    EMAIL_USER: !!process.env.EMAIL_USER,
+    EMAIL_PASS: !!process.env.EMAIL_PASS,
+    ADMIN_EMAIL: !!process.env.ADMIN_EMAIL,
+    ADMIN_PASSWORD: !!process.env.ADMIN_PASSWORD,
+    NEXT_PUBLIC_SUPABASE_URL: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    NODE_ENV: process.env.NODE_ENV,
+  };
+
+  // Try to init firebase-admin and catch any error
+  let firebaseStatus: string;
+  let firebaseError: string | null = null;
+  try {
+    const { adminDb } = await import("@/lib/firebase-admin");
+    firebaseStatus = adminDb ? "initialized_ok" : "initialized_but_null";
+  } catch (e: any) {
+    firebaseStatus = "CRASHED";
+    firebaseError = e?.message ?? String(e);
   }
 
-  const finalSnap = await adminDb.collection("mentor_assignments").get();
   return NextResponse.json({
-    assignments: finalSnap.docs.map(d => d.data())
+    envReport,
+    firebaseStatus,
+    firebaseError,
+    timestamp: new Date().toISOString(),
   });
 }
