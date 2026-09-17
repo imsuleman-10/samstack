@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { tracks } from "@/lib/curriculum";
@@ -103,7 +103,9 @@ export async function POST(request: NextRequest) {
       }
     };
 
-    await processCertificate();
+    after(async () => {
+      await processCertificate();
+    });
 
     return NextResponse.json({
       success: true,
