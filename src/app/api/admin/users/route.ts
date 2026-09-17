@@ -5,12 +5,13 @@ import { auditLog } from "@/lib/audit";
 import { sendWelcomeEmailWithPassword, sendWelcomeEmailGoogle } from "@/lib/mailer";
 import { FS } from "@/lib/firestore-schema";
 import type { PlatformUser, UserRole, AccountStatus } from "@/lib/firestore-schema";
-import fs from "fs";
-import path from "path";
+// Imports moved to function body
 
 function getLocalUsersFallback(roleFilter?: string | null, statusFilter?: string | null, search?: string, page = 1, limit = 25) {
   let interns: any[] = [];
   try {
+    const fs = require("fs");
+    const path = require("path");
     const dbPath = path.join(process.cwd(), ".data", "db.json");
     if (fs.existsSync(dbPath)) {
       const raw = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
@@ -197,6 +198,8 @@ export async function POST(req: NextRequest) {
   // Save to local database fallback if Firebase Admin not configured
   if (!process.env.FIREBASE_PRIVATE_KEY || !process.env.FIREBASE_CLIENT_EMAIL || !adminDb || !adminAuth) {
     try {
+      const fs = require("fs");
+      const path = require("path");
       const dbPath = path.join(process.cwd(), ".data", "db.json");
       let dbData: any = { interns: [] };
       if (fs.existsSync(dbPath)) {

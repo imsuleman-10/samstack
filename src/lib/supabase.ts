@@ -13,8 +13,7 @@
  */
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import fs from "fs";
-import path from "path";
+// Imports moved inside saveLocalFallback
 
 // ─── Singleton Client ─────────────────────────────────────────────────────────
 
@@ -56,6 +55,8 @@ export async function saveLocalFallback(
   body: Buffer | Uint8Array | Blob
 ): Promise<string> {
   try {
+    const fs = require("fs");
+    const path = require("path");
     const cleanPath = filePath.replace(/^[/\\]+/, "").replace(/\\/g, "/");
     const targetDir = path.join(process.cwd(), "public", "uploads", bucket, path.dirname(cleanPath));
     const targetFile = path.join(process.cwd(), "public", "uploads", bucket, cleanPath);

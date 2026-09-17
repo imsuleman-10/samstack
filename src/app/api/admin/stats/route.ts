@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { requireAuth, isAuthError } from '@/lib/session';
 import { FS } from '@/lib/firestore-schema';
-import fs from 'fs';
-import path from 'path';
+// Imports moved to function body
 
 function getLocalStatsFallback() {
   let interns: any[] = [];
   try {
+    const fs = require('fs');
+    const path = require('path');
     const dbPath = path.join(process.cwd(), '.data', 'db.json');
     if (fs.existsSync(dbPath)) {
       const raw = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));

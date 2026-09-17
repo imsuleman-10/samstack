@@ -3,8 +3,7 @@ import { adminDb } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
 import { generateUniqueCertificateId } from "@/lib/certificate";
-import fs from "fs";
-import path from "path";
+// Imports moved inside POST
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireAuth(req, ["admin"]);
@@ -71,6 +70,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   // Local database fallback for development
   try {
+    const fs = require("fs");
+    const path = require("path");
     const dbPath = path.join(process.cwd(), ".data", "db.json");
     if (!fs.existsSync(dbPath)) {
       return NextResponse.json({ error: "Local DB not found" }, { status: 404 });

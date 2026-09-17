@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
-import fs from "fs";
-import path from "path";
+// Imports moved inside GET
 
 export async function GET(request: NextRequest) {
   try {
@@ -65,6 +64,8 @@ export async function GET(request: NextRequest) {
 
     // 2. Check local database .data/db.json (used in local development)
     try {
+      const fs = require("fs");
+      const path = require("path");
       const dbPath = path.join(process.cwd(), ".data", "db.json");
       if (fs.existsSync(dbPath)) {
         const dbData = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
