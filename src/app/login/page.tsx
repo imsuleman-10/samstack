@@ -32,7 +32,7 @@ const firebaseErrorMessage = (code: string): string => {
     'auth/requires-recent-login':    'Please log out and log in again before making this change.',
     'auth/operation-not-allowed':    'This sign-in method is not enabled. Contact support.',
     'auth/account-exists-with-different-credential': '__EMAIL_EXISTS__',
-    'auth/unauthorized-domain':      'This domain/IP is not authorized for Google Sign-In. Please access the app via localhost:3000 to use Google Login.',
+    'auth/unauthorized-domain':      'Google Sign-In is not enabled for this domain. Please contact support or try signing in with email and password.',
   };
   return map[code] || code;
 };

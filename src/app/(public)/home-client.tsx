@@ -63,7 +63,7 @@ const defaultTeam = [
     to: "to-teal-500",
   },
   {
-    image: "/syed-abdullah-software-engineer-samstack-tech.png",
+    image: "/syed-abdullah-software-engineer-samstack-tech.webp",
     initials: "SA",
     name: "Syed Abdullah",
     role: "Backend Engineer",
@@ -116,7 +116,8 @@ export default function HomeClient() {
         {/* Video Background */}
         <div className="absolute inset-0 bg-slate-950">
           <video
-            preload="auto"
+            preload="metadata"
+            poster="/images/img-servers.jpg"
             autoPlay
             loop
             muted
@@ -206,7 +207,8 @@ export default function HomeClient() {
           SECTION 2: STATS (exact h-screen)
           ═══════════════════════════════════════════════════ */}
       <section className="z-0 overflow-hidden relative min-h-[100dvh] flex flex-col justify-center bg-slate-50 dark:bg-black pt-[80px] pb-8 px-4 sm:px-6 lg:px-8 group/section">
-        {/* No background image on section - clean solid background */}<div className="z-10 relative max-w-7xl mx-auto w-full space-y-6">
+        <Image src="/images/bg-cloud.webp" alt="Cloud Background" fill sizes="100vw" priority={false} className="object-cover opacity-[0.03] dark:opacity-[0.07] mix-blend-luminosity pointer-events-none" />
+        <div className="z-10 relative max-w-7xl mx-auto w-full space-y-6">
           <AnimateOnScroll variant="fadeUp">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
@@ -273,7 +275,8 @@ export default function HomeClient() {
           SECTION 3: SERVICES
           ═══════════════════════════════════════════════════ */}
       <section className="z-0 overflow-hidden relative min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-neutral-950 group/section">
-        {/* No background image on section - clean solid background */}<div className="z-10 relative max-w-7xl mx-auto w-full space-y-10">
+        <Image src="/images/bg-react.webp" alt="React Architecture Background" fill sizes="100vw" priority={false} className="object-cover opacity-[0.02] dark:opacity-[0.06] mix-blend-luminosity pointer-events-none" />
+        <div className="z-10 relative max-w-7xl mx-auto w-full space-y-10">
           <AnimateOnScroll variant="fadeUp">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white font-heading">
               Transform Your Business
@@ -372,7 +375,8 @@ export default function HomeClient() {
           (Full-screen dark overlay section — the "landing in the middle")
           ═══════════════════════════════════════════════════ */}
       <section className="z-0 overflow-hidden relative min-h-[100dvh] pt-[80px] pb-8 flex flex-col items-center justify-center bg-white dark:bg-black group/section">
-        {/* No background image on section - clean solid background */}{/* Grid overlay */}
+        <Image src="/images/bg-ai.webp" alt="AI Neural Background" fill sizes="100vw" priority={false} className="object-cover opacity-[0.04] dark:opacity-[0.1] mix-blend-luminosity pointer-events-none" />
+        {/* Grid overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
         <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto space-y-8">
@@ -543,7 +547,7 @@ export default function HomeClient() {
 
             {/* Left: Beautiful Realistic Process Photo */}
             <AnimateOnScroll variant="fadeUp" className="hidden lg:block lg:col-span-5 h-[50vh] relative rounded-3xl overflow-hidden shadow-2xl">
-              <Image src="/process-photo.png" alt="Team collaborating" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-700 hover:scale-105" />
+              <Image src="/process-photo.webp" alt="Team collaborating" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-700 hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-tr from-brand-900/40 to-transparent" />
             </AnimateOnScroll>
 

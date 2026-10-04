@@ -17,31 +17,50 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const service = services.find((s) => s.slug === slug);
   if (!service) return { title: "Service Not Found" };
 
-  const url = `https://samstack-tech.vercel.app/services/${slug}`;
+  const BASE_URL = 'https://samstack-tech.vercel.app';
+  const url = `${BASE_URL}/services/${slug}`;
 
   return {
-    title: `${service.title} | SAMStack Tech Services`,
-    description: service.description,
+    title: `${service.title} | SAMStack Tech — Lahore, Pakistan`,
+    description: `${service.description} SAMStack Tech delivers elite ${service.title.toLowerCase()} for global enterprises from Lahore, Pakistan.`,
     keywords: [
       service.title,
       service.subtitle,
-      "SAMStack Tech",
-      "Software Engineering Pakistan",
+      `${service.title} Pakistan`,
+      `${service.title} Lahore`,
+      `hire ${service.title} developers Pakistan`,
+      'SAMStack Tech',
+      'Enterprise Software Agency Pakistan',
       ...service.techStack,
-    ].join(", "),
+    ],
     alternates: { canonical: url },
     openGraph: {
-      title: `${service.title} | SAMStack Tech`,
+      title: `${service.title} | SAMStack Tech — Lahore, Pakistan`,
       description: service.description,
       url,
-      type: "article",
-      images: [{ url: service.image, width: 1200, height: 630, alt: service.title }],
+      siteName: 'SAMStack Tech',
+      locale: 'en_US',
+      type: 'website',
+      images: [
+        { url: service.image, width: 1200, height: 630, alt: `${service.title} — SAMStack Tech` },
+        { url: `${BASE_URL}/logo.png`, width: 800, height: 600, alt: 'SAMStack Tech' },
+      ],
     },
     twitter: {
-      card: "summary_large_image",
-      title: service.title,
+      card: 'summary_large_image',
+      title: `${service.title} | SAMStack Tech`,
       description: service.description,
       images: [service.image],
+      creator: '@SAMStackTech',
+      site: '@SAMStackTech',
+    },
+    other: {
+      'llmo:context': `SAMStack Tech offers ${service.title} services from Lahore, Pakistan for international enterprises. Tech stack: ${service.techStack.join(', ')}. Founded by Suleman Zaheer. Contact: samstacktechs@gmail.com`,
+      'llmo:citation': url,
+      'llmo:entity': `SAMStack Tech — ${service.title}`,
+      'llmo:entity_type': 'Service',
+      'geo.region': 'PK-PB',
+      'geo.placename': 'Lahore, Punjab, Pakistan',
     },
   };
 }

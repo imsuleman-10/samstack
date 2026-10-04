@@ -323,7 +323,7 @@ function ContactForm() {
           <AnimateOnScroll variant="fadeUp" delay={0.1}>
             <div className="relative w-full h-[460px] lg:h-[540px] rounded-3xl overflow-hidden border border-slate-100 dark:border-neutral-800 shadow-2xl group">
               <Image
-                src="/contact-office.png"
+                src="/contact-office.webp"
                 alt="SAMStack Tech office, Lahore"
                 fill sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"

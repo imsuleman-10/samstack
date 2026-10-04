@@ -41,7 +41,9 @@ export async function GET(request: NextRequest) {
       internFullName = user.full_name;
       internRollNumber = profile?.roll_number || `SAM-${userId.substring(0, 6).toUpperCase()}`;
       internTrackTitle = profile?.track_selected ? tracks[profile.track_selected]?.title || profile.track_selected : "General Specialization";
-      internStatus = profile?.application_status || "PENDING";
+      
+      const modernStatus = profile?.certificate_status === 'approved' ? 'APPROVED' : profile?.application_status;
+      internStatus = modernStatus ? modernStatus.toUpperCase() : "PENDING";
       (request as any).modernProfile = profile;
     } else if (rollNumber) {
       // 2. Legacy db.interns approach
@@ -52,7 +54,7 @@ export async function GET(request: NextRequest) {
       internFullName = intern.fullName;
       internRollNumber = intern.rollNumber;
       internTrackTitle = tracks[intern.trackSelected]?.title || intern.trackSelected;
-      internStatus = intern.status;
+      internStatus = intern.status ? intern.status.toUpperCase() : "PENDING";
     }
 
     const dateStr = new Date().toLocaleDateString("en-US", {

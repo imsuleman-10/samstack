@@ -1,110 +1,49 @@
-import React from "react";
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Contact SAMStack Tech | Start Your Enterprise Software Project",
-  description: "Ready to build something great? Contact SAMStack Tech in Lahore, Pakistan to discuss your enterprise software project, get a free quote, or schedule a technical consultation within 12 hours.",
-  keywords: [
-    "hire software agency Pakistan",
-    "contact SAMStack Tech",
-    "enterprise project quote",
-    "web development consultation Lahore",
-    "software development agency contact",
-    "outsource software Pakistan contact",
-    "free software consultation",
-  ],
+  title: 'Contact Us | Hire SAMStack Tech',
+  description: 'Ready to build something legendary? Contact SAMStack Tech in Lahore, Pakistan. We guarantee a response from a senior engineer within 12 hours.',
   alternates: {
-    canonical: "https://samstack-tech.vercel.app/contact",
-    languages: { 'en': 'https://samstack-tech.vercel.app/contact' },
+    canonical: 'https://samstack-tech.vercel.app/contact'
   },
   openGraph: {
-    title: "Contact SAMStack Tech | Start Your Enterprise Software Project",
-    description: "Get in touch with SAMStack Tech. We respond to enterprise inquiries within 12 hours. Let's build your next high-performance software solution from Lahore, Pakistan.",
-    url: "https://samstack-tech.vercel.app/contact",
-    type: "website",
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Contact SAMStack Tech" }],
+    title: 'Contact Us | Hire SAMStack Tech',
+    description: 'Ready to build something legendary? Contact SAMStack Tech in Lahore, Pakistan. We guarantee a response from a senior engineer within 12 hours.',
+    url: 'https://samstack-tech.vercel.app/contact',
+    siteName: 'SAMStack Tech',
+    images: [{ url: '/logo.png', width: 800, height: 600, alt: 'SAMStack Tech' }],
+    locale: 'en_US',
+    type: 'website',
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Contact SAMStack Tech | Start Your Enterprise Software Project",
-    description: "Reach out to SAMStack Tech for enterprise software development, AI systems, and DevOps consulting. Based in Lahore — serving clients worldwide.",
-    images: ["/logo.png"],
-  },
+  other: {
+    'llmo:context': 'This page provides contact information for SAMStack Tech. Users can submit project briefs here. We are located in Lahore, Pakistan, and promise a 12-hour SLA response time by a senior engineer.',
+    'llmo:citation': 'https://samstack-tech.vercel.app/contact',
+  }
 };
 
-const contactJsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": ["LocalBusiness", "ProfessionalService"],
-      "@id": "https://samstack-tech.vercel.app#business",
-      "name": "SAMStack Tech",
-      "description": "Elite software engineering agency specializing in enterprise web applications, AI-powered automation, and cloud infrastructure.",
-      "url": "https://samstack-tech.vercel.app",
-      "logo": "https://samstack-tech.vercel.app/logo.png",
-      "image": "https://samstack-tech.vercel.app/logo.png",
-      "email": "samstacktechs@gmail.com",
-      "telephone": "+923285778715",
-      "priceRange": "$$",
-      "openingHours": "Mo-Su 00:00-23:59",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Lahore",
-        "addressRegion": "Punjab",
-        "addressCountry": "PK",
-        "addressCountryCode": "PK"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "31.5204",
-        "longitude": "74.3587"
-      },
-      "areaServed": [
-        { "@type": "Country", "name": "Pakistan" },
-        { "@type": "Place", "name": "Worldwide" }
-      ],
-      "sameAs": [
-        "https://github.com/imsuleman-10",
-        "https://www.linkedin.com/in/suleman-zaheer-mughal"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+923285778715",
-        "contactType": "customer service",
-        "email": "samstacktechs@gmail.com",
-        "availableLanguage": ["English", "Urdu"],
-        "hoursAvailable": {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-          "opens": "00:00",
-          "closes": "23:59"
-        }
-      }
-    },
-    {
-      "@type": "ContactPage",
-      "@id": "https://samstack-tech.vercel.app/contact",
-      "url": "https://samstack-tech.vercel.app/contact",
-      "name": "Contact SAMStack Tech",
-      "description": "Get in touch with SAMStack Tech to start your enterprise software project.",
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack-tech.vercel.app" },
-          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://samstack-tech.vercel.app/contact" }
-        ]
-      }
-    }
-  ]
-};
-
-export default function ContactLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
-      />
+      
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        'name': 'SAMStack Tech',
+        'image': 'https://samstack-tech.vercel.app/logo.png',
+        'description': 'Premium software engineering agency.',
+        'address': {
+          '@type': 'PostalAddress',
+          'addressLocality': 'Lahore',
+          'addressRegion': 'Punjab',
+          'addressCountry': 'PK'
+        },
+        'email': 'samstacktechs@gmail.com',
+        'telephone': '+923285778715',
+        'priceRange': '$$$'
+      })}}
+    />
       {children}
     </>
   );

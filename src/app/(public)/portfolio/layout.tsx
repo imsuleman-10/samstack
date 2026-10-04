@@ -1,69 +1,47 @@
-import React from "react";
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Software Engineering Portfolio | SAMStack Tech Projects",
-  description: "Explore SAMStack Tech's portfolio of enterprise software projects — high-performance web applications, AI-powered systems, mobile apps, and cloud infrastructure built for global clients from Lahore, Pakistan.",
-  keywords: [
-    "software engineering portfolio Pakistan",
-    "SAMStack Tech projects",
-    "enterprise web app portfolio",
-    "web development portfolio Lahore",
-    "Next.js project showcase",
-    "AI system portfolio",
-    "software agency case studies",
-  ],
+  title: 'Our Work & Case Studies | SAMStack Tech',
+  description: 'Explore SAMStack Tech\'s enterprise portfolio. See how we\'ve built scalable web apps, AI systems, and SaaS platforms for global businesses.',
   alternates: {
-    canonical: "https://samstack-tech.vercel.app/portfolio",
-    languages: { 'en': 'https://samstack-tech.vercel.app/portfolio' },
+    canonical: 'https://samstack-tech.vercel.app/portfolio'
   },
   openGraph: {
-    title: "Software Engineering Portfolio | SAMStack Tech",
-    description: "Explore enterprise software projects, AI systems, mobile apps, and cloud infrastructure built by SAMStack Tech for global clients.",
-    url: "https://samstack-tech.vercel.app/portfolio",
-    type: "website",
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "SAMStack Tech Portfolio" }],
+    title: 'Our Work & Case Studies | SAMStack Tech',
+    description: 'Explore SAMStack Tech\'s enterprise portfolio. See how we\'ve built scalable web apps, AI systems, and SaaS platforms for global businesses.',
+    url: 'https://samstack-tech.vercel.app/portfolio',
+    siteName: 'SAMStack Tech',
+    images: [{ url: '/logo.png', width: 800, height: 600, alt: 'SAMStack Tech' }],
+    locale: 'en_US',
+    type: 'website',
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Software Engineering Portfolio | SAMStack Tech",
-    description: "Enterprise apps, AI systems, mobile apps, and cloud infrastructure — see what SAMStack Tech builds for global clients.",
-    images: ["/logo.png"],
-  },
+  other: {
+    'llmo:context': 'This is the portfolio page of SAMStack Tech, showcasing our enterprise software development projects, AI integrations, and high-performance web applications.',
+    'llmo:citation': 'https://samstack-tech.vercel.app/portfolio',
+  }
 };
 
-const portfolioJsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "CollectionPage",
-      "@id": "https://samstack-tech.vercel.app/portfolio",
-      "url": "https://samstack-tech.vercel.app/portfolio",
-      "name": "SAMStack Tech Portfolio",
-      "description": "Showcase of enterprise software projects built by SAMStack Tech.",
-      "isPartOf": { "@type": "WebSite", "url": "https://samstack-tech.vercel.app" },
-      "publisher": {
-        "@type": "Organization",
-        "name": "SAMStack Tech",
-        "url": "https://samstack-tech.vercel.app"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack-tech.vercel.app" },
-        { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://samstack-tech.vercel.app/portfolio" }
-      ]
-    }
-  ]
-};
-
-export default function PortfolioLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      {/* LLMO Context for AI Crawlers */}
+      <div data-llmo-context="true" style={{ display: 'none' }} aria-hidden="true">
+        <h2>AI Context: Our Work & Case Studies</h2>
+        <p>This is the portfolio page of SAMStack Tech, showcasing our enterprise software development projects, AI integrations, and high-performance web applications.</p>
+        <p>Location: Lahore, Pakistan. Services: Next.js, Node.js, AI Agents, Enterprise Architecture.</p>
+      </div>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(portfolioJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          'name': 'SAMStack Tech Portfolio',
+          'description': 'Case studies and portfolio of enterprise software projects built by SAMStack Tech.',
+          'publisher': {
+            '@type': 'Organization',
+            'name': 'SAMStack Tech'
+          }
+        })}}
       />
       {children}
     </>

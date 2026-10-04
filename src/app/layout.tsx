@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Toaster } from "sonner";
 import { NotificationProvider } from "@/context/NotificationContext";
+import PageLoader from "@/components/PageLoader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -215,7 +217,7 @@ const personJsonLd = {
   "familyName": "Zaheer",
   "alternateName": "Suleman Zaheer Mughal",
   "url": "https://suleman-zaheer.vercel.app",
-  "image": "https://samstack-tech.vercel.app/images/image.png",
+  "image": "https://samstack-tech.vercel.app/images/image.webp",
   "jobTitle": "Full Stack Engineer & DevOps Lead",
   "description": "Founder of SAMStack Tech — an elite software engineering studio based in Lahore, Pakistan. Specializes in Next.js, DevOps, cloud architecture, and AI agent systems.",
   "telephone": "+923285778715",
@@ -388,6 +390,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <ThemeProvider>
+          {/* Industrial Page Loader — route transitions + splash */}
+          <Suspense fallback={null}>
+            <PageLoader />
+          </Suspense>
           {/* Global Toast Notifications */}
           <Toaster position="top-right" richColors closeButton theme="system" />
           <NotificationProvider>

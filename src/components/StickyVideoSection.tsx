@@ -62,7 +62,8 @@ export default function StickyVideoSection() {
           <video
             ref={videoRef}
             src="/2nd-vid.mp4"
-            preload="auto"
+            preload="metadata"
+            poster="/images/img-servers.jpg"
             autoPlay
             muted
             playsInline
@@ -108,7 +109,8 @@ export default function StickyVideoSection() {
           <div className="relative" style={{ height: "45vh" }}>
             <video
               src="/2nd-vid.mp4"
-              preload="auto"
+              preload="metadata"
+              poster="/images/img-servers.jpg"
               autoPlay
               muted
               playsInline

@@ -149,7 +149,7 @@ export default function InternshipPage() {
           <AnimateOnScroll variant="fadeUp" delay={0.12}>
             <div className="relative w-full h-[420px] lg:h-[540px] rounded-3xl overflow-hidden border border-slate-100 dark:border-neutral-800 shadow-2xl group">
               <Image
-                src="/internship-hero.png"
+                src="/internship-hero.webp"
                 alt="SAMStack Tech Internship Program"
                 fill sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"

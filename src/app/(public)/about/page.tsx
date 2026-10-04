@@ -133,7 +133,7 @@ const team = [
   {
     name: "Syed Abdullah",
     role: "Database & APIs",
-    image: "/syed-abdullah-software-engineer-samstack-tech.png",
+    image: "/syed-abdullah-software-engineer-samstack-tech.webp",
     badge: "Backend Engineering",
     badgeBg: "bg-violet-500/20 border-violet-500/30",
     badgeText: "text-violet-400",
