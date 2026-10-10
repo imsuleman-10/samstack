@@ -57,6 +57,6 @@ try {
   console.warn("[Firebase] Client initialization warning:", (error as Error).message);
 }
 
-export const firestore = firestoreDb as LiteFirestore | undefined;
-export const realtimeDb = realtimeDbObj as Firestore | undefined;
-export const auth = authObj as Auth | undefined;
+export const firestore = firestoreDb as LiteFirestore;
+export const realtimeDb = realtimeDbObj as Firestore;
+export const auth = authObj as Auth;

@@ -229,6 +229,9 @@ export default function LoginPage() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       try {
+        if (!auth) {
+          throw new Error('Firebase configuration missing. Please add NEXT_PUBLIC_FIREBASE_API_KEY in .env.local');
+        }
         const cred = await signInWithEmailAndPassword(auth, sigEmail.trim(), sigPw);
         await verifyOnServer(cred.user, sigName.trim(), undefined, sigEmail.trim());
       } catch (loginErr: any) {
