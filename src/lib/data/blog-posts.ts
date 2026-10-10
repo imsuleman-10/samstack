@@ -368,15 +368,7 @@ If they can't discuss the nuances of state management or indexing strategies, th
 <h2>5. Managed Databases Over Self-Hosting</h2>
 <p>Never run your own database on a raw EC2 instance unless you have a dedicated DBA team. Use Amazon RDS, Supabase, or Neon. The extra cost is negligible compared to the peace of mind you get from automated backups, point-in-time recovery, and high availability.</p>
 <p>By implementing these foundational DevOps practices early, SaaS startups ensure they can scale seamlessly when growth accelerates, without drowning in technical debt.</p>`,
-  }
-];
-
-export function getBlogPost(slug: string): BlogPost | undefined {
-  return blogPosts.find((p) => p.slug === slug);
-}
-
-export function getFeaturedPost(): BlogPost {
-  return blogPosts.find((p) => p.featured) ?? blogPosts[0,
+  },
   {
     slug: `hire-nextjs-developers-pakistan`,
     title: `Hire Next.js Developers in Pakistan: A Complete Guide for 2026`,
@@ -728,4 +720,12 @@ export function getFeaturedPost(): BlogPost {
     content: `<h2>Your Custom CRM Development Company in Lahore</h2><p>Enterprise SaaS licensing costs scale out of control as your team grows. As a leading custom CRM development company in Lahore, SAMStack Tech engineers bespoke Customer Relationship Management systems that perfectly map to your unique sales processes.</p><h2>Own Your Data and Source Code</h2><p>By building a custom CRM, you own the intellectual property and eliminate recurring per-user fees forever. We integrate custom dashboards, automated email workflows, and advanced reporting tailored specifically for your executive team.</p>`,
   }
 ];
+
+export function getBlogPost(slug: string): BlogPost | undefined {
+  return blogPosts.find((p) => p.slug === slug);
 }
+
+export function getFeaturedPost(): BlogPost {
+  return blogPosts.find((p) => p.featured) ?? blogPosts[0];
+}
+

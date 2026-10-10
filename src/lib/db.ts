@@ -101,12 +101,16 @@ export interface FSInternProfile {
   github_url: string | null;
   portfolio_url: string | null;
   application_status: 'APPLIED' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | null;
+  certificate_status?: 'pending' | 'approved' | 'rejected' | 'issued' | null;
+  certificate_id?: string | null;
+  offer_letter_sent?: boolean | null;
   start_date: string | null;
   enrolled_at: string | null;
   assigned_mentor_id: string | null;
   phone_number: string | null;
   email: string | null;
   created_at: string;
+  updated_at?: string | null;
 }
 
 export interface FSTrackTask {

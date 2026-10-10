@@ -5,10 +5,12 @@ import { FS } from "@/lib/firestore-schema";
 import type { CompanyProject } from "@/lib/firestore-schema";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 export async function DELETE(
   req: NextRequest,
@@ -41,7 +43,10 @@ export async function DELETE(
       const urlParts = project.file_url.split('/resumes/');
       if (urlParts.length > 1) {
         const filePath = urlParts[1];
-        await supabase.storage.from("resumes").remove([filePath]);
+        const supabase = getSupabase();
+        if (supabase) {
+          await supabase.storage.from("resumes").remove([filePath]);
+        }
       }
     } catch (storageErr) {
       console.warn("Failed to delete file from storage:", storageErr);

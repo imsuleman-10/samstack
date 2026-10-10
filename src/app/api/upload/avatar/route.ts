@@ -3,7 +3,6 @@ import { adminDb } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
 import sharp from "sharp";
-import { createClient } from "@supabase/supabase-js";
 import { supabaseUpload } from "@/lib/supabase";
 
 /**
