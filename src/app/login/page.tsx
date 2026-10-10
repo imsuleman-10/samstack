@@ -132,6 +132,9 @@ export default function LoginPage() {
         const std = cleaned.startsWith('+') ? cleaned : `+92${cleaned.replace(/^0/, '')}`;
         fbEmail = d.firebaseEmail || `${std}@samstack.com`;
       }
+      if (!auth) {
+        throw new Error('Firebase configuration missing. Please add NEXT_PUBLIC_FIREBASE_API_KEY in .env.local');
+      }
       const cred = await signInWithEmailAndPassword(auth, fbEmail, loginPw);
       await verifyOnServer(cred.user);
     } catch (err: any) {
@@ -315,6 +318,9 @@ export default function LoginPage() {
   const handleGoogle = async () => {
     setLoading(true); clear();
     try {
+      if (!auth) {
+        throw new Error('Firebase configuration missing. Please add NEXT_PUBLIC_FIREBASE_API_KEY in .env.local');
+      }
       const cred = await signInWithPopup(auth, new GoogleAuthProvider());
       await verifyOnServer(
         cred.user,

@@ -42,13 +42,17 @@ let authObj: Auth | undefined;
 // Prevent duplicate initialization in Next.js hot-reload environments
 try {
   if (getApps().length === 0) {
-    app = initializeApp(firebaseConfig);
+    if (firebaseConfig.apiKey) {
+      app = initializeApp(firebaseConfig);
+    }
   } else {
     app = getApps()[0];
   }
-  firestoreDb = getLiteFirestore(app);
-  realtimeDbObj = getFirestore(app);
-  authObj = getAuth(app);
+  if (app) {
+    firestoreDb = getLiteFirestore(app);
+    realtimeDbObj = getFirestore(app);
+    authObj = getAuth(app);
+  }
 } catch (error: unknown) {
   console.warn("[Firebase] Client initialization warning:", (error as Error).message);
 }

@@ -223,6 +223,9 @@ function ApplyForm() {
     setIsSubmitting(true);
     setError(null);
     try {
+      if (!auth) {
+        throw new Error('Firebase configuration missing. Please add NEXT_PUBLIC_FIREBASE_API_KEY in .env.local');
+      }
       const provider = new GoogleAuthProvider();
       const cred = await signInWithPopup(auth, provider);
       const googleEmail = cred.user.email || email;
