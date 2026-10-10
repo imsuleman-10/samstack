@@ -34,7 +34,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-let app: FirebaseApp;
+let app: FirebaseApp | undefined;
 let firestoreDb: LiteFirestore | undefined;
 let realtimeDbObj: Firestore | undefined;
 let authObj: Auth | undefined;
@@ -57,6 +57,6 @@ try {
   console.warn("[Firebase] Client initialization warning:", (error as Error).message);
 }
 
-export const firestore = firestoreDb as LiteFirestore;
-export const realtimeDb = realtimeDbObj as Firestore;
-export const auth = authObj as Auth;
+export const firestore = firestoreDb as LiteFirestore | undefined;
+export const realtimeDb = realtimeDbObj as Firestore | undefined;
+export const auth = authObj as Auth | undefined;
