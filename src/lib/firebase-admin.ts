@@ -16,13 +16,9 @@ if (!getApps().length) {
         }),
         storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
       });
-    } else {
-      // Fallback: application default credentials (for local dev without service account)
-      initializeApp({
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'samstack-tech',
-        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      });
     }
+    // NOTE: No ADC fallback — if env vars are missing, adminDb/adminAuth will be null
+    // and API routes that need them will gracefully return errors.
   } catch (error) {
     console.error('Firebase Admin initialization error:', error);
   }

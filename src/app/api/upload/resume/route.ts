@@ -45,17 +45,21 @@ export async function POST(request: NextRequest) {
 
     // Save resume_url to the intern profiles collection
     if (adminDb) {
-      await adminDb.collection(FS.INTERN_PROFILES).doc(user.id).update({
-        resume_url: publicUrl,
-        updated_at: new Date().toISOString(),
-      });
+      try {
+        await adminDb.collection(FS.INTERN_PROFILES).doc(user.id).set({
+          resume_url: publicUrl,
+          updated_at: new Date().toISOString(),
+        }, { merge: true });
+      } catch (dbErr: any) {
+        console.error('[Resume Upload] Failed to update Firestore, but file was uploaded:', dbErr.message);
+      }
     }
 
     console.log(`[Resume Upload] User ${user.id} uploaded resume: ${sizeKB}KB`);
 
     return NextResponse.json({ success: true, url: publicUrl, resume_url: publicUrl, sizeKB });
   } catch (err: any) {
-    console.error("Resume upload error:", err);
-    return NextResponse.json({ error: err.message || "Upload failed" }, { status: 500 });
+    console.error('Resume upload error:', err);
+    return NextResponse.json({ error: err.message || 'Upload failed' }, { status: 500 });
   }
 }

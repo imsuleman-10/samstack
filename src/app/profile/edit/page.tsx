@@ -98,34 +98,48 @@ export default function ProfileEditPage() {
   }, []);
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let file = e.target.files?.[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size must be less than 5MB.');
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error('Image size must be less than 20MB.');
       return;
     }
 
     setUploadingAvatar(true);
     try {
-      if (file.size > 150 * 1024) {
-        toast.info('Compressing image...');
-        const compressedBlob = await compressImage(file, { targetKB: 100 });
-        file = blobToFile(compressedBlob, file.name);
+      let uploadFile: File | Blob = file;
+      if (file.size > 200 * 1024) {
+        try {
+          const compressedBlob = await compressImage(file, { targetKB: 100 });
+          if (compressedBlob && compressedBlob.size > 0) {
+            uploadFile = compressedBlob;
+          }
+        } catch (compressionErr) {
+          console.warn('Browser canvas compression skipped, server will compress:', compressionErr);
+          uploadFile = file;
+        }
       }
 
       const fd = new FormData();
-      fd.append('avatar', file);
+      fd.append('avatar', uploadFile, file.name);
       const res = await fetch('/api/upload/avatar', { method: 'POST', body: fd });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || 'Upload failed');
-      setData(prev => prev ? { ...prev, user: { ...prev.user, avatar_url: json.avatar_url } } : null);
+
+      const newUrl = json.avatar_url || json.url;
+      setData(prev => prev ? {
+        ...prev,
+        user: { ...prev.user, avatar_url: newUrl },
+        internProfile: prev.internProfile ? { ...prev.internProfile, avatar_url: newUrl } : prev.internProfile,
+      } : null);
       toast.success('Profile photo updated successfully.');
     } catch (err: any) {
       setError(err.message);
-      toast.error(err.message);
+      toast.error(err.message || 'Failed to upload photo');
     } finally {
       setUploadingAvatar(false);
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -147,8 +161,10 @@ export default function ProfileEditPage() {
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
       setError(err.message);
+      toast.error(err.message || 'Failed to upload resume');
     } finally {
       setUploadingResume(false);
+      if (e.target) e.target.value = '';
     }
   };
 

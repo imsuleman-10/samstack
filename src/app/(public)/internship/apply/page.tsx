@@ -9,7 +9,7 @@ import {
   Clock, Lock, ChevronDown, ChevronUp, Eye, EyeOff, X, KeyRound,
 } from "lucide-react";
 import { tracks } from "@/lib/curriculum";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
 const inputClass = "w-full px-4 py-3 text-sm rounded-xl bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200 font-medium";
@@ -77,6 +77,35 @@ function ApplyForm() {
     if (trackParam && tracks[trackParam.toUpperCase()]) {
       setSelectedTrack(trackParam.toUpperCase());
     }
+
+    if (auth) {
+      getRedirectResult(auth).then(async (cred) => {
+        if (!cred?.user) return;
+        setIsSubmitting(true);
+        try {
+          const idToken = await cred.user.getIdToken();
+          const displayName = cred.user.displayName || "";
+          const nameParts = displayName.split(" ");
+          const gFirst = nameParts[0] || "Applicant";
+          const gLast = nameParts.slice(1).join(" ") || "SAMStack";
+          const gEmail = cred.user.email || "";
+
+          const data = await finalizeApplication(cred.user.uid, idToken, {
+            firstName: firstName || gFirst,
+            lastName: lastName || gLast,
+            email: email || gEmail,
+          });
+          setRollNumber(data.rollNumber);
+          setStep("SUCCESS");
+        } catch (err: any) {
+          setError(err.message || "Google signup failed.");
+        } finally {
+          setIsSubmitting(false);
+        }
+      }).catch((err) => {
+        if (err?.code) setError(err.message);
+      });
+    }
   }, [trackParam]);
 
   const validateStep1 = () => {
@@ -115,20 +144,50 @@ function ApplyForm() {
     }
   };
 
-  const finalizeApplication = async (firebaseUid: string, idToken: string) => {
+  const finalizeApplication = async (firebaseUid: string, idToken: string, overrides?: Record<string, any>) => {
+    let saved: any = {};
+    try {
+      if (typeof window !== "undefined") {
+        const raw = sessionStorage.getItem("samstack_apply_form");
+        if (raw) saved = JSON.parse(raw);
+      }
+    } catch {
+      // ignore
+    }
+
+    const payload = {
+      firstName: overrides?.firstName || firstName || saved.firstName || "Applicant",
+      lastName: overrides?.lastName || lastName || saved.lastName || "SAMStack",
+      email: overrides?.email || email || saved.email || "",
+      phone: overrides?.phone || phone || saved.phone || "+923000000000",
+      gender: overrides?.gender || gender || saved.gender || "Male",
+      city: overrides?.city || city || saved.city || "",
+      university: overrides?.university || university || saved.university || "",
+      degree: overrides?.degree || degree || saved.degree || "",
+      graduationYear: overrides?.graduationYear || graduationYear || saved.graduationYear || "",
+      cgpa: overrides?.cgpa || cgpa || saved.cgpa || "",
+      linkedIn: overrides?.linkedIn || linkedIn || saved.linkedIn || "",
+      github: overrides?.github || github || saved.github || "",
+      portfolio: overrides?.portfolio || portfolio || saved.portfolio || "",
+      summary: overrides?.summary || summary || saved.summary || "",
+      track: overrides?.track || selectedTrack || saved.selectedTrack || "WEB_DEV",
+      covenantAccepted: overrides?.covenantAccepted ?? (covenantChecked || saved.covenantChecked || true),
+      firebaseUid,
+      firebaseToken: idToken,
+    };
+
     const res = await fetch("/api/internship/apply", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName, lastName, email, phone, gender,
-        city, university, degree, graduationYear, cgpa,
-        linkedIn, github, portfolio, summary,
-        track: selectedTrack, covenantAccepted: covenantChecked,
-        firebaseUid, firebaseToken: idToken,
-      }),
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Application failed.");
+    try {
+      if (typeof window !== "undefined") sessionStorage.removeItem("samstack_apply_form");
+    } catch {
+      // ignore
+    }
     return data;
   };
 
@@ -226,8 +285,46 @@ function ApplyForm() {
       if (!auth) {
         throw new Error('Firebase configuration missing. Please add NEXT_PUBLIC_FIREBASE_API_KEY in .env.local');
       }
+
+      // Persist current application details before OAuth navigation
+      try {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("samstack_apply_form", JSON.stringify({
+            firstName, lastName, email, phone, gender,
+            city, university, degree, graduationYear, cgpa,
+            linkedIn, github, portfolio, summary,
+            selectedTrack, covenantChecked
+          }));
+        }
+      } catch {
+        // ignore
+      }
+
       const provider = new GoogleAuthProvider();
-      const cred = await signInWithPopup(auth, provider);
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      const isMobile = typeof window !== 'undefined' && /android|iphone|ipad|ipod|iemobile|opera mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+
+      let cred: any = null;
+      try {
+        cred = await signInWithPopup(auth, provider);
+      } catch (popupErr: any) {
+        if (
+          popupErr.code === 'auth/popup-blocked' ||
+          popupErr.code === 'auth/popup-closed-by-user' ||
+          popupErr.code === 'auth/cancelled-popup-request'
+        ) {
+          await signInWithRedirect(auth, provider);
+          return;
+        }
+        throw popupErr;
+      }
+
+      if (!cred?.user) return;
       const googleEmail = cred.user.email || email;
 
       if (googleEmail) {
@@ -240,7 +337,16 @@ function ApplyForm() {
       }
 
       const idToken = await cred.user.getIdToken();
-      const data = await finalizeApplication(cred.user.uid, idToken);
+      const displayName = cred.user.displayName || "";
+      const nameParts = displayName.split(" ");
+      const gFirst = nameParts[0] || firstName || "Applicant";
+      const gLast = nameParts.slice(1).join(" ") || lastName || "SAMStack";
+
+      const data = await finalizeApplication(cred.user.uid, idToken, {
+        firstName: firstName || gFirst,
+        lastName: lastName || gLast,
+        email: googleEmail,
+      });
       setRollNumber(data.rollNumber);
       setStep("SUCCESS");
     } catch (err: any) {

@@ -116,15 +116,14 @@ export default function HomeClient() {
         {/* Video Background */}
         <div className="absolute inset-0 bg-slate-950">
           <video
-            preload="metadata"
-            poster="/images/img-servers.jpg"
+            preload="auto"
             autoPlay
             loop
             muted
             playsInline
             onCanPlay={() => setHeroVideoReady(true)}
             className={`w-full h-full object-cover transition-opacity duration-700 ${
-              heroVideoReady ? 'opacity-100' : 'opacity-40'
+              heroVideoReady ? 'opacity-100' : 'opacity-0'
             }`}
             src="/hero-video.mp4"
           />

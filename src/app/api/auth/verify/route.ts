@@ -64,17 +64,20 @@ export async function POST(request: NextRequest) {
     if (!adminDb) throw new Error("Firebase Admin DB not initialized");
 
     // ─── Upsert user in Firestore ────────────────────────────────────────────
+    const adminEmail = (process.env.ADMIN_EMAIL || "samstacktechs@gmail.com").toLowerCase();
+    const isAdmin = resolvedEmail ? resolvedEmail.toLowerCase() === adminEmail : false;
+
     const userDocRef = adminDb.collection("users").doc(firebaseUid);
     const userSnapshot = await userDocRef.get();
 
     let user: Record<string, unknown>;
 
     if (!userSnapshot.exists) {
-      // New user — if track is provided, set as intern, else user
-      const assignedRole: UserRole = track ? "intern" : "intern";
+      // New user — if email is admin email, set admin, otherwise intern
+      const assignedRole: UserRole = isAdmin ? "admin" : "intern";
       const insertPayload: Record<string, unknown> = {
         id: firebaseUid,
-        full_name: fullName?.trim() || "New Intern",
+        full_name: fullName?.trim() || (isAdmin ? "Administrator" : "New Intern"),
         role: assignedRole,
         status: "active" as AccountStatus,
         created_at: new Date().toISOString(),
@@ -90,9 +93,11 @@ export async function POST(request: NextRequest) {
     } else {
       user = userSnapshot.data() as Record<string, unknown>;
 
-      // Update missing fields — upgrade generic "user" role to "intern"
+      // Update missing fields — upgrade generic "user" role to "intern", or admin if admin email
       const updates: Record<string, unknown> = {};
-      if (user.role === "user") updates.role = "intern";
+      if (isAdmin && user.role !== "admin") updates.role = "admin";
+      else if (user.role === "user") updates.role = "intern";
+
       if (!user.phone_number && resolvedPhone) updates.phone_number = resolvedPhone;
       if (!user.email && resolvedEmail) updates.email = resolvedEmail;
       if (!user.full_name && fullName?.trim()) updates.full_name = fullName.trim();
@@ -106,15 +111,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // If track was provided or user is intern, ensure intern_profiles exists
-    if (track || user.role === "intern") {
+    // If user is intern or user, ensure intern_profiles exists with roll number
+    if (track || user.role === "intern" || user.role === "user") {
       const internRef = adminDb.collection("intern_profiles").doc(firebaseUid);
       const internSnap = await internRef.get();
-      if (!internSnap.exists && track) {
-        const rollNumber = `SAM-${track.toUpperCase().slice(0, 2)}-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+      const effectiveTrack = track || (user.track as string) || "WEB_DEV";
+      if (!internSnap.exists) {
+        const rollNumber = `SAM-${effectiveTrack.toUpperCase().slice(0, 2)}-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
         await internRef.set({
           user_id: firebaseUid,
-          track_selected: track,
+          track_selected: effectiveTrack,
           roll_number: rollNumber,
           certificate_status: null,
           offer_letter_sent: false,
@@ -148,7 +154,7 @@ export async function POST(request: NextRequest) {
     cookieStore.set("session_token", sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });

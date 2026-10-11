@@ -57,12 +57,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const allowedTypes = [
-      "image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif",
-    ];
-    if (!allowedTypes.includes(file.type)) {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    const validExts = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic', 'heif', 'jfif', 'bmp', 'svg'];
+    const isImageMime = file.type ? file.type.startsWith('image/') : false;
+    const isValidExt = validExts.includes(ext);
+
+    if (!isImageMime && !isValidExt) {
       return NextResponse.json(
-        { error: "Only JPEG, PNG, WebP, GIF or HEIC images are allowed." },
+        { error: "Only image files (JPEG, PNG, WebP, GIF, HEIC) are allowed." },
         { status: 400 }
       );
     }
@@ -74,34 +76,49 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const rawBuffer = Buffer.from(arrayBuffer);
 
-    // Compress server-side to ~100KB JPEG
-    const compressedBuffer = await compressToTarget(rawBuffer, 100, 800);
-    const finalSizeKB = Math.round(compressedBuffer.length / 1024);
-    console.log(
-      `[Avatar Upload] User ${user.id} — original: ${Math.round(file.size / 1024)}KB → compressed: ${finalSizeKB}KB`
-    );
+    let finalBuffer: Buffer = rawBuffer;
+    let contentType = "image/jpeg";
+    try {
+      finalBuffer = await compressToTarget(rawBuffer, 100, 800);
+    } catch (sharpErr: any) {
+      console.warn('[Avatar Upload] Sharp compression skipped, using original buffer:', sharpErr?.message);
+      finalBuffer = rawBuffer;
+      contentType = file.type || "image/jpeg";
+    }
 
-    const fileName = `${user.id}-avatar.jpg`;
+    const finalSizeKB = Math.round(finalBuffer.length / 1024);
+    const sanitizedId = user.id.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const fileName = `${sanitizedId}-avatar-${Date.now()}.jpg`;
 
-    // Upload to Supabase Storage with auto-retry (wakes project if paused)
+    // Upload to Supabase Storage with auto-retry and local fallback
     const publicUrl = await supabaseUpload({
       bucket: "avatars",
       path: fileName,
-      body: compressedBuffer,
-      contentType: "image/jpeg",
+      body: finalBuffer,
+      contentType,
     });
 
     // Save avatar_url to the platform users collection
     if (adminDb) {
-      await adminDb.collection(FS.USERS).doc(user.id).update({
-        avatar_url: publicUrl,
-        updated_at: new Date().toISOString(),
-      });
+      try {
+        await adminDb.collection(FS.USERS).doc(user.id).set({
+          avatar_url: publicUrl,
+          updated_at: new Date().toISOString(),
+        }, { merge: true });
+
+        // Also merge into intern_profiles if exists
+        await adminDb.collection(FS.INTERN_PROFILES).doc(user.id).set({
+          avatar_url: publicUrl,
+          updated_at: new Date().toISOString(),
+        }, { merge: true });
+      } catch (dbErr: any) {
+        console.error('[Avatar Upload] Failed to update Firestore, but file was uploaded:', dbErr.message);
+      }
     }
 
     return NextResponse.json({ success: true, url: publicUrl, avatar_url: publicUrl, sizeKB: finalSizeKB });
   } catch (err: any) {
-    console.error("Avatar upload error:", err);
-    return NextResponse.json({ error: err.message || "Upload failed" }, { status: 500 });
+    console.error('Avatar upload error:', err);
+    return NextResponse.json({ error: err.message || 'Upload failed' }, { status: 500 });
   }
 }

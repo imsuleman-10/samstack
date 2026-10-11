@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  onAuthStateChanged,
   GoogleAuthProvider,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -25,7 +28,7 @@ const firebaseErrorMessage = (code: string): string => {
     'auth/invalid-email':            'Please enter a valid email address.',
     'auth/user-disabled':            'This account has been disabled. Contact support.',
     'auth/popup-closed-by-user':     'Google sign-in was cancelled. Please try again.',
-    'auth/popup-blocked':            'Popup was blocked. Please allow popups and try again.',
+    'auth/popup-blocked':            'Popup was blocked. Redirecting to Google sign in...',
     'auth/network-request-failed':   'Network error. Please check your internet connection.',
     'auth/expired-action-code':      'This link has expired. Please request a new one.',
     'auth/invalid-action-code':      'Invalid or already used reset link.',
@@ -67,6 +70,7 @@ export default function LoginPage() {
 
   // State
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [emailExists, setEmailExists] = useState(false);
@@ -82,11 +86,110 @@ export default function LoginPage() {
     return () => clearTimeout(timer);
   }, [countdown]);
 
+  const hasHandledAuthRef = useRef(false);
+
+  // Check if user is already logged in or returning from Google redirect
+  useEffect(() => {
+    let isMounted = true;
+
+    // Restore any pending registration track / gender / mode from sessionStorage
+    try {
+      if (typeof window !== 'undefined') {
+        const savedMode = sessionStorage.getItem('samstack_oauth_mode') as Mode | null;
+        const savedTrack = sessionStorage.getItem('samstack_oauth_track');
+        const savedGender = sessionStorage.getItem('samstack_oauth_gender');
+        if (savedMode) setMode(savedMode);
+        if (savedTrack) setSigTrack(savedTrack);
+        if (savedGender) setSigGender(savedGender);
+      }
+    } catch {
+      // ignore
+    }
+
+    // 1. If user already has an active session cookie, auto-redirect to dashboard
+    fetch('/api/profile')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!isMounted || !d?.user || hasHandledAuthRef.current) return;
+        hasHandledAuthRef.current = true;
+        const role = d.user.role || 'intern';
+        const target = role === 'admin' ? '/admin' : role === 'mentor' ? '/mentor/dashboard' : '/intern/dashboard';
+        setRedirecting(true);
+        window.location.replace(target);
+      })
+      .catch(() => {});
+
+    // Helper to verify user on server and redirect
+    const handleAuthenticatedUser = async (user: any) => {
+      if (!isMounted || hasHandledAuthRef.current) return;
+      hasHandledAuthRef.current = true;
+      setLoading(true);
+      setRedirecting(true);
+      try {
+        const savedTrack = typeof window !== 'undefined' ? sessionStorage.getItem('samstack_oauth_track') : null;
+        const savedGender = typeof window !== 'undefined' ? sessionStorage.getItem('samstack_oauth_gender') : null;
+        await verifyOnServer(
+          user,
+          user.displayName || 'Google User',
+          undefined,
+          user.email || undefined,
+          savedTrack || sigTrack,
+          savedGender || sigGender
+        );
+      } catch (err: any) {
+        hasHandledAuthRef.current = false;
+        setRedirecting(false);
+        setLoading(false);
+        setError(firebaseErrorMessage(err.code) || err.message || 'Google verification failed.');
+      }
+    };
+
+    // 2. Handle mobile Google OAuth redirect result
+    if (auth) {
+      getRedirectResult(auth)
+        .then(async (cred) => {
+          if (cred?.user) {
+            await handleAuthenticatedUser(cred.user);
+          }
+        })
+        .catch((err: any) => {
+          if (!isMounted) return;
+          if (err?.code) setError(firebaseErrorMessage(err.code) || err.message);
+        });
+
+      // 3. Fallback listener: onAuthStateChanged catches user on mobile when getRedirectResult resolves null
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (!isMounted || !user || hasHandledAuthRef.current) return;
+        // Verify if session cookie is already active before re-verifying
+        const profile = await fetch('/api/profile').then(r => r.ok ? r.json() : null).catch(() => null);
+        if (profile?.user) {
+          hasHandledAuthRef.current = true;
+          const role = profile.user.role || 'intern';
+          const target = role === 'admin' ? '/admin' : role === 'mentor' ? '/mentor/dashboard' : '/intern/dashboard';
+          setRedirecting(true);
+          window.location.replace(target);
+          return;
+        }
+        await handleAuthenticatedUser(user);
+      });
+
+      return () => {
+        isMounted = false;
+        unsubscribe();
+      };
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const clear = () => { setError(''); setSuccess(''); setEmailExists(false); };
   const switchMode = (m: Mode) => { setMode(m); clear(); setForgotSent(false); setOtp(''); };
 
   const verifyOnServer = async (user: any, n?: string, p?: string, e?: string, track?: string, gender?: string) => {
-    const token = await user.getIdToken();
+    setRedirecting(true);
+    const token = await user.getIdToken(true);
     const res = await fetch('/api/auth/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -94,8 +197,21 @@ export default function LoginPage() {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'Server error');
-    // Role-based redirect is driven by the server
-    router.push(data.dashboard || '/intern/dashboard');
+    
+    // Clear OAuth temporary storage
+    try {
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('samstack_oauth_mode');
+        sessionStorage.removeItem('samstack_oauth_track');
+        sessionStorage.removeItem('samstack_oauth_gender');
+      }
+    } catch {
+      // ignore
+    }
+
+    // Hard document navigation ensures cookies are attached immediately across all mobile browsers
+    const targetDashboard = data.dashboard || '/intern/dashboard';
+    window.location.replace(targetDashboard);
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -324,16 +440,60 @@ export default function LoginPage() {
       if (!auth) {
         throw new Error('Firebase configuration missing. Please add NEXT_PUBLIC_FIREBASE_API_KEY in .env.local');
       }
-      const cred = await signInWithPopup(auth, new GoogleAuthProvider());
-      await verifyOnServer(
-        cred.user,
-        cred.user.displayName || 'Google User',
-        undefined,
-        cred.user.email || undefined,
-        sigTrack,
-        sigGender
-      );
+
+      // Save current registration selections so they persist across redirect
+      try {
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('samstack_oauth_mode', mode);
+          sessionStorage.setItem('samstack_oauth_track', sigTrack);
+          sessionStorage.setItem('samstack_oauth_gender', sigGender);
+        }
+      } catch {
+        // ignore
+      }
+
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      // On mobile devices, always prefer redirect for reliable native authentication
+      const isMobile = typeof window !== 'undefined' && /android|iphone|ipad|ipod|iemobile|opera mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        setRedirecting(true);
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+
+      let cred: any = null;
+      try {
+        cred = await signInWithPopup(auth, provider);
+      } catch (popupErr: any) {
+        // If popup was blocked or closed on mobile, fallback smoothly to redirect
+        if (
+          popupErr.code === 'auth/popup-blocked' ||
+          popupErr.code === 'auth/popup-closed-by-user' ||
+          popupErr.code === 'auth/cancelled-popup-request'
+        ) {
+          console.log('[Google Auth] Popup blocked or cancelled, redirecting...');
+          setRedirecting(true);
+          await signInWithRedirect(auth, provider);
+          return;
+        }
+        throw popupErr;
+      }
+
+      if (cred?.user) {
+        await verifyOnServer(
+          cred.user,
+          cred.user.displayName || 'Google User',
+          undefined,
+          cred.user.email || undefined,
+          mode === 'SIGNUP' ? sigTrack : undefined,
+          mode === 'SIGNUP' ? sigGender : undefined
+        );
+      }
     } catch (err: any) {
+      setRedirecting(false);
+      setLoading(false);
       if (err.code === 'auth/email-already-in-use' || err.code === 'auth/account-exists-with-different-credential') {
         setEmailExists(true);
         if (mode === 'SIGNUP') {
@@ -345,7 +505,6 @@ export default function LoginPage() {
         setError(firebaseErrorMessage(err.code) || err.message || 'Google login failed.');
       }
     }
-    finally { setLoading(false); }
   };
 
   const inp = "w-full bg-slate-50 dark:bg-neutral-800/60 border border-slate-200 dark:border-neutral-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm font-medium";
@@ -441,6 +600,21 @@ export default function LoginPage() {
                     Sign In Instead
                   </button>
                 </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Redirecting banner */}
+          <AnimatePresence>
+            {redirecting && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-5 p-4 rounded-xl text-sm font-semibold border overflow-hidden bg-brand-50 dark:bg-brand-950/40 border-brand-200 dark:border-brand-800/40 text-brand-700 dark:text-brand-300 flex items-center justify-center gap-3 shadow-sm"
+              >
+                <Loader2 className="w-5 h-5 animate-spin text-brand-500 shrink-0" />
+                <span>Redirecting to your dashboard...</span>
               </motion.div>
             )}
           </AnimatePresence>
