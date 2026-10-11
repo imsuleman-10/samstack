@@ -23,7 +23,7 @@ async function compressToTarget(
 
   let pipeline: ReturnType<typeof sharp>;
   try {
-    pipeline = sharp(input, { failOnError: false }).rotate();
+    pipeline = sharp(input).rotate();
     const meta = await pipeline.metadata();
     if ((meta.width ?? 0) > maxWidthPx) {
       pipeline = pipeline.resize({ width: maxWidthPx, withoutEnlargement: true });
