@@ -51,18 +51,21 @@ export default function StickyVideoSection() {
       className="relative h-[200vh] bg-white dark:bg-zinc-950"
     >
 
-      {/* -- DESKTOP LAYOUT -- */}
-      <div className="hidden md:flex sticky top-[80px] h-[calc(100vh-80px)] w-full bg-white dark:bg-zinc-950 items-center overflow-hidden pl-8">
-
-        {/* VIDEO — shrinks from full-width, stays left-aligned */}
+      {/* Unified Responsive Container — Single video element */}
+      <div className="sticky top-[80px] h-[calc(100vh-80px)] w-full bg-white dark:bg-zinc-950 flex flex-col md:flex-row items-center justify-center md:justify-start overflow-hidden px-4 md:px-0 md:pl-8 gap-6 md:gap-0">
+        
+        {/* VIDEO — Shrinks on scroll, single video for desktop and mobile */}
         <motion.div
-          style={{ width: videoWidth, borderRadius }}
-          className="relative h-[75vh] overflow-hidden flex-shrink-0 shadow-xl"
+          style={{
+            width: typeof window !== "undefined" && window.innerWidth < 768 ? mobileVideoWidth : videoWidth,
+            borderRadius: typeof window !== "undefined" && window.innerWidth < 768 ? mobileBorderRadius : borderRadius,
+          }}
+          className="relative h-[42vh] md:h-[75vh] w-full md:w-auto overflow-hidden flex-shrink-0 shadow-xl"
         >
           <video
             ref={videoRef}
             src="/2nd-vid.mp4"
-            preload="auto"
+            preload="metadata"
             autoPlay
             muted
             playsInline
@@ -72,72 +75,32 @@ export default function StickyVideoSection() {
           />
         </motion.div>
 
-        {/* TEXT — appears on the right as video shrinks */}
+        {/* TEXT CONTENT — Responsive position and typography */}
         <motion.div
-          style={{ opacity: textOpacity, x: textX }}
-          className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 pr-[7vw] pl-6 w-[46%] max-w-[500px]"
+          style={{
+            opacity: typeof window !== "undefined" && window.innerWidth < 768 ? mobileTextOpacity : textOpacity,
+            x: typeof window !== "undefined" && window.innerWidth >= 768 ? textX : 0,
+            y: typeof window !== "undefined" && window.innerWidth < 768 ? mobileTextY : 0,
+          }}
+          className="flex flex-col items-center md:items-start text-center md:text-left gap-3 md:gap-5 md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 md:pr-[7vw] md:pl-6 w-full md:w-[46%] md:max-w-[500px]"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#1bc2cd]">
+          <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-[#1bc2cd]">
             What We Do
           </p>
-          <h2 className="text-4xl xl:text-5xl font-extrabold text-slate-900 dark:text-white font-heading leading-tight">
-            We Turn Ideas Into<br />Business Solutions.
+          <h2 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-extrabold text-slate-900 dark:text-white font-heading leading-tight">
+            We Turn Ideas Into<br className="hidden md:inline" /> Business Solutions.
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
-            From startups to enterprises — we engineer scalable software that drives real growth, not just lines of code.
+          <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed max-w-sm md:max-w-none">
+            From startups to established companies — we engineer scalable software that drives real business growth.
           </p>
           <div className="mt-1">
             <Link
               href="/services"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#1bc2cd] hover:bg-[#15aab4] text-white font-bold text-sm transition-colors shadow-lg shadow-[#1bc2cd]/30"
+              className="inline-flex items-center justify-center px-6 md:px-8 py-3 md:py-3.5 rounded-full bg-[#1bc2cd] hover:bg-[#15aab4] text-white font-bold text-xs md:text-sm transition-colors shadow-lg shadow-[#1bc2cd]/30"
             >
               Our Services
             </Link>
           </div>
-        </motion.div>
-      </div>
-
-      {/* -- MOBILE LAYOUT — stacked: video on top, text below -- */}
-      <div className="md:hidden sticky top-[80px] h-[calc(100vh-80px)] w-full bg-white dark:bg-zinc-950 flex flex-col items-center justify-center gap-6 overflow-hidden px-4">
-
-        {/* VIDEO */}
-        <motion.div
-          style={{ width: mobileVideoWidth, borderRadius: mobileBorderRadius }}
-          className="w-full overflow-hidden flex-shrink-0 shadow-xl"
-        >
-          <div className="relative" style={{ height: "45vh" }}>
-            <video
-              src="/2nd-vid.mp4"
-              preload="auto"
-              autoPlay
-              muted
-              playsInline
-              loop
-              className="w-full h-full object-cover bg-zinc-950"
-            />
-          </div>
-        </motion.div>
-
-        {/* TEXT — below video */}
-        <motion.div
-          style={{ opacity: mobileTextOpacity, y: mobileTextY }}
-          className="flex flex-col items-center text-center gap-3 px-2"
-        >
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#1bc2cd]">
-            What We Do
-          </p>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white font-heading leading-tight">
-            We Turn Ideas Into Business Solutions.
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-xs">
-            Scalable software that drives real growth — from startups to enterprises.
-          </p>
-          <Link
-            href="/services"
-            className="mt-1 inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#1bc2cd] hover:bg-[#15aab4] text-white font-bold text-xs transition-colors shadow-lg shadow-[#1bc2cd]/30"
-          >
-            Our Services
-          </Link>
         </motion.div>
       </div>
 

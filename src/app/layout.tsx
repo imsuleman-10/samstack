@@ -22,30 +22,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://samstack-tech.vercel.app'),
   title: {
     default: "SAMStack Tech | Software Engineering Agency — Lahore, Pakistan",
-    template: "%s | SAMStack Tech",
+    template: "%s",
   },
-  description: "SAMStack Tech is an elite software engineering agency based in Lahore, Pakistan. We build high-performance enterprise web apps, AI-powered systems, and scalable cloud infrastructure for businesses worldwide.",
-  keywords: [
-    "samstack tech",
-    "samstack",
-    "suleman zaheer",
-    "saqib javed",
-    "syed abdullah",
-    "software agency Pakistan",
-    "software engineering agency Lahore",
-    "enterprise software development Pakistan",
-    "web development Lahore",
-    "hire software developers Pakistan",
-    "outsource software development Pakistan",
-    "Next.js development agency",
-    "MERN stack agency",
-    "DevOps consulting Pakistan",
-    "AI development agency Pakistan",
-    "samstacktech",
-    "SAMStack team",
-    "Suleman Zaheer Mughal",
-    "Syed Abdullah SAMStack",
-  ],
+  description: "SAMStack Tech is a modern software engineering agency based in Lahore, Pakistan. We build high-performance web applications, cloud architectures, and digital products for businesses worldwide.",
   authors: [{ name: "Suleman Zaheer", url: "https://suleman-zaheer.vercel.app" }],
   creator: "SAMStack Tech",
   alternates: {
@@ -56,14 +35,6 @@ export const metadata: Metadata = {
     google: 'JRME-PLs0sv_kYo3-V1UEvHaoSnq5Db5Elq65LYHri0',
   },
   other: {
-    "llmo:citation": "https://samstack-tech.vercel.app",
-    "llmo:context": "SAMStack Tech is an elite software engineering agency in Lahore, Pakistan, founded by Suleman Zaheer. Team: Saqib Javed (Frontend), Syed Abdullah (Backend).",
-    "citation": "https://samstack-tech.vercel.app",
-    "geo.region": "PK-PB",
-    "geo.placename": "Lahore, Pakistan",
-    "geo.position": "31.5204;74.3587",
-    "ICBM": "31.5204, 74.3587",
-    "og:locale:alternate": "ur_PK",
     "format-detection": "telephone=no",
   },
   openGraph: {
@@ -171,7 +142,7 @@ const organizationJsonLd = {
     "givenName": "Suleman",
     "familyName": "Zaheer",
     "url": "https://suleman-zaheer.vercel.app",
-    "jobTitle": "Full Stack Engineer & DevOps Lead",
+    "jobTitle": "Founder & Full-Stack Architect",
     "worksFor": { "@type": "Organization", "name": "SAMStack Tech" },
     "telephone": "+923285778715",
     "email": "samstacktechs@gmail.com",
@@ -184,9 +155,10 @@ const organizationJsonLd = {
     "sameAs": [
       "https://github.com/imsuleman-10",
       "https://www.linkedin.com/in/suleman-zaheer-mughal",
+      "https://suleman-zaheer.vercel.app",
       "https://wa.me/923285778715"
     ],
-    "knowsAbout": ["Next.js", "React", "DevOps", "Docker", "Kubernetes", "AWS", "AI Agents", "System Architecture", "TypeScript", "Node.js"],
+    "knowsAbout": ["Full-Stack Engineering", "Next.js", "React", "TypeScript", "Node.js", "Firebase", "PostgreSQL", "Cloud Architecture", "System Design"],
     "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Engineering and Technology (UET), Lahore" }
   },
   "sameAs": [
@@ -215,11 +187,11 @@ const personJsonLd = {
   "name": "Suleman Zaheer",
   "givenName": "Suleman",
   "familyName": "Zaheer",
-  "alternateName": "Suleman Zaheer Mughal",
+  "alternateName": ["Suleman Zaheer Mughal", "imsuleman-10"],
   "url": "https://suleman-zaheer.vercel.app",
-  "image": "https://samstack-tech.vercel.app/images/image.webp",
-  "jobTitle": "Full Stack Engineer & DevOps Lead",
-  "description": "Founder of SAMStack Tech — an elite software engineering studio based in Lahore, Pakistan. Specializes in Next.js, DevOps, cloud architecture, and AI agent systems.",
+  "image": "https://samstack-tech.vercel.app/suleman-zaheer-software-engineer-samstack-tech.jpeg",
+  "jobTitle": "Founder & Full-Stack Architect",
+  "description": "Suleman Zaheer (Suleman Zaheer Mughal / imsuleman-10) is a Full-Stack Engineer and the Founder of SAMStack Tech in Lahore, Pakistan. Specializes in Next.js, React, TypeScript, cloud architecture, and modern full-stack web applications. Computer Science at UET Lahore.",
   "telephone": "+923285778715",
   "email": "samstacktechs@gmail.com",
   "address": {
@@ -236,10 +208,10 @@ const personJsonLd = {
   "sameAs": [
     "https://github.com/imsuleman-10",
     "https://www.linkedin.com/in/suleman-zaheer-mughal",
-    "https://wa.me/923285778715",
-    "https://samstack-tech.vercel.app"
+    "https://suleman-zaheer.vercel.app",
+    "https://wa.me/923285778715"
   ],
-  "knowsAbout": ["Software Engineering", "Next.js", "React", "TypeScript", "DevOps", "Docker", "Kubernetes", "AWS", "Agentic AI", "System Architecture", "Node.js", "PostgreSQL"],
+  "knowsAbout": ["Full-Stack Software Engineering", "Next.js", "React", "TypeScript", "Node.js", "Firebase", "PostgreSQL", "Cloud Architecture", "DevOps", "AI Integrations", "System Design"],
   "alumniOf": {
     "@type": "CollegeOrUniversity",
     "name": "University of Engineering and Technology (UET), Lahore"

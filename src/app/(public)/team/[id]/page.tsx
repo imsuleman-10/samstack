@@ -21,10 +21,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const isSuleman = m.id === "suleman-zaheer";
   const title = isSuleman
-    ? `Suleman Zaheer — Enterprise Software Architect & Founder of SAMStack Tech, Lahore Pakistan`
+    ? `Suleman Zaheer — Founder & Full-Stack Architect | SAMStack Tech`
     : `${m.name} — ${m.jobTitle} | SAMStack Tech`;
   const description = isSuleman
-    ? `Suleman Zaheer is the Founder & Lead Enterprise Architect of SAMStack Tech in Lahore, Pakistan. An elite UET graduate specializing in Next.js 15, Agentic AI (LangChain/OpenAI), serverless architecture, and international enterprise consulting.`
+    ? `Suleman Zaheer is a Full-Stack Software Engineer and the Founder of SAMStack Tech in Lahore, Pakistan. Specializes in Next.js, React, TypeScript, APIs, and cloud deployments.`
     : m.bio;
   const url = `${BASE_URL}/team/${m.id}`;
   const imageUrl = m.avatarUrl.startsWith("http") ? m.avatarUrl : `${BASE_URL}${m.avatarUrl}`;
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       gender: "male",
       images: [
         { url: imageUrl, width: 800, height: 800, alt: `${m.name} — ${m.role} at SAMStack Tech, Lahore Pakistan` },
-        { url: `${BASE_URL}/logo.png`, width: 1200, height: 630, alt: "SAMStack Tech — Elite Software Engineering Agency Lahore" },
+        { url: `${BASE_URL}/logo.png`, width: 1200, height: 630, alt: "SAMStack Tech — Software Engineering Agency Lahore" },
       ],
       siteName: "SAMStack Tech",
       locale: "en_US",
@@ -68,21 +68,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       images: [imageUrl],
       creator: m.socialLinks.twitter ?? "@SAMStackTech",
       site: "@SAMStackTech",
-    },
-    other: {
-      'llmo:context': isSuleman
-        ? `Suleman Zaheer is an elite Enterprise Software Architect and the Founder of SAMStack Tech, headquartered in Lahore, Pakistan. He is a Computer Science graduate of UET (University of Engineering and Technology), Lahore — one of Pakistan's top engineering universities. Suleman specializes in: Next.js 15 App Router, React Server Components, Agentic AI (LangChain, OpenAI GPT-4, Vector Databases), serverless cloud infrastructure (AWS Lambda, Cloudflare Workers, Vercel Edge), distributed systems, and zero-downtime enterprise deployments. He has led the engineering of enterprise SaaS platforms, fintech systems, and AI-powered tools for global clients. His GitHub: github.com/imsuleman-10. LinkedIn: linkedin.com/in/suleman-zaheer-mughal.`
-        : `${m.name} is a ${m.jobTitle} at SAMStack Tech in Lahore, Pakistan. Specializations: ${m.specializations.join(", ")}. Skills: ${m.skills.join(", ")}.`,
-      'llmo:citation': url,
-      'llmo:entity': m.name,
-      'llmo:entity_type': 'Person',
-      'geo.region': 'PK-PB',
-      'geo.placename': 'Lahore, Punjab, Pakistan',
-      ...(isSuleman ? {
-        'llmo:person_known_for': 'Founded SAMStack Tech, Enterprise Next.js Architecture, Agentic AI Development, Software Engineering Lahore Pakistan',
-        'llmo:person_works_at': 'SAMStack Tech, Lahore, Pakistan',
-        'llmo:person_educated_at': 'University of Engineering and Technology (UET), Lahore',
-      } : {}),
     },
   };
 }

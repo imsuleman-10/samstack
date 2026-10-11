@@ -2,35 +2,29 @@ import React from "react";
 import HomeClient from "./home-client";
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack-tech.vercel.app";
+const BASE_URL = (process.env.NEXT_PUBLIC_SITE_URL && !process.env.NEXT_PUBLIC_SITE_URL.includes("localhost"))
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : "https://samstack-tech.vercel.app";
 
 export const metadata: Metadata = {
   title: "SAMStack Tech | Software Engineering Agency in Lahore, Pakistan",
-  description: "SAMStack Tech is an elite software engineering agency based in Lahore, Pakistan. We build high-performance enterprise web apps, AI-powered systems, and scalable cloud infrastructure for businesses worldwide. Free consultation available.",
+  description: "SAMStack Tech is a modern software engineering agency based in Lahore, Pakistan. We engineer high-performance web applications, full-stack systems, and scalable cloud solutions for companies worldwide.",
   keywords: [
-    "samstack tech",
-    "samstack",
-    "suleman zaheer",
-    "saqib javed",
-    "syed abdullah",
-    "software engineering agency Lahore Pakistan",
-    "enterprise software development Pakistan",
-    "hire software developers Pakistan",
-    "outsource software development to Pakistan",
     "Next.js development agency Pakistan",
-    "MERN stack agency Lahore",
-    "AI development company Pakistan",
-    "DevOps consulting Pakistan",
-    "web development company Lahore",
-    "custom software development Pakistan",
-    "software agency Pakistan",
+    "software engineering agency Lahore Pakistan",
+    "hire Next.js developers Pakistan",
+    "full-stack development agency Lahore",
+    "custom web application development Pakistan",
+    "React and Node.js agency Pakistan",
+    "cloud architecture and DevOps consulting Pakistan",
+    "enterprise software development Pakistan",
   ],
   alternates: {
     canonical: BASE_URL,
   },
   openGraph: {
     title: "SAMStack Tech | Software Engineering Agency in Lahore, Pakistan",
-    description: "Elite software agency building enterprise web apps, AI systems, and cloud infrastructure. Based in Lahore — serving clients globally. Free consultation.",
+    description: "Modern software engineering agency building high-performance web apps, APIs, and cloud infrastructure. Based in Lahore — serving clients globally.",
     url: BASE_URL,
     type: "website",
     images: [{ url: "/logo.png", width: 1200, height: 630, alt: "SAMStack Tech — Software Engineering Agency Lahore Pakistan" }],
@@ -38,7 +32,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "SAMStack Tech | Software Engineering Agency in Lahore, Pakistan",
-    description: "Enterprise software, AI systems, and cloud infrastructure from Lahore, Pakistan. 14+ deployments. 99.9% uptime. Free consultation.",
+    description: "Modern web applications, APIs, and cloud infrastructure from Lahore, Pakistan. Book a free discovery call.",
     images: ["/logo.png"],
     creator: "@samstacktech",
   },

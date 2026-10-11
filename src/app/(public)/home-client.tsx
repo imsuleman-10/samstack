@@ -31,10 +31,10 @@ import { motion, useScroll, useTransform } from "framer-motion";
 // ─── Data ─────────────────────────────────────────────────
 
 const stats = [
-  { icon: ServerCog, label: "Enterprise Deployments", value: "14+", note: "Global Scale", color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50/60 dark:bg-brand-950/30 border-brand-200 dark:border-brand-900", image: "/images/img-global-scale.jpg" },
-  { icon: Shield, label: "Uptime Guarantee", value: "99.9%", note: "Zero-Downtime", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900", image: "/images/img-server-rack.jpg" },
-  { icon: Clock, label: "Response Time", value: "<12h", note: "Priority Support", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50/60 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900", image: "/images/img-matrix-code.jpg" },
-  { icon: Star, label: "Client Satisfaction", value: "9.9/10", note: "Avg NPS Score", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900", image: "/images/img-team-meeting.jpg" },
+  { icon: ServerCog, label: "Production Deployments", value: "14+", note: "Global Deployments", color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50/60 dark:bg-brand-950/30 border-brand-200 dark:border-brand-900", image: "/images/img-global-scale.jpg" },
+  { icon: Shield, label: "Uptime Commitment", value: "99.9%", note: "Zero-Downtime Focus", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900", image: "/images/img-server-rack.jpg" },
+  { icon: Clock, label: "Response Time", value: "<12h", note: "Priority Communication", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50/60 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900", image: "/images/img-matrix-code.jpg" },
+  { icon: Star, label: "Client Satisfaction", value: "4.9/5", note: "Average Rating", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900", image: "/images/img-team-meeting.jpg" },
 ];
 
 const defaultTeam = [
@@ -42,10 +42,10 @@ const defaultTeam = [
     image: "/suleman-zaheer-software-engineer-samstack-tech.jpeg",
     initials: "SZ",
     name: "Suleman Zaheer",
-    role: "Founder & DevOps Lead",
-    badge: "DevOps",
-    description: "Architecting cloud-native systems, CI/CD pipelines, and zero-downtime infrastructure. Leads the overall vision and technical direction of SAMStack Tech.",
-    skills: ["Docker & Kubernetes", "GitHub Actions", "Next.js", "Firebase"],
+    role: "Founder & Full-Stack Architect",
+    badge: "Full-Stack",
+    description: "Architecting modern web applications, scalable APIs, and cloud deployments. Leads the technical vision, architecture, and engineering at SAMStack Tech.",
+    skills: ["Next.js & React", "TypeScript", "Node.js & APIs", "Cloud & DevOps"],
     badgeColor: "bg-brand-500",
     from: "from-brand-600",
     to: "to-indigo-600",
@@ -56,7 +56,7 @@ const defaultTeam = [
     name: "Saqib Javed",
     role: "Frontend Engineer",
     badge: "Frontend",
-    description: "Crafting pixel-perfect, high-performance user interfaces with obsidian aesthetics and smooth micro-animations. Specialises in React & component systems.",
+    description: "Crafting responsive, high-performance user interfaces with clean design systems and smooth interactions. Specialises in React & component libraries.",
     skills: ["React / Next.js", "Tailwind CSS", "Figma", "Framer Motion"],
     badgeColor: "bg-emerald-500",
     from: "from-emerald-600",
@@ -68,7 +68,7 @@ const defaultTeam = [
     name: "Syed Abdullah",
     role: "Backend Engineer",
     badge: "Backend",
-    description: "Building robust, scalable server-side systems, REST/GraphQL APIs, database architecture, and enterprise-grade business logic that powers our platforms.",
+    description: "Building robust server-side architectures, database schemas, and reliable REST/GraphQL APIs that form the foundation of our client applications.",
     skills: ["Node.js", "PostgreSQL", "REST / GraphQL", "Firebase Admin"],
     badgeColor: "bg-violet-500",
     from: "from-violet-600",
@@ -405,7 +405,7 @@ export default function HomeClient() {
               {[
                 { val: "3", label: "Core Domains" },
                 { val: "14+", label: "Deployments" },
-                { val: "100%", label: "Client Retention" },
+                { val: "95%+", label: "Repeat & Referral" },
               ].map((m) => (
                 <div key={m.label} className="text-center">
                   <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white font-heading">{m.val}</p>
@@ -443,7 +443,7 @@ export default function HomeClient() {
                 Built by Specialists
               </h2>
               <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-base">
-                A tight-knit team of senior engineers each owning their domain — no juniors, no filler.
+                A focused team of engineers working directly on your codebase — direct founder communication and zero handoff friction.
               </p>
             </div>
           </AnimateOnScroll>

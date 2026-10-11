@@ -485,7 +485,7 @@ export default async function ServiceDetailsPage({ params }: { params: Promise<{
 
           <AnimateOnScroll variant="fadeUp" delay={0.2}>
             <div className="flex flex-wrap items-center justify-center gap-6 pt-6 border-t border-white/10">
-              {["14+ Deployments", "9.9 NPS Score", "NDA Protected", "Free Consultation"].map((badge) => (
+              {["14+ Deployments", "4.9/5 Rating", "NDA Protected", "Free Consultation"].map((badge) => (
                 <span key={badge} className="flex items-center gap-2 text-xs text-slate-400 font-medium">
                   <CheckCircle2 className="w-4 h-4 text-brand-500 shrink-0" />
                   {badge}

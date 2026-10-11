@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { UserAvatar } from '@/components/ui/UserAvatar';
-import { Loader2, Camera, X, Plus, FileText, Upload, KeyRound, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Camera, X, Plus, FileText, Upload, KeyRound, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -27,6 +27,7 @@ export default function ProfileEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [removingAvatar, setRemovingAvatar] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -168,6 +169,26 @@ export default function ProfileEditPage() {
     }
   };
 
+  const handleRemoveAvatar = async () => {
+    if (!window.confirm('Are you sure you want to remove your profile photo?')) return;
+    setRemovingAvatar(true);
+    try {
+      const res = await fetch('/api/upload/avatar', { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || 'Remove failed');
+      setData(prev => prev ? {
+        ...prev,
+        user: { ...prev.user, avatar_url: undefined },
+        internProfile: prev.internProfile ? { ...prev.internProfile, avatar_url: undefined } : prev.internProfile,
+      } : null);
+      toast.success('Profile photo removed.');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to remove photo');
+    } finally {
+      setRemovingAvatar(false);
+    }
+  };
+
   const addSkill = () => {
     const trimmed = skillInput.trim();
     if (!trimmed || form.skills.includes(trimmed)) { setSkillInput(''); return; }
@@ -243,16 +264,29 @@ export default function ProfileEditPage() {
               )}
             </div>
             <div>
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadingAvatar}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white/10 hover:bg-white/15 text-white transition-colors disabled:opacity-50"
-              >
-                <Camera className="w-4 h-4" />
-                Change Photo
-              </button>
-              <p className="text-xs text-gray-500 mt-1.5">JPEG, PNG or WebP · Max 5MB</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingAvatar || removingAvatar}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white/10 hover:bg-white/15 text-white transition-colors disabled:opacity-50"
+                >
+                  <Camera className="w-4 h-4" />
+                  Change Photo
+                </button>
+                {data.user.avatar_url && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveAvatar}
+                    disabled={uploadingAvatar || removingAvatar}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors disabled:opacity-50"
+                  >
+                    {removingAvatar ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    {removingAvatar ? 'Removing...' : 'Remove Photo'}
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-1.5">JPEG, PNG or WebP · Max 20MB</p>
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
             </div>
           </div>
@@ -359,8 +393,8 @@ export default function ProfileEditPage() {
             <Field label="Portfolio URL">
               <input type="url" value={form.social_links.portfolio || ''} onChange={e => setForm({ ...form, social_links: { ...form.social_links, portfolio: e.target.value } })} className={inputClass} placeholder="https://yoursite.com" />
             </Field>
-            <Field label="Twitter/X URL">
-              <input type="url" value={form.social_links.twitter || ''} onChange={e => setForm({ ...form, social_links: { ...form.social_links, twitter: e.target.value } })} className={inputClass} placeholder="https://x.com/..." />
+            <Field label="Instagram URL">
+              <input type="url" value={form.social_links.instagram || form.social_links.twitter || ''} onChange={e => setForm({ ...form, social_links: { ...form.social_links, instagram: e.target.value } })} className={inputClass} placeholder="https://instagram.com/..." />
             </Field>
           </div>
         </div>

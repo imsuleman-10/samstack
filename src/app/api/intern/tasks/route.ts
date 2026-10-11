@@ -27,7 +27,7 @@ async function isProfileComplete(userId: string): Promise<boolean> {
     { done: !!user.bio },
     { done: !!user.city },
     { done: Array.isArray(user.skills) && user.skills.length > 0 },
-    { done: !!(user.social_links?.linkedin || user.social_links?.github || user.linkedin || user.github) },
+    { done: !!(user.social_links?.linkedin || user.social_links?.github || user.social_links?.instagram || user.social_links?.portfolio || user.social_links?.twitter || user.linkedin || user.github) },
     { done: !!user.phone },
     { done: hasAvatar },
     { done: !!(intern?.track_selected || intern?.trackSelected || intern?.track) },

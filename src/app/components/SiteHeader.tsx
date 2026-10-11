@@ -254,36 +254,22 @@ export default function SiteHeader() {
               <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 animate-pulse" />
             )}
 
-            {/* Login CTA (outlined) */}
+            {/* Client Portal / Login (subtle) */}
             <Link
               href="/login"
-              className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg border transition-all duration-200 ${
+              className={`hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium rounded-lg transition-colors ${
                 isTransparent
-                  ? "border-slate-300/80 dark:border-white/20 text-slate-800 dark:text-slate-200 hover:bg-white/40 dark:hover:bg-white/10 backdrop-blur-sm"
-                  : "border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-neutral-800"
+                  ? "text-slate-700 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400"
+                  : "text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400"
               }`}
             >
-              <UserCheck className="w-3.5 h-3.5" />
-              Login
+              Portal
             </Link>
 
-            {/* Internship CTA (outlined) */}
-            <Link
-              href="/internship"
-              className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg border border-brand-500 text-brand-600 dark:text-brand-400 dark:border-brand-500/60 transition-all duration-200 ${
-                isTransparent
-                  ? "hover:bg-brand-500/15 backdrop-blur-sm bg-brand-50/40 dark:bg-brand-500/5"
-                  : "hover:bg-brand-50 dark:hover:bg-brand-500/10"
-              }`}
-            >
-              <GraduationCap className="w-3.5 h-3.5" />
-              Internship
-            </Link>
-
-            {/* Contact CTA (filled) */}
+            {/* Contact CTA (primary action) */}
             <Link
               href="/contact"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-all duration-200 shadow-md hover:shadow-brand-500/30 hover:shadow-lg"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-all duration-200 shadow-md hover:shadow-brand-500/30 hover:shadow-lg"
             >
               <Zap className="w-3.5 h-3.5" />
               Let&apos;s Talk

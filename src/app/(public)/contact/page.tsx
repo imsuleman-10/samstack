@@ -48,8 +48,8 @@ const TRUST_ITEMS = [
   },
   {
     icon: Users,
-    title: "Senior Team Only",
-    desc: "No juniors. Only senior architects with proven enterprise track records.",
+    title: "Direct Founder Access",
+    desc: "Work directly with core engineers and founders who architect and build your product.",
     image: "/images/img-server-rack.jpg",
   },
   {

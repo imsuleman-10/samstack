@@ -203,13 +203,12 @@ function Splash({ onDone }: { onDone: () => void }) {
 
 /* ─────────────────────────────────────────────────────────────────
    Master component — mount once in root layout inside <Suspense>
+   Non-blocking top indicator only, matching modern apps (Vercel/Linear).
 ───────────────────────────────────────────────────────────────── */
 export default function PageLoader() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [splashKey, setSplashKey] = useState(0);
-  const [splash, setSplash] = useState(true);
   const [routeLoading, setRouteLoading] = useState(false);
   const prevPath = useRef<string | null>(null);
 
@@ -220,19 +219,10 @@ export default function PageLoader() {
 
     prevPath.current = current;
     setRouteLoading(true);
-    
-    // Trigger splash screen on every route change
-    setSplashKey(k => k + 1);
-    setSplash(true);
 
-    const t = setTimeout(() => setRouteLoading(false), 600);
+    const t = setTimeout(() => setRouteLoading(false), 450);
     return () => clearTimeout(t);
   }, [pathname, searchParams]);
 
-  return (
-    <>
-      <TopBar active={routeLoading} />
-      {splash && <Splash key={splashKey} onDone={() => setSplash(false)} />}
-    </>
-  );
+  return <TopBar active={routeLoading} />;
 }

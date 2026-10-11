@@ -6,7 +6,7 @@ import { UserAvatar } from '@/components/ui/UserAvatar';
 import { RoleBadge } from '@/components/ui/RoleBadge';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProfileCompletion } from '@/components/ui/ProfileCompletion';
-import { Loader2, Edit3, Globe, MapPin, Briefcase, GraduationCap } from 'lucide-react';
+import { Loader2, Edit3, Globe, MapPin, Briefcase, GraduationCap, Instagram } from 'lucide-react';
 import Link from 'next/link';
 import type { PlatformUser, InternProfile, MentorProfile } from '@/lib/firestore-schema';
 import { getTrackTitle } from '@/lib/curriculum';
@@ -19,7 +19,16 @@ function calcCompletionFields(user: PlatformUser, intern?: InternProfile | null,
     { label: 'Bio', done: !!user.bio },
     { label: 'City', done: !!user.city },
     { label: 'Skills', done: (user.skills?.length ?? 0) > 0 },
-    { label: 'Social Links', done: !!user.social_links?.linkedin || !!user.social_links?.github },
+    {
+      label: 'Social Links',
+      done: !!(
+        user.social_links?.linkedin ||
+        user.social_links?.github ||
+        user.social_links?.instagram ||
+        user.social_links?.portfolio ||
+        user.social_links?.twitter
+      ),
+    },
     { label: 'Phone', done: !!user.phone },
     { label: 'Avatar', done: !!user.avatar_url },
   ];
@@ -115,9 +124,9 @@ export default function ProfilePage() {
                     <Globe className="w-5 h-5" />
                   </a>
                 )}
-                {user.social_links.twitter && (
-                  <a href={user.social_links.twitter} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-sky-400 transition-colors">
-                    <Globe className="w-5 h-5" />
+                {(user.social_links.instagram || user.social_links.twitter) && (
+                  <a href={user.social_links.instagram || user.social_links.twitter} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-pink-400 transition-colors" title="Instagram">
+                    <Instagram className="w-5 h-5" />
                   </a>
                 )}
                 {user.social_links.portfolio && (

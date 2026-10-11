@@ -44,6 +44,7 @@ export interface PlatformUser {
   social_links?: {
     linkedin?: string;
     github?: string;
+    instagram?: string;
     twitter?: string;
     portfolio?: string;
   };

@@ -286,7 +286,7 @@ export default function BlogPage() {
               Never Miss an <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Update.</span>
             </h2>
             <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto font-medium">
-              Join 10,000+ engineers receiving our best technical deep-dives and architecture patterns directly in their inbox.
+              Join founders and engineering leaders receiving our monthly architecture breakdowns and practical engineering insights.
             </p>
           </AnimateOnScroll>
 

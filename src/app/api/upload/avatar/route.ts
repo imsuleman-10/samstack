@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
-import { supabaseUpload } from "@/lib/supabase";
+import { supabaseUpload, getSupabaseClient } from "@/lib/supabase";
 
 export async function POST(request: NextRequest) {
   const authResult = await requireAuth(request);
@@ -93,5 +93,66 @@ export async function POST(request: NextRequest) {
   } catch (err: any) {
     console.error('[Avatar Upload Error]', err?.message || err);
     return NextResponse.json({ error: err.message || 'Upload failed' }, { status: 500 });
+  }
+}
+
+// DELETE — Remove avatar photo
+export async function DELETE(request: NextRequest) {
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
+  const { session: user } = authResult;
+
+  try {
+    // Get current avatar URL to extract the file path
+    let oldFilePath: string | null = null;
+    if (adminDb) {
+      try {
+        const userDoc = await adminDb.collection(FS.USERS).doc(user.id).get();
+        const avatarUrl: string = userDoc.data()?.avatar_url || '';
+        if (avatarUrl && avatarUrl.includes('/avatars/')) {
+          // Extract path after /avatars/
+          const match = avatarUrl.match(/\/avatars\/(.+)$/);
+          if (match) oldFilePath = match[1];
+        }
+      } catch { /* ignore */ }
+    }
+
+    // Remove from Supabase Storage
+    if (oldFilePath) {
+      try {
+        const supabase = getSupabaseClient();
+        await supabase.storage.from('avatars').remove([oldFilePath]);
+        console.log('[Avatar] Removed from Supabase:', oldFilePath);
+      } catch (storageErr: any) {
+        console.warn('[Avatar] Could not remove from Supabase:', storageErr.message);
+      }
+    }
+
+    // Clear avatar_url from Firestore
+    if (adminDb) {
+      const now = new Date().toISOString();
+      try {
+        await adminDb.collection(FS.USERS).doc(user.id).set(
+          { avatar_url: null, updated_at: now },
+          { merge: true }
+        );
+      } catch (dbErr: any) {
+        console.warn('[Avatar] Could not clear users avatar_url:', dbErr.message);
+      }
+      try {
+        const internRef = adminDb.collection(FS.INTERN_PROFILES).doc(user.id);
+        const internSnap = await internRef.get();
+        if (internSnap.exists) {
+          await internRef.update({ avatar_url: null, updated_at: now });
+        }
+      } catch (dbErr: any) {
+        console.warn('[Avatar] Could not clear intern_profiles avatar_url:', dbErr.message);
+      }
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err: any) {
+    console.error('[Avatar Remove Error]', err?.message || err);
+    return NextResponse.json({ error: err.message || 'Remove failed' }, { status: 500 });
   }
 }

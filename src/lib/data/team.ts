@@ -38,24 +38,24 @@ export const teamData: TeamMember[] = [
     name: "Suleman Zaheer",
     givenName: "Suleman",
     familyName: "Zaheer",
-    role: "Founder & Lead Enterprise Architect",
-    jobTitle: "Founder & Lead Enterprise Architect",
-    bio: "Suleman is an elite software architect and the founder of SAMStack Tech. He specializes in designing globally scalable Next.js architectures, serverless cloud infrastructure, and Agentic AI systems for international enterprises.",
-    longBio: "Suleman Zaheer is a world-class Enterprise Software Architect and the visionary founder of SAMStack Tech, headquartered in Lahore, Pakistan. Recognized as one of the top 1% engineering talents emerging from the University of Engineering and Technology (UET), Suleman has built a formidable reputation engineering high-throughput, zero-downtime platforms for global B2B SaaS and fintech companies. His core expertise lies at the intersection of modern React ecosystem (Next.js 15 App Router, React Server Components), distributed cloud infrastructure (AWS Serverless, Kubernetes, Edge caching), and Generative AI orchestration (LangChain, OpenAI, Vector Databases). As an international tech consultant, he bridge the gap between complex business requirements and elite technical execution, leading teams to deliver mission-critical software systems that handle millions of requests.",
+    role: "Founder & Full-Stack Architect",
+    jobTitle: "Founder & Full-Stack Architect",
+    bio: "Suleman Zaheer is a Full-Stack Software Engineer and the founder of SAMStack Tech. He specializes in designing modern Next.js applications, scalable APIs, and cloud deployments.",
+    longBio: "Suleman Zaheer is a Full-Stack Software Engineer and the founder of SAMStack Tech, headquartered in Lahore, Pakistan. Studying Computer Science at the University of Engineering and Technology (UET) Lahore, Suleman has built high-performance web applications and backend systems for businesses and startups. His core expertise includes the modern React and Next.js ecosystem, TypeScript, Node.js API engineering, database design with PostgreSQL and Firebase, and cloud deployments on Vercel and AWS. As lead engineer, he collaborates directly with founders and teams to deliver production-ready software systems with clean architecture and reliable execution.",
     avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpeg",
     skills: [
-      "Next.js 15 App Router", "React Server Components", "Agentic AI Orchestration", "LangChain & LLMs",
-      "Serverless Architecture (AWS/Vercel)", "PostgreSQL & Redis", "System Design & Scalability", 
-      "TypeScript (Strict DDD)", "Docker & Kubernetes", "CI/CD & DevOps Automation", "Vector Databases (Pinecone)"
+      "Next.js & React", "TypeScript", "Node.js & Express", "PostgreSQL & Firebase",
+      "REST & GraphQL APIs", "Tailwind CSS", "Docker & CI/CD", "System Architecture",
+      "Git & GitHub", "State Management & Performance"
     ],
     specializations: [
-      "Enterprise Cloud Architecture", "High-Frequency System Design", "AI Agentic Workflows", 
-      "B2B SaaS Engineering", "Global IT Consulting", "Zero-Downtime Deployments"
+      "Full-Stack Web Development", "Next.js Architecture", "API Design & Integration", 
+      "Cloud Deployment & DevOps", "Database Architecture"
     ],
     education: {
       institution: "University of Engineering and Technology (UET), Lahore",
       degree: "Bachelor of Science",
-      field: "Computer Science (AI & Cloud Computing focus)",
+      field: "Computer Science",
     },
     hometown: "Lahore, Punjab, Pakistan",
     location: "Lahore, Pakistan (Serving Clients Globally)",
@@ -66,29 +66,27 @@ export const teamData: TeamMember[] = [
     },
     featuredProjects: [
       {
-        title: "SAMStack Enterprise Console",
-        description: "A highly secure, multi-tenant B2B platform managing real-time data synchronization, automated PDF credentials via serverless functions, and encrypted client communications.",
-        techStack: ["Next.js 15", "TypeScript", "Redis", "Cloud Functions", "Tailwind CSS"],
+        title: "SAMStack Platform",
+        description: "A secure multi-tenant platform managing real-time data synchronization, automated document generation via cloud functions, and administrative workflows.",
+        techStack: ["Next.js", "TypeScript", "Firebase", "Tailwind CSS"],
         link: "https://samstack-tech.vercel.app",
       },
       {
-        title: "AI-Powered Medical Triage System",
-        description: "A HIPAA-compliant, AI-driven healthcare platform utilizing Retrieval-Augmented Generation (RAG) to process patient symptoms and suggest clinical pathways securely.",
-        techStack: ["React", "Node.js", "PostgreSQL", "LangChain", "OpenAI"],
+        title: "Clinical Workflow & Triage Portal",
+        description: "A healthcare triage web platform designed to streamline patient intake and clinical pathing with responsive UI and secure record management.",
+        techStack: ["React", "Node.js", "PostgreSQL", "REST APIs"],
         link: "https://github.com/imsuleman-10/SAM-AI-Clinic",
       },
       {
-        title: "High-Frequency Financial Dashboard",
-        description: "Engineered a low-latency dashboard processing financial streams via WebSockets with a sub-50ms global latency utilizing Edge computing.",
-        techStack: ["Next.js App Router", "Vercel Edge", "React Server Components"],
+        title: "Financial Analytics & Portfolio Dashboard",
+        description: "A high-performance dashboard displaying real-time financial metrics and analytics with low-latency client updates.",
+        techStack: ["Next.js", "TypeScript", "Chart.js", "Tailwind CSS"],
       }
     ],
     seoKeywords: [
-      "Suleman Zaheer", "Suleman Zaheer software engineer", "Top Next.js Developer Pakistan", 
-      "Enterprise Software Architect Lahore", "Suleman Zaheer AI Expert", "Agentic AI Developer Pakistan",
-      "Suleman Zaheer SAMStack Tech Founder", "Hire Senior React Architect Pakistan", 
-      "Outsource Next.js Development Pakistan", "Top 1% Software Engineer UET Lahore",
-      "Serverless AWS Consultant Pakistan", "SaaS Backend Engineer Lahore"
+      "Suleman Zaheer", "Suleman Zaheer Mughal", "Suleman Zaheer software engineer", 
+      "Suleman Zaheer SAMStack Tech", "Suleman Zaheer web developer", "Next.js developer Lahore", 
+      "Full Stack developer Pakistan", "imsuleman-10", "Suleman Zaheer UET"
     ],
   },
   {

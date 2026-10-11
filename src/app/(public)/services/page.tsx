@@ -409,7 +409,7 @@ export default function ServicesPage() {
 
           <AnimateOnScroll variant="fadeUp" delay={0.2}>
             <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8 pt-6 border-t border-white/10">
-              {["14+ Deployments", "9.9 NPS Score", "NDA Protected", "Free Consultation"].map((badge) => (
+              {["14+ Deployments", "4.9/5 Rating", "NDA Protected", "Free Consultation"].map((badge) => (
                 <span key={badge} className="flex items-center gap-2 text-xs text-white/50 font-medium">
                   <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
                   {badge}

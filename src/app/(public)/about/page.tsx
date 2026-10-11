@@ -91,8 +91,8 @@ const milestones = [
 ];
 
 const stats = [
-  { value: "14+", label: "Enterprise Projects", icon: Layers, image: "/images/img-global-scale.jpg" },
-  { value: "9.9", label: "Avg NPS Score", icon: Star, image: "/images/img-team-meeting.jpg" },
+  { value: "14+", label: "Production Projects", icon: Layers, image: "/images/img-global-scale.jpg" },
+  { value: "4.9/5", label: "Client Satisfaction", icon: Star, image: "/images/img-team-meeting.jpg" },
   { value: "50+", label: "Interns Mentored", icon: Users, image: "/images/img-server-rack.jpg" },
   { value: "100%", label: "On-Time Delivery", icon: Award, image: "/images/img-matrix-code.jpg" },
 ];
@@ -100,18 +100,18 @@ const stats = [
 const team = [
   {
     name: "Suleman Zaheer",
-    role: "System Architecture & AI",
+    role: "Founder & Full-Stack Architect",
     image: "/suleman-zaheer-software-engineer-samstack-tech.jpeg",
     badge: "Founder & Lead",
     badgeBg: "bg-blue-500/20 border-blue-500/30",
     badgeText: "text-blue-400",
-    skills: ["Next.js", "DevOps", "AI Agents", "System Design"],
+    skills: ["Next.js", "TypeScript", "System Design", "Cloud Infrastructure"],
     phone: "+923285778715",
     whatsapp: "https://wa.me/923285778715",
     email: "samstacktechs@gmail.com",
     linkedin: "https://www.linkedin.com/in/suleman-zaheer-mughal",
     github: "https://github.com/imsuleman-10",
-    bio: "Founder of SAMStack Tech. Full Stack Engineer & DevOps Lead specializing in cloud-native systems, CI/CD pipelines, and AI-powered applications. Based in Lahore, Pakistan.",
+    bio: "Founder of SAMStack Tech. Full Stack Engineer specializing in Next.js, scalable web architectures, and cloud applications. Based in Lahore, Pakistan.",
     portfolioId: "suleman-zaheer",
   },
   {
@@ -350,7 +350,7 @@ export default function AboutPage() {
                 The Engineering Core
               </h2>
               <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base">
-                Senior engineers only. No juniors. No compromise.
+                Direct founder leadership. Dedicated full-stack specialists collaborating directly on your codebase.
               </p>
             </div>
           </AnimateOnScroll>
