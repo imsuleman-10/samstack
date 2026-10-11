@@ -7,6 +7,7 @@ import {
   User, MapPin, GraduationCap, Globe, Link as LinkIcon,
   ShieldCheck, LayoutDashboard, CalendarDays, Code, ArrowLeft, Loader2
 } from "lucide-react";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -148,14 +149,19 @@ export default function ProfilePage() {
 
               {/* Social Links */}
               <div className="flex items-center justify-center sm:justify-start gap-4">
-                {profile.github && (
-                  <a href={profile.github.startsWith("http") ? profile.github : `https://${profile.github}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-neutral-700 hover:text-slate-900 dark:hover:text-white transition-all">
-                    <Globe className="w-5 h-5" />
+                {profile.instagram && (
+                  <a href={profile.instagram.startsWith("http") ? profile.instagram : `https://${profile.instagram}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-pink-600 hover:text-white transition-all" title="Instagram">
+                    <InstagramIcon className="w-5 h-5" />
                   </a>
                 )}
                 {profile.linkedin && (
-                  <a href={profile.linkedin.startsWith("http") ? profile.linkedin : `https://${profile.linkedin}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-[#0A66C2] hover:text-white transition-all">
+                  <a href={profile.linkedin.startsWith("http") ? profile.linkedin : `https://${profile.linkedin}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-[#0A66C2] hover:text-white transition-all" title="LinkedIn">
                     <LinkIcon className="w-5 h-5" />
+                  </a>
+                )}
+                {profile.github && (
+                  <a href={profile.github.startsWith("http") ? profile.github : `https://${profile.github}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-neutral-700 hover:text-slate-900 dark:hover:text-white transition-all" title="GitHub">
+                    <Globe className="w-5 h-5" />
                   </a>
                 )}
               </div>

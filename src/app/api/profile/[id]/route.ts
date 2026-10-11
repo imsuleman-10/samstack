@@ -27,13 +27,16 @@ export async function GET(
     } else if (user.role === "intern") {
       const intern = await adb.internProfiles.get(user.id);
       if (intern) {
+        const userSocial = (user as any).social_links || (user as any).socialLinks || (intern as any)?.social_links || {};
         publicProfile.track = intern.track_selected;
         publicProfile.rollNumber = intern.roll_number;
         publicProfile.university = intern.university;
         publicProfile.degree = intern.degree;
         publicProfile.city = intern.city;
-        publicProfile.github = intern.github_url;
-        publicProfile.linkedin = intern.linkedin_url;
+        publicProfile.github = intern.github_url || userSocial.github || (user as any).github;
+        publicProfile.linkedin = intern.linkedin_url || userSocial.linkedin || (user as any).linkedin;
+        publicProfile.instagram = (intern as any).instagram_url || userSocial.instagram || userSocial.twitter || (user as any).instagram;
+        publicProfile.portfolio = (intern as any).portfolio_url || userSocial.portfolio || (user as any).portfolio;
         publicProfile.joinedAt = intern.created_at;
       }
     }

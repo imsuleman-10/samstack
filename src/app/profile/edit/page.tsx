@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import type { PlatformUser, InternProfile, MentorProfile } from '@/lib/firestore-schema';
 import { compressImage, blobToFile } from '@/lib/compressImage';
 import { tracks } from '@/lib/curriculum';
+import { normalizeSocialUrl } from '@/lib/social';
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div>
@@ -52,6 +53,12 @@ export default function ProfileEditPage() {
         }
         const json = await res.json();
 
+        const initialSocial = json.user.social_links || (json.user as any).socialLinks || (json.internProfile as any)?.social_links || {};
+        const resolvedInstagram = initialSocial.instagram || initialSocial.twitter || (json.user as any).instagram || (json.internProfile as any)?.instagram || (json.internProfile as any)?.instagram_url || '';
+        const resolvedLinkedin = initialSocial.linkedin || (json.user as any).linkedin || (json.internProfile as any)?.linkedin || (json.internProfile as any)?.linkedin_url || '';
+        const resolvedGithub = initialSocial.github || (json.user as any).github || (json.internProfile as any)?.github || (json.internProfile as any)?.github_url || '';
+        const resolvedPortfolio = initialSocial.portfolio || (json.user as any).portfolio || (json.internProfile as any)?.portfolio || (json.internProfile as any)?.portfolio_url || '';
+
         setData({ user: json.user, internProfile: json.internProfile, mentorProfile: json.mentorProfile });
         setForm({
           full_name: json.user.full_name || '',
@@ -65,7 +72,13 @@ export default function ProfileEditPage() {
           age: json.user.age ?? '',
           skills: json.user.skills || [],
           visibility: json.user.visibility || 'organization',
-          social_links: json.user.social_links || {},
+          social_links: {
+            ...initialSocial,
+            instagram: resolvedInstagram,
+            linkedin: resolvedLinkedin,
+            github: resolvedGithub,
+            portfolio: resolvedPortfolio,
+          },
         });
         if (json.internProfile) {
           setInternForm({
@@ -207,7 +220,36 @@ export default function ProfileEditPage() {
 
     try {
       const payload: any = { ...form };
-      if (data?.user.role === 'intern' || data?.user.role === 'user') payload.internProfile = internForm;
+
+      // Clean & normalize social links so handles (@user) or domains work seamlessly
+      const cleanSocial: Record<string, string> = {};
+      if (form.social_links?.linkedin?.trim()) {
+        cleanSocial.linkedin = normalizeSocialUrl('linkedin', form.social_links.linkedin);
+      }
+      if (form.social_links?.github?.trim()) {
+        cleanSocial.github = normalizeSocialUrl('github', form.social_links.github);
+      }
+      if (form.social_links?.instagram?.trim()) {
+        cleanSocial.instagram = normalizeSocialUrl('instagram', form.social_links.instagram);
+      }
+      if (form.social_links?.portfolio?.trim()) {
+        cleanSocial.portfolio = normalizeSocialUrl('portfolio', form.social_links.portfolio);
+      }
+
+      payload.social_links = cleanSocial;
+      if (cleanSocial.instagram) payload.instagram = cleanSocial.instagram;
+      if (cleanSocial.linkedin) payload.linkedin = cleanSocial.linkedin;
+      if (cleanSocial.github) payload.github = cleanSocial.github;
+
+      if (data?.user.role === 'intern' || data?.user.role === 'user') {
+        payload.internProfile = {
+          ...internForm,
+          social_links: cleanSocial,
+          ...(cleanSocial.instagram ? { instagram_url: cleanSocial.instagram } : {}),
+          ...(cleanSocial.linkedin ? { linkedin_url: cleanSocial.linkedin } : {}),
+          ...(cleanSocial.github ? { github_url: cleanSocial.github } : {}),
+        };
+      }
       if (data?.user.role === 'mentor') payload.mentorProfile = mentorForm;
 
       const res = await fetch('/api/profile', {
@@ -382,19 +424,51 @@ export default function ProfileEditPage() {
 
         {/* Social Links */}
         <div className="p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
-          <h2 className="text-base font-semibold text-white mb-6">Social Links</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-base font-semibold text-white">Social Links</h2>
+            <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-medium">
+              Only 1 link required
+            </span>
+          </div>
+          <p className="text-xs text-gray-400 mb-6">
+            Adding any single link (Instagram, LinkedIn, GitHub, or Portfolio) marks this requirement as complete.
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Field label="LinkedIn URL">
-              <input type="url" value={form.social_links.linkedin || ''} onChange={e => setForm({ ...form, social_links: { ...form.social_links, linkedin: e.target.value } })} className={inputClass} placeholder="https://linkedin.com/in/..." />
+            <Field label="Instagram Profile / Handle">
+              <input
+                type="text"
+                value={form.social_links.instagram || form.social_links.twitter || ''}
+                onChange={e => setForm({ ...form, social_links: { ...form.social_links, instagram: e.target.value } })}
+                className={inputClass}
+                placeholder="instagram.com/username or @username"
+              />
             </Field>
-            <Field label="GitHub URL">
-              <input type="url" value={form.social_links.github || ''} onChange={e => setForm({ ...form, social_links: { ...form.social_links, github: e.target.value } })} className={inputClass} placeholder="https://github.com/..." />
+            <Field label="LinkedIn Profile">
+              <input
+                type="text"
+                value={form.social_links.linkedin || ''}
+                onChange={e => setForm({ ...form, social_links: { ...form.social_links, linkedin: e.target.value } })}
+                className={inputClass}
+                placeholder="linkedin.com/in/username"
+              />
             </Field>
-            <Field label="Portfolio URL">
-              <input type="url" value={form.social_links.portfolio || ''} onChange={e => setForm({ ...form, social_links: { ...form.social_links, portfolio: e.target.value } })} className={inputClass} placeholder="https://yoursite.com" />
+            <Field label="GitHub Profile">
+              <input
+                type="text"
+                value={form.social_links.github || ''}
+                onChange={e => setForm({ ...form, social_links: { ...form.social_links, github: e.target.value } })}
+                className={inputClass}
+                placeholder="github.com/username"
+              />
             </Field>
-            <Field label="Instagram URL">
-              <input type="url" value={form.social_links.instagram || form.social_links.twitter || ''} onChange={e => setForm({ ...form, social_links: { ...form.social_links, instagram: e.target.value } })} className={inputClass} placeholder="https://instagram.com/..." />
+            <Field label="Portfolio Website">
+              <input
+                type="text"
+                value={form.social_links.portfolio || ''}
+                onChange={e => setForm({ ...form, social_links: { ...form.social_links, portfolio: e.target.value } })}
+                className={inputClass}
+                placeholder="https://yoursite.com"
+              />
             </Field>
           </div>
         </div>

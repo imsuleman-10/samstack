@@ -6,10 +6,12 @@ import { UserAvatar } from '@/components/ui/UserAvatar';
 import { RoleBadge } from '@/components/ui/RoleBadge';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProfileCompletion } from '@/components/ui/ProfileCompletion';
-import { Loader2, Edit3, Globe, MapPin, Briefcase, GraduationCap, Instagram } from 'lucide-react';
+import { Loader2, Edit3, Globe, MapPin, Briefcase, GraduationCap } from 'lucide-react';
+import { InstagramIcon } from '@/components/ui/InstagramIcon';
 import Link from 'next/link';
 import type { PlatformUser, InternProfile, MentorProfile } from '@/lib/firestore-schema';
 import { getTrackTitle } from '@/lib/curriculum';
+import { hasAnySocialLink } from '@/lib/social';
 
 function calcCompletionFields(user: PlatformUser, intern?: InternProfile | null, mentor?: MentorProfile | null) {
   const fields = [
@@ -20,14 +22,8 @@ function calcCompletionFields(user: PlatformUser, intern?: InternProfile | null,
     { label: 'City', done: !!user.city },
     { label: 'Skills', done: (user.skills?.length ?? 0) > 0 },
     {
-      label: 'Social Links',
-      done: !!(
-        user.social_links?.linkedin ||
-        user.social_links?.github ||
-        user.social_links?.instagram ||
-        user.social_links?.portfolio ||
-        user.social_links?.twitter
-      ),
+      label: 'Social Profile (At least 1 link)',
+      done: hasAnySocialLink(user, intern),
     },
     { label: 'Phone', done: !!user.phone },
     { label: 'Avatar', done: !!user.avatar_url },
@@ -112,30 +108,39 @@ export default function ProfilePage() {
             </div>
 
             {/* Social links */}
-            {user.social_links && (
-              <div className="flex gap-3 mt-4">
-                {user.social_links.linkedin && (
-                  <a href={user.social_links.linkedin} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-blue-400 transition-colors">
-                    <Globe className="w-5 h-5" />
-                  </a>
-                )}
-                {user.social_links.github && (
-                  <a href={user.social_links.github} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white transition-colors">
-                    <Globe className="w-5 h-5" />
-                  </a>
-                )}
-                {(user.social_links.instagram || user.social_links.twitter) && (
-                  <a href={user.social_links.instagram || user.social_links.twitter} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-pink-400 transition-colors" title="Instagram">
-                    <Instagram className="w-5 h-5" />
-                  </a>
-                )}
-                {user.social_links.portfolio && (
-                  <a href={user.social_links.portfolio} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-cyan-400 transition-colors">
-                    <Globe className="w-5 h-5" />
-                  </a>
-                )}
-              </div>
-            )}
+            {(() => {
+              const linkedin = user.social_links?.linkedin || (user as any).linkedin || ((internProfile as any)?.linkedin) || ((internProfile as any)?.linkedin_url);
+              const github = user.social_links?.github || (user as any).github || ((internProfile as any)?.github) || ((internProfile as any)?.github_url);
+              const instagram = user.social_links?.instagram || user.social_links?.twitter || (user as any).instagram || ((internProfile as any)?.instagram) || ((internProfile as any)?.instagram_url);
+              const portfolio = user.social_links?.portfolio || (user as any).portfolio || ((internProfile as any)?.portfolio) || ((internProfile as any)?.portfolio_url);
+              
+              if (!linkedin && !github && !instagram && !portfolio) return null;
+
+              return (
+                <div className="flex gap-3 mt-4">
+                  {linkedin && (
+                    <a href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-blue-400 transition-colors" title="LinkedIn">
+                      <Globe className="w-5 h-5" />
+                    </a>
+                  )}
+                  {github && (
+                    <a href={github.startsWith('http') ? github : `https://${github}`} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white transition-colors" title="GitHub">
+                      <Globe className="w-5 h-5" />
+                    </a>
+                  )}
+                  {instagram && (
+                    <a href={instagram.startsWith('http') ? instagram : `https://${instagram}`} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-pink-400 transition-colors" title="Instagram">
+                      <InstagramIcon className="w-5 h-5" />
+                    </a>
+                  )}
+                  {portfolio && (
+                    <a href={portfolio.startsWith('http') ? portfolio : `https://${portfolio}`} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-cyan-400 transition-colors" title="Portfolio">
+                      <Globe className="w-5 h-5" />
+                    </a>
+                  )}
+                </div>
+              );
+            })()}
 
             <div className="w-full mt-5 pt-5 border-t border-white/5 space-y-3 text-left">
               {user.gender && (

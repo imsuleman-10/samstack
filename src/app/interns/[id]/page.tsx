@@ -7,15 +7,17 @@ import {
   FileText, ArrowLeft, Code2, ExternalLink,
   GitBranch, Globe2, Rss, Briefcase, Sparkles, User,
 } from 'lucide-react';
+import { InstagramIcon } from '@/components/ui/InstagramIcon';
 import Link from 'next/link';
 import { RoleBadge } from '@/components/ui/RoleBadge';
 
 /* ─── Social config ───────────────────────────────────────────────────────── */
 const SOCIAL_CONFIG = {
-  linkedin:  { label: 'LinkedIn',  color: '#0A66C2', glowR: 10,  glowG: 102, glowB: 194, icon: <Globe2    className="w-4 h-4" /> },
-  github:    { label: 'GitHub',    color: '#e2e8f0', glowR: 226, glowG: 232, glowB: 240, icon: <GitBranch className="w-4 h-4" /> },
-  twitter:   { label: 'Twitter',   color: '#1DA1F2', glowR: 29,  glowG: 161, glowB: 242, icon: <Rss       className="w-4 h-4" /> },
-  portfolio: { label: 'Portfolio', color: '#22d3ee', glowR: 34,  glowG: 211, glowB: 238, icon: <Globe2    className="w-4 h-4" /> },
+  instagram: { label: 'Instagram', color: '#E1306C', glowR: 225, glowG: 48,  glowB: 108, icon: <InstagramIcon className="w-4 h-4" /> },
+  linkedin:  { label: 'LinkedIn',  color: '#0A66C2', glowR: 10,  glowG: 102, glowB: 194, icon: <Globe2        className="w-4 h-4" /> },
+  github:    { label: 'GitHub',    color: '#e2e8f0', glowR: 226, glowG: 232, glowB: 240, icon: <GitBranch     className="w-4 h-4" /> },
+  twitter:   { label: 'Twitter',   color: '#1DA1F2', glowR: 29,  glowG: 161, glowB: 242, icon: <Rss           className="w-4 h-4" /> },
+  portfolio: { label: 'Portfolio', color: '#22d3ee', glowR: 34,  glowG: 211, glowB: 238, icon: <Globe2        className="w-4 h-4" /> },
 } as const;
 
 type SocialPlatform = keyof typeof SOCIAL_CONFIG;
@@ -168,8 +170,15 @@ export default function InternProfilePage({ params }: { params: Promise<{ id: st
   );
 
   const { user, profile } = data;
-  const socialLinks: Record<string, string> = user.social_links || {};
-  const hasSocials = (['linkedin', 'github', 'twitter', 'portfolio'] as const).some(k => socialLinks[k]);
+  const userSocial = user.social_links || (user as any).socialLinks || (profile as any)?.social_links || {};
+  const socialLinks: Record<string, string> = {
+    ...userSocial,
+    instagram: userSocial.instagram || userSocial.twitter || (user as any).instagram || (profile as any)?.instagram_url || (profile as any)?.instagram || '',
+    linkedin: userSocial.linkedin || (user as any).linkedin || (profile as any)?.linkedin_url || (profile as any)?.linkedin || '',
+    github: userSocial.github || (user as any).github || (profile as any)?.github_url || (profile as any)?.github || '',
+    portfolio: userSocial.portfolio || (user as any).portfolio || (profile as any)?.portfolio_url || (profile as any)?.portfolio || '',
+  };
+  const hasSocials = (['instagram', 'linkedin', 'github', 'twitter', 'portfolio'] as const).some(k => Boolean(socialLinks[k]));
 
   return (
     <div className="max-w-5xl mx-auto pb-20">
@@ -367,7 +376,7 @@ export default function InternProfilePage({ params }: { params: Promise<{ id: st
             <GlassCard>
               <SectionHeader icon={<Globe2 className="w-3.5 h-3.5" />} title="Connect" />
               <div className="space-y-2">
-                {(['linkedin', 'github', 'portfolio', 'twitter'] as SocialPlatform[]).map(platform => {
+                {(['instagram', 'linkedin', 'github', 'portfolio', 'twitter'] as SocialPlatform[]).map(platform => {
                   const url = socialLinks[platform];
                   if (!url) return null;
                   const cfg = SOCIAL_CONFIG[platform];

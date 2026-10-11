@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { tracks, getDetailedTask } from '@/lib/curriculum';
 import type { Task, DetailedTask } from '@/lib/curriculum';
 import { toast } from 'sonner';
+import { hasAnySocialLink } from '@/lib/social';
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 const TOTAL_TASKS = 5;
@@ -30,7 +31,7 @@ function getProfileCompletionPercentage(user: any, intern: any) {
     { done: !!user.bio },
     { done: !!user.city },
     { done: Array.isArray(user.skills) && user.skills.length > 0 },
-    { done: !!(user.social_links?.linkedin || user.social_links?.github || user.social_links?.instagram || user.social_links?.portfolio || user.social_links?.twitter || user.linkedin || user.github) },
+    { done: hasAnySocialLink(user, intern) },
     { done: !!(user.phone || user.phone_number) },
     { done: hasAvatar },
     { done: !!(intern?.track_selected || intern?.trackSelected || intern?.track || user?.track) },
@@ -1036,7 +1037,7 @@ function InternDashboardContent() {
     { label: 'Bio / Intro', done: !!user.bio },
     { label: 'City', done: !!user.city },
     { label: 'Skills Added', done: Array.isArray(user.skills) && user.skills.length > 0 },
-    { label: 'Social Profile (At least 1 link)', done: !!(user.social_links?.linkedin || user.social_links?.github || user.social_links?.instagram || user.social_links?.portfolio || user.social_links?.twitter || user.linkedin || user.github) },
+    { label: 'Social Profile (At least 1 link)', done: hasAnySocialLink(user, intern) },
     { label: 'Phone Number', done: !!(user.phone || user.phone_number) },
     { label: 'Internship Track', done: hasTrack },
     { label: 'University Name', done: !!intern?.university },
