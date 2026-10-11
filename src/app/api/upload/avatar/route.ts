@@ -16,10 +16,20 @@ async function compressToTarget(
 ): Promise<Buffer> {
   const targetBytes = targetKB * 1024;
 
-  let pipeline = sharp(input).rotate();
-  const meta = await pipeline.metadata();
-  if ((meta.width ?? 0) > maxWidthPx) {
-    pipeline = pipeline.resize({ width: maxWidthPx, withoutEnlargement: true });
+  // Validate buffer is not empty/corrupt before passing to sharp
+  if (!input || input.length < 10) {
+    throw new Error('Input buffer is too small or empty');
+  }
+
+  let pipeline: ReturnType<typeof sharp>;
+  try {
+    pipeline = sharp(input, { failOnError: false }).rotate();
+    const meta = await pipeline.metadata();
+    if ((meta.width ?? 0) > maxWidthPx) {
+      pipeline = pipeline.resize({ width: maxWidthPx, withoutEnlargement: true });
+    }
+  } catch (metaErr: any) {
+    throw new Error(`Sharp metadata error: ${metaErr?.message}`);
   }
 
   let lo = 20;
@@ -28,12 +38,16 @@ async function compressToTarget(
 
   for (let i = 0; i < 8; i++) {
     const mid = Math.round((lo + hi) / 2);
-    const candidate = await pipeline.clone().jpeg({ quality: mid, mozjpeg: true }).toBuffer();
-    if (candidate.length <= targetBytes) {
-      best = candidate;
-      lo = mid;
-    } else {
-      hi = mid;
+    try {
+      const candidate = await pipeline.clone().jpeg({ quality: mid, mozjpeg: true }).toBuffer();
+      if (candidate.length <= targetBytes) {
+        best = candidate;
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    } catch {
+      break; // Stop iteration on encode error, use what we have
     }
   }
 
@@ -77,13 +91,15 @@ export async function POST(request: NextRequest) {
     const rawBuffer = Buffer.from(arrayBuffer);
 
     let finalBuffer: Buffer = rawBuffer;
-    let contentType = "image/jpeg";
+    let contentType = file.type || "image/jpeg";
     try {
       finalBuffer = await compressToTarget(rawBuffer, 100, 800);
+      contentType = "image/jpeg";
+      console.log(`[Avatar Upload] Sharp compression OK — ${Math.round(finalBuffer.length / 1024)}KB`);
     } catch (sharpErr: any) {
       console.warn('[Avatar Upload] Sharp compression skipped, using original buffer:', sharpErr?.message);
+      // Use original buffer with original content type — upload still proceeds
       finalBuffer = rawBuffer;
-      contentType = file.type || "image/jpeg";
     }
 
     const finalSizeKB = Math.round(finalBuffer.length / 1024);
@@ -100,19 +116,25 @@ export async function POST(request: NextRequest) {
 
     // Save avatar_url to the platform users collection
     if (adminDb) {
+      const now = new Date().toISOString();
+      // Use set() with merge:true — this creates doc if not exists, or merges if it does
       try {
-        await adminDb.collection(FS.USERS).doc(user.id).set({
-          avatar_url: publicUrl,
-          updated_at: new Date().toISOString(),
-        }, { merge: true });
-
-        // Also merge into intern_profiles if exists
-        await adminDb.collection(FS.INTERN_PROFILES).doc(user.id).set({
-          avatar_url: publicUrl,
-          updated_at: new Date().toISOString(),
-        }, { merge: true });
+        await adminDb.collection(FS.USERS).doc(user.id).set(
+          { avatar_url: publicUrl, updated_at: now },
+          { merge: true }
+        );
       } catch (dbErr: any) {
-        console.error('[Avatar Upload] Failed to update Firestore, but file was uploaded:', dbErr.message);
+        console.warn('[Avatar Upload] Could not update users collection:', dbErr.message);
+      }
+      try {
+        // Only update intern_profiles if document already exists
+        const internRef = adminDb.collection(FS.INTERN_PROFILES).doc(user.id);
+        const internSnap = await internRef.get();
+        if (internSnap.exists) {
+          await internRef.update({ avatar_url: publicUrl, updated_at: now });
+        }
+      } catch (dbErr: any) {
+        console.warn('[Avatar Upload] Could not update intern_profiles:', dbErr.message);
       }
     }
 

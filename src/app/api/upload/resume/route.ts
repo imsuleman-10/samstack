@@ -45,13 +45,15 @@ export async function POST(request: NextRequest) {
 
     // Save resume_url to the intern profiles collection
     if (adminDb) {
+      const now = new Date().toISOString();
       try {
-        await adminDb.collection(FS.INTERN_PROFILES).doc(user.id).set({
-          resume_url: publicUrl,
-          updated_at: new Date().toISOString(),
-        }, { merge: true });
+        // set() with merge:true creates the doc if missing, or merges fields if existing
+        await adminDb.collection(FS.INTERN_PROFILES).doc(user.id).set(
+          { resume_url: publicUrl, updated_at: now },
+          { merge: true }
+        );
       } catch (dbErr: any) {
-        console.error('[Resume Upload] Failed to update Firestore, but file was uploaded:', dbErr.message);
+        console.warn('[Resume Upload] Could not update intern_profiles:', dbErr.message);
       }
     }
 
