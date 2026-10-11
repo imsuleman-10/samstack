@@ -285,8 +285,10 @@ export async function supabaseUpload({
     }
   }
 
-  // ── Infallible Fallback ──
-  // When Supabase is paused or offline, store locally so the user request succeeds!
-  console.log(`[Supabase Upload] Fallback activated for ${filePath}. Storing in public/uploads/${bucket}/`);
-  return await saveLocalFallback(bucket, filePath, body);
+  // ── All retries exhausted ──
+  // Throw a clear error — do NOT try to save locally (Vercel filesystem is read-only)
+  throw new Error(
+    `Supabase upload failed after ${retries + 1} attempts. ` +
+    `Please check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables on Vercel.`
+  );
 }
